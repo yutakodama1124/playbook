@@ -1,0 +1,44 @@
+import { evaluate } from "mathjs";
+import type { ConceptMap } from "@/domain/concept-map";
+import type { GameSpec } from "@/domain/game-spec";
+import type { VerifierReport } from "@/repo/types";
+
+const norm = (s: string) => s.trim().toLowerCase();
+
+export function verifyGame(spec: GameSpec, map: ConceptMap): VerifierReport {
+  const problems: string[] = [];
+  const known = new Set(map.concepts.map((c) => c.id));
+  const seen = new Set<string>();
+
+  for (const id of spec.concept_ids) if (!known.has(id)) problems.push(`game references unknown concept ${id}`);
+
+  for (const c of spec.checks) {
+    if (seen.has(c.id)) problems.push(`duplicate check id ${c.id}`);
+    seen.add(c.id);
+    for (const id of c.concept_ids) if (!known.has(id)) problems.push(`check ${c.id} references unknown concept ${id}`);
+
+    if (c.kind === "number" && c.formula) {
+      try {
+        const v = Number(evaluate(c.formula));
+        if (!Number.isFinite(v) || Math.abs(v - c.answer) > Math.max(c.tolerance, 1e-9))
+          problems.push(`check ${c.id}: formula ${c.formula} = ${v}, but answer is ${c.answer}`);
+      } catch {
+        problems.push(`check ${c.id}: formula "${c.formula}" could not be evaluated`);
+      }
+    }
+    if (c.kind === "choice" && !c.options.map(norm).includes(norm(c.answer)))
+      problems.push(`check ${c.id}: answer "${c.answer}" is not one of the options`);
+    if (c.kind === "order") {
+      const a = [...c.answer].map(norm).sort().join("|"), i = [...c.items].map(norm).sort().join("|");
+      if (a !== i) problems.push(`check ${c.id}: order answer is not a permutation of items`);
+    }
+    if (c.kind === "set" && !c.answer.every((x) => c.options.map(norm).includes(norm(x))))
+      problems.push(`check ${c.id}: set answer contains values not in options`);
+    if (c.kind === "match") {
+      const lefts = new Set(c.left.map(norm)), rights = new Set(c.right.map(norm));
+      for (const [l, r] of Object.entries(c.answer))
+        if (!lefts.has(norm(l)) || !rights.has(norm(r))) problems.push(`check ${c.id}: pair ${l}→${r} not in left/right lists`);
+    }
+  }
+  return { ok: problems.length === 0, problems };
+}
