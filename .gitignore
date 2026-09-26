@@ -43,3 +43,9 @@ next-env.d.ts
 # workflow build
 dist-workflow/
 !.env.example
+
+# local Claude/editor settings
+.claude/settings.local.json
+
+# Supabase CLI temp files
+/supabase/.temp/
