@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
-import { createLlmClient } from "../src/lib/llm";
-import { ingestUnit } from "../src/pipeline/ingest";
+import { createLlmClient } from "../src/lib/llm.ts";
+import { ingestUnit } from "../src/pipeline/ingest.ts";
 
 const map = await ingestUnit(createLlmClient(), {
   title: "Cellular Respiration", course: "AP Biology",

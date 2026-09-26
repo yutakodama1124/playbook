@@ -1,9 +1,9 @@
-import { createLlmClient } from "../src/lib/llm";
-import { createSupabaseRepo } from "../src/repo/supabase";
-import { generateImage } from "../src/assets/image-gen";
-import { tagImage } from "../src/assets/tagger";
-import { supabaseUpload } from "../src/assets/resolver";
-import { STYLE_VERSION } from "../src/assets/library";
+import { createLlmClient } from "../src/lib/llm.ts";
+import { createSupabaseRepo } from "../src/repo/supabase.ts";
+import { generateImage } from "../src/assets/image-gen.ts";
+import { tagImage } from "../src/assets/tagger.ts";
+import { supabaseUpload } from "../src/assets/resolver.ts";
+import { STYLE_VERSION } from "../src/assets/library.ts";
 
 const SCENES = ["high school chemistry lab at night", "old library with tall shelves", "spaceship bridge", "hospital exam room",
   "museum gallery", "1914 war office with maps", "greenhouse", "detective office", "courtroom", "factory floor",

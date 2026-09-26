@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createLlmClient } from "../src/lib/llm";
+import { createLlmClient } from "../src/lib/llm.ts";
 
 const out = await createLlmClient().parseStructured({
   schema: z.object({ capital: z.string() }),
