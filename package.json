@@ -11,7 +11,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "build:workflow": "tsup",
-    "start:workflow": "node dist-workflow/index.js"
+    "start:workflow": "node dist-workflow/index.mjs"
   },
   "dependencies": {
     "@ai-sdk/gateway": "^4.0.94",
