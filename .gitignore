@@ -49,3 +49,6 @@ dist-workflow/
 
 # Supabase CLI temp files
 /supabase/.temp/
+
+# art drop folder (uploaded to Supabase by scripts/import-assets.mts)
+/assets-import/
