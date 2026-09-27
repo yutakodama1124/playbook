@@ -1,12 +1,14 @@
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { createMemoryRepo } from "./memory";
-import type { AssetRow, GameRow, Repo, UnitRow } from "./types";
+import type { AssetRow, GameRow, Repo, RoomPlayerRow, RoomRow, UnitRow } from "./types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const unitFrom = (r: any): UnitRow => ({ id: r.id, title: r.title, course: r.course, testDate: r.test_date, status: r.status,
   error: r.error, conceptMap: r.concept_map, input: r.input, createdAt: r.created_at });
 const gameFrom = (r: any): GameRow => ({ id: r.id, unitId: r.unit_id, mode: r.mode, status: r.status, error: r.error,
   spec: r.spec, assets: r.assets, verifierReport: r.verifier_report, createdAt: r.created_at });
+const roomFrom = (r: any): RoomRow => ({ id: r.id, code: r.code, gameId: r.game_id, hostToken: r.host_token, state: r.state });
+const playerFrom = (r: any): RoomPlayerRow => ({ id: r.id, roomId: r.room_id, name: r.name, token: r.token, score: r.score });
 const assetFrom = (r: any): AssetRow => ({ id: r.id, url: r.url, kind: r.kind, tags: r.tags, mood: r.mood,
   positions: r.positions, styleVersion: r.style_version });
 
@@ -41,6 +43,27 @@ export function createSupabaseRepo(): Repo {
     async listAssets() { return (must(await db.from("assets").select()) ?? []).map(assetFrom); },
     async addAsset(a) {
       return assetFrom(must(await db.from("assets").insert({ url: a.url, kind: a.kind, tags: a.tags, mood: a.mood, positions: a.positions, style_version: a.styleVersion }).select().single()));
+    },
+    async createRoom(r) {
+      return roomFrom(must(await db.from("rooms").insert({ code: r.code, game_id: r.gameId, host_token: r.hostToken, state: r.state }).select().single()));
+    },
+    async getRoomByCode(code) {
+      const r = must(await db.from("rooms").select().eq("code", code).maybeSingle());
+      return r ? roomFrom(r) : null;
+    },
+    async updateRoomState(id, state) { must(await db.from("rooms").update({ state }).eq("id", id)); },
+    async addPlayer(roomId, name, token) {
+      return playerFrom(must(await db.from("room_players").insert({ room_id: roomId, name, token }).select().single()));
+    },
+    async listPlayers(roomId) {
+      return (must(await db.from("room_players").select().eq("room_id", roomId).order("joined_at")) ?? []).map(playerFrom);
+    },
+    async setScore(playerId, score) { must(await db.from("room_players").update({ score }).eq("id", playerId)); },
+    async castVote(roomId, round, voterId, targetId) {
+      must(await db.from("room_votes").upsert({ room_id: roomId, round, voter_id: voterId, target_id: targetId }));
+    },
+    async listVotes(roomId, round) {
+      return (must(await db.from("room_votes").select().eq("room_id", roomId).eq("round", round)) ?? []).map((v: any) => ({ voterId: v.voter_id, targetId: v.target_id }));
     },
   };
 }

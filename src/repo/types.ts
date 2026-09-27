@@ -10,6 +10,9 @@ export type GameRow = { id: string; unitId: string; mode: GameMode; status: JobS
 export type AssetRow = { id: string; url: string; kind: "scene" | "portrait" | "prop" | "card" | "boss";
   tags: string[]; mood: string | null; positions: Record<string, string>; styleVersion: number };
 export type VerifierReport = { ok: boolean; problems: string[] };
+export type RoomRow = { id: string; code: string; gameId: string; hostToken: string; state: unknown };
+export type RoomPlayerRow = { id: string; roomId: string; name: string; token: string; score: number };
+export type RoomVoteRow = { voterId: string; targetId: string };
 export interface Repo {
   createUnit(input: IngestInput, testDate: string | null): Promise<UnitRow>;
   getUnit(id: string): Promise<UnitRow | null>;
@@ -19,4 +22,12 @@ export interface Repo {
   updateGame(id: string, patch: Partial<Pick<GameRow, "status" | "error" | "spec" | "assets" | "verifierReport">>): Promise<void>;
   listAssets(): Promise<AssetRow[]>;
   addAsset(a: Omit<AssetRow, "id">): Promise<AssetRow>;
+  createRoom(r: Omit<RoomRow, "id">): Promise<RoomRow>;
+  getRoomByCode(code: string): Promise<RoomRow | null>;
+  updateRoomState(id: string, state: unknown): Promise<void>;
+  addPlayer(roomId: string, name: string, token: string): Promise<RoomPlayerRow>;
+  listPlayers(roomId: string): Promise<RoomPlayerRow[]>;
+  setScore(playerId: string, score: number): Promise<void>;
+  castVote(roomId: string, round: number, voterId: string, targetId: string): Promise<void>;
+  listVotes(roomId: string, round: number): Promise<RoomVoteRow[]>;
 }
