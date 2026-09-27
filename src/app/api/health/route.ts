@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-// Reports which config is present (booleans only — never values).
+// Temporary deploy check: reports which config is present (booleans only). Remove after deploy is verified.
 export function GET() {
   const has = (k: string) => Boolean(process.env[k]);
   return NextResponse.json({
@@ -11,6 +11,6 @@ export function GET() {
     supabaseKey: has("SUPABASE_SERVICE_ROLE_KEY"),
     aiGateway: has("AI_GATEWAY_API_KEY"),
     render: has("RENDER_API_KEY"),
-    pipelineMode: process.env.PIPELINE_MODE ?? "inline",
+    pipelineMode: has("PIPELINE_MODE"),
   });
 }
