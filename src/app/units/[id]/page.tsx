@@ -5,7 +5,7 @@ import { ConceptMapView } from "@/app/components/ConceptMapView";
 import { Arcade } from "@/app/components/Arcade";
 import { usePoll } from "@/app/components/usePoll";
 
-type UnitView = { error?: string | null; id: string; title: string; course: string; status: string; error: string | null; conceptMap: ConceptMap | null };
+type UnitView = { id: string; title: string; course: string; status: string; error: string | null; conceptMap: ConceptMap | null };
 
 export default function UnitPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
