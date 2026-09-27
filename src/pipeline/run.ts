@@ -1,6 +1,7 @@
 import type { GameSpec } from "@/domain/game-spec";
 import type { LlmClient } from "@/lib/llm";
 import type { Repo } from "@/repo/types";
+import { InvalidSpecError } from "@/domain/llm-check";
 import { generators, type Generator } from "./generators";
 import { ingestUnit } from "./ingest";
 import { verifyGame } from "./verify";
@@ -40,7 +41,14 @@ export async function runGamePipeline(
       const repairLlm: LlmClient = problems.length
         ? { parseStructured: (a) => llm.parseStructured({ ...a, content: [...a.content, { type: "text", text: `Your previous attempt failed verification. Fix these problems:\n- ${problems.join("\n- ")}` }] }) }
         : llm;
-      const spec = await gen({ llm: repairLlm, map, targetConceptIds: [], learnMode: true });
+      let spec: GameSpec;
+      try {
+        spec = await gen({ llm: repairLlm, map, targetConceptIds: [], learnMode: true });
+      } catch (e) {
+        if (!(e instanceof InvalidSpecError)) throw e;
+        problems = [e.message];
+        continue;
+      }
       const report = verifyGame(spec, map);
       if (report.ok) {
         const assets = await resolveAssets(spec);
