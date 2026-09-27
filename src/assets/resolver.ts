@@ -14,10 +14,11 @@ export function createAssetResolver(deps: {
     const out: Record<string, string> = {};
     const library = await deps.repo.listAssets();
     for (const req of spec.asset_requests) {
-      const hit = pickAsset(library, req.tags, 2);
+      const kind = req.role.startsWith("portrait") ? "portrait" : req.role === "boss" ? "boss" : "scene";
+      const hit = pickAsset(library.filter((a) => a.kind === kind), req.tags, 2);
       if (hit) { out[req.role] = hit.url; continue; }
       if (env.devNoImages) { out[req.role] = PLACEHOLDER_URL; continue; }
-      const img = await generateImage(req.tags.join(", "));
+      const img = await generateImage(kind === "portrait" ? `portrait of a ${req.tags.join(", ")}, shoulders up, plain soft background` : req.tags.join(", "));
       const url = await deps.upload(img.bytes, `library/${nanoid()}.png`);
       const tags = await tagImage(deps.llm, img);
       const row = await deps.repo.addAsset({ url, ...tags, tags: [...new Set([...tags.tags, ...req.tags])], styleVersion: STYLE_VERSION });

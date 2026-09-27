@@ -7,9 +7,7 @@ import type { LlmClient } from "@/lib/llm";
 export type GenerateContext = { llm: LlmClient; map: ConceptMap; targetConceptIds: string[]; learnMode: boolean };
 export type Generator = (ctx: GenerateContext) => Promise<GameSpec>;
 
-export const CONTENT_POLICY = "Content must be school-appropriate for ages 13–18: no gore, no sexual content, no real-person defamation. Default to non-violent stakes.";
-
-export const conceptMapText = (map: ConceptMap) => JSON.stringify(map);
+import { CONTENT_POLICY, conceptMapText } from "./prompt-shared";
 
 // Stub mode proving the pipeline end-to-end: a 3-question "warm-up" whose checks follow the shared Check schema.
 const DemoSpecSchema = llmEnvelope("demo", z.object({ theme: z.string() }));
@@ -26,4 +24,6 @@ asset_requests: one {role:"scene", tags:[...]} describing a fitting background.`
     content: [{ type: "text", text: `Concept Map:\n${conceptMapText(map)}\n\nTarget concepts (prioritize): ${targetConceptIds.join(", ") || "any"}` }],
   }));
 
-export const generators: Partial<Record<GameMode, Generator>> = { demo };
+import { generateCase } from "@/modes/case/generate";
+
+export const generators: Partial<Record<GameMode, Generator>> = { demo, case: generateCase };
