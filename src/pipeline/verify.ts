@@ -2,6 +2,17 @@ import { evaluate } from "mathjs";
 import type { ConceptMap } from "@/domain/concept-map";
 import type { GameSpec } from "@/domain/game-spec";
 import type { VerifierReport } from "@/repo/types";
+import { CaseContentSchema } from "@/modes/case/schema";
+import { validateCase } from "@/modes/case/validate";
+
+/** Mode-specific structural checks on spec.content. */
+function modeProblems(spec: GameSpec, map: ConceptMap): string[] {
+  if (spec.mode === "case") {
+    const parsed = CaseContentSchema.safeParse(spec.content);
+    return parsed.success ? validateCase(parsed.data, map) : [`case content invalid: ${parsed.error.issues[0]?.message}`];
+  }
+  return [];
+}
 
 const norm = (s: string) => s.trim().toLowerCase();
 
@@ -40,5 +51,6 @@ export function verifyGame(spec: GameSpec, map: ConceptMap): VerifierReport {
         if (!lefts.has(norm(l)) || !rights.has(norm(r))) problems.push(`check ${c.id}: pair ${l}→${r} not in left/right lists`);
     }
   }
+  problems.push(...modeProblems(spec, map));
   return { ok: problems.length === 0, problems };
 }

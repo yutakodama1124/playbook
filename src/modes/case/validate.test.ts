@@ -1,0 +1,29 @@
+import { describe, it, expect } from "vitest";
+import { validateCase } from "./validate";
+import { content, map } from "./__fixtures__/case";
+
+describe("validateCase", () => {
+  it("accepts a valid case", () => {
+    expect(validateCase(content, map)).toEqual([]);
+  });
+  it("requires exactly one mentor and at least 3 non-mentor characters", () => {
+    const noMentor = { ...content, characters: content.characters.map((c) => ({ ...c, is_mentor: false })) };
+    expect(validateCase(noMentor, map).join()).toMatch(/mentor/);
+    const few = { ...content, characters: content.characters.slice(2) };
+    expect(validateCase(few, map).join()).toMatch(/at least 3/);
+  });
+  it("requires the correct option to exist and wrong-option feedback for every other option", () => {
+    const bad = { ...content, accusation: { ...content.accusation, correct_option_id: "zz", wrong_option_feedback: [] } };
+    const p = validateCase(bad, map).join("|");
+    expect(p).toMatch(/correct_option_id/);
+    expect(p).toMatch(/feedback/);
+  });
+  it("flags unknown concept ids and dangling references", () => {
+    const bad = { ...content,
+      solution: { ...content.solution, chain: [{ step: "x", concept_id: "c_nope" }] },
+      evidence: [{ ...content.evidence[0], points_to: ["ghost"] }] };
+    const p = validateCase(bad, map).join("|");
+    expect(p).toMatch(/c_nope/);
+    expect(p).toMatch(/ghost/);
+  });
+});

@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { verifyGame } from "./verify";
 import type { ConceptMap } from "@/domain/concept-map";
 import type { GameSpec } from "@/domain/game-spec";
+import { spec as caseSpec, map as caseMap } from "@/modes/case/__fixtures__/case";
 
 const map = { unit: { title: "t", course: "c", level: "AP/IB" }, source_coverage: "x",
   concepts: ["c_a", "c_b", "c_c"].map((id) => ({ id, name: id, summary: "s", kind: "term", facts: ["f"], formulas: [], steps: [], misconceptions: [], relations: [], source_ref: null })) } as ConceptMap;
@@ -33,5 +34,10 @@ describe("verifyGame", () => {
   it("flags duplicate check ids", () => {
     const bad = { ...base, checks: [base.checks[0], base.checks[0]] } as GameSpec;
     expect(verifyGame(bad, map).problems.join()).toMatch(/duplicate/i);
+  });
+  it("runs case validation for case mode", () => {
+    expect(verifyGame(caseSpec, caseMap).ok).toBe(true);
+    const bad = { ...caseSpec, content: { ...caseSpec.content, characters: [] } } as GameSpec;
+    expect(verifyGame(bad, caseMap).problems.join()).toMatch(/mentor/);
   });
 });
