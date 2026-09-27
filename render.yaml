@@ -1,5 +1,6 @@
 services:
   - type: workflow
     name: playbook-pipeline
+    runtime: node
     buildCommand: npm install && npm run build:workflow
     startCommand: npm run start:workflow
