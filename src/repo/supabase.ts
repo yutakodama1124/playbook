@@ -47,6 +47,11 @@ export function createSupabaseRepo(): Repo {
 
 let singleton: Repo | null = null;
 export function getRepo(): Repo {
-  singleton ??= process.env.SUPABASE_URL ? createSupabaseRepo() : createMemoryRepo();
+  if (!singleton) {
+    if (process.env.SUPABASE_URL) singleton = createSupabaseRepo();
+    // Memory repo loses data across serverless instances, so it is only allowed outside production.
+    else if (process.env.NODE_ENV === "production") throw new Error("SUPABASE_URL is not set in this deployment");
+    else singleton = createMemoryRepo();
+  }
   return singleton;
 }
