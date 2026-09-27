@@ -4,6 +4,8 @@ import type { GameSpec } from "@/domain/game-spec";
 import type { VerifierReport } from "@/repo/types";
 import { CaseContentSchema } from "@/modes/case/schema";
 import { validateCase } from "@/modes/case/validate";
+import { ImpostorContentSchema } from "@/modes/impostor/schema";
+import { validateImpostor } from "@/modes/impostor/validate";
 
 const CONCEPT_ID = /\bc_[a-z0-9]+(?:_[a-z0-9]+)*\b/;
 
@@ -20,6 +22,10 @@ function modeProblems(spec: GameSpec, map: ConceptMap): string[] {
   if (spec.mode === "case") {
     const parsed = CaseContentSchema.safeParse(spec.content);
     return parsed.success ? validateCase(parsed.data, map) : [`case content invalid: ${parsed.error.issues[0]?.message}`];
+  }
+  if (spec.mode === "impostor") {
+    const parsed = ImpostorContentSchema.safeParse(spec.content);
+    return parsed.success ? validateImpostor(parsed.data, map) : [`impostor content invalid: ${parsed.error.issues[0]?.message}`];
   }
   return [];
 }
