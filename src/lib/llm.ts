@@ -26,7 +26,8 @@ export function createLlmClient(anthropic: Anthropic = new Anthropic()): LlmClie
       // Server-side refusal fallback (spec: Global Constraints). SDK typings may lag the "default" form,
       // so these two fields are spread from an untyped object.
       const fallback = { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" } as Record<string, unknown>;
-      const res = await anthropic.beta.messages.parse({
+      // Streaming avoids SDK/HTTP timeouts on long generations (e.g. 32k-token case files).
+      const res = await anthropic.beta.messages.stream({
         model: MODEL,
         max_tokens: maxTokens,
         thinking: { type: "adaptive" },
@@ -34,7 +35,7 @@ export function createLlmClient(anthropic: Anthropic = new Anthropic()): LlmClie
         messages: [{ role: "user", content }],
         output_config: { effort, format: zodOutputFormat(schema) },
         ...fallback,
-      } as Parameters<typeof anthropic.beta.messages.parse>[0]);
+      } as Parameters<typeof anthropic.beta.messages.stream>[0]).finalMessage();
       if (res.stop_reason === "refusal") throw new RefusalError("Claude declined this request");
       if (res.parsed_output == null) throw new ParseError(`No valid structured output (stop_reason=${res.stop_reason})`);
       return res.parsed_output as T;

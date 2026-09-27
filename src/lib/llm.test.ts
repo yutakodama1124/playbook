@@ -3,8 +3,9 @@ import { z } from "zod";
 import { createLlmClient, RefusalError, ParseError } from "./llm";
 
 function fakeAnthropic(result: object) {
-  const parse = vi.fn().mockResolvedValue(result);
-  return { client: { beta: { messages: { parse } } } as never, parse };
+  // parseStructured streams (needed for long generations); the fake returns the final parsed message.
+  const parse = vi.fn().mockReturnValue({ finalMessage: vi.fn().mockResolvedValue(result) });
+  return { client: { beta: { messages: { stream: parse } } } as never, parse };
 }
 
 const Schema = z.object({ answer: z.number() });
