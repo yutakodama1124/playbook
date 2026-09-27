@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { GameMode } from "@/domain/game-spec";
 
 const MODES: { mode: GameMode | null; name: string; blurb: string }[] = [
@@ -13,11 +14,13 @@ const MODES: { mode: GameMode | null; name: string; blurb: string }[] = [
 ];
 
 export function Arcade({ unitId, available }: { unitId: string; available: GameMode[] }) {
+  const router = useRouter();
   const [msg, setMsg] = useState<string | null>(null);
   async function start(mode: GameMode) {
     const res = await fetch(`/api/units/${unitId}/games`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ mode }) });
     const json = await res.json();
-    setMsg(res.ok ? `Game ${json.id} is generating…` : json.error);
+    if (res.ok) router.push(`/games/${json.id}`);
+    else setMsg(json.error);
   }
   return (
     <section>
