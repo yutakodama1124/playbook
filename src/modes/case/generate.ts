@@ -28,6 +28,8 @@ Red herring: at least one wrong option must look right to a student holding a co
 Solution chain: 3–5 steps from evidence to answer, each tied to a concept id.
 Field guide: one entry per concept used, a clear student-level explanation, with source_ref copied from the concept.
 Checks: 2–3 "deduction" checks the student answers mid-case (predict or apply a concept to the evidence). Check fields by kind — number: answer_number, tolerance, formula (mathjs expression computing answer_number); choice: options, answer=[correct], wrong_feedback for EVERY wrong option; order: options=items shuffled, answer=correct sequence; set: options, answer=correct members; match: pairs. Leave unused fields empty/null. Hints: exactly 3 — nudge, concept explanation, similar worked example; never the answer.
+NEVER write concept ids (like c_something) in any text a student reads — use concept names. Ids go only in *_id / concept_ids fields.
+The title, intro, premise, and briefing must NOT hint at which option is correct.
 briefing: 2–4 sentences, in-world, introducing the key concepts the detective will need (pre-training). Use only concept ids from the map. setting_tags: 3–5 plain tags describing the location.`;
 
 export const generateCase: Generator = async ({ llm, map, targetConceptIds }) => {

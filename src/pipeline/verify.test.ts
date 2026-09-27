@@ -40,4 +40,9 @@ describe("verifyGame", () => {
     const bad = { ...caseSpec, content: { ...caseSpec.content, characters: [] } } as GameSpec;
     expect(verifyGame(bad, caseMap).problems.join()).toMatch(/mentor/);
   });
+  it("flags raw concept ids in student-facing text but not in id fields", () => {
+    const bad = { ...caseSpec, briefing: "You will need c_etc to solve this." } as GameSpec;
+    expect(verifyGame(bad, caseMap).problems.join()).toMatch(/concept id.*briefing/);
+    expect(verifyGame(caseSpec, caseMap).ok).toBe(true);
+  });
 });

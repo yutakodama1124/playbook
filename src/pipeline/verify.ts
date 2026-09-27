@@ -5,6 +5,16 @@ import type { VerifierReport } from "@/repo/types";
 import { CaseContentSchema } from "@/modes/case/schema";
 import { validateCase } from "@/modes/case/validate";
 
+const CONCEPT_ID = /\bc_[a-z0-9]+(?:_[a-z0-9]+)*\b/;
+
+/** Students must see concept names, never raw ids like "c_electron_transport_chain". */
+function idLeaks(value: unknown, path: string, out: string[]) {
+  if (typeof value === "string") { if (CONCEPT_ID.test(value)) out.push(`raw concept id in student-facing text at ${path}; use the concept's name`); return; }
+  if (Array.isArray(value)) { value.forEach((v, i) => idLeaks(v, `${path}[${i}]`, out)); return; }
+  if (value && typeof value === "object")
+    for (const [k, v] of Object.entries(value)) if (!/(^id$|_id$|_ids$)/.test(k)) idLeaks(v, path ? `${path}.${k}` : k, out);
+}
+
 /** Mode-specific structural checks on spec.content. */
 function modeProblems(spec: GameSpec, map: ConceptMap): string[] {
   if (spec.mode === "case") {
@@ -52,5 +62,6 @@ export function verifyGame(spec: GameSpec, map: ConceptMap): VerifierReport {
     }
   }
   problems.push(...modeProblems(spec, map));
+  idLeaks(spec, "", problems);
   return { ok: problems.length === 0, problems };
 }

@@ -20,7 +20,7 @@ const demo: Generator = async ({ llm, map, targetConceptIds }) =>
 Create a 3-check warm-up. Each check must require APPLYING a concept, not recalling a definition. Use only concept ids from the map.
 Hints: exactly 3 — (1) a nudge, (2) an explanation of the concept, (3) a worked example of a SIMILAR problem. Never reveal the answer in hints.
 Check fields by kind — number: answer_number, tolerance, formula (mathjs expression computing answer_number); choice: options, answer=[correct option], wrong_feedback for EVERY wrong option (a correction based on a misconception); order: options=items shuffled, answer=correct sequence; set: options, answer=correct members; match: pairs. Leave unused fields empty/null.
-asset_requests: one {role:"scene", tags:[...]} describing a fitting background.`,
+Never write concept ids in student-facing text; use concept names.\nasset_requests: one {role:"scene", tags:[...]} describing a fitting background.`,
     content: [{ type: "text", text: `Concept Map:\n${conceptMapText(map)}\n\nTarget concepts (prioritize): ${targetConceptIds.join(", ") || "any"}` }],
   }));
 
