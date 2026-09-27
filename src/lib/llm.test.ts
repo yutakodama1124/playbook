@@ -31,4 +31,16 @@ describe("createLlmClient.parseStructured", () => {
     const { client } = fakeAnthropic({ stop_reason: "max_tokens", parsed_output: null });
     await expect(createLlmClient(client).parseStructured({ schema: Schema, system: "s", content: [] })).rejects.toBeInstanceOf(ParseError);
   });
+  it("json mode: sends no grammar, parses fenced JSON text, validates with the schema", async () => {
+    const { client, parse } = fakeAnthropic({ stop_reason: "end_turn", content: [{ type: "text", text: "```json\n{\"answer\": 7}\n```" }] });
+    const out = await createLlmClient(client).parseStructured({ schema: Schema, system: "s", content: [], mode: "json" });
+    expect(out).toEqual({ answer: 7 });
+    const req = parse.mock.calls[0][0];
+    expect(req.output_config.format).toBeUndefined();
+    expect(req.system).toContain("JSON Schema");
+  });
+  it("json mode: throws ParseError with the validation problem on bad JSON", async () => {
+    const { client } = fakeAnthropic({ stop_reason: "end_turn", content: [{ type: "text", text: "{\"answer\": \"seven\"}" }] });
+    await expect(createLlmClient(client).parseStructured({ schema: Schema, system: "s", content: [], mode: "json" })).rejects.toThrow(/answer/);
+  });
 });

@@ -1,5 +1,5 @@
 import type { GameSpec } from "@/domain/game-spec";
-import type { LlmClient } from "@/lib/llm";
+import { ParseError, type LlmClient } from "@/lib/llm";
 import type { Repo } from "@/repo/types";
 import { InvalidSpecError } from "@/domain/llm-check";
 import { generators, type Generator } from "./generators";
@@ -45,7 +45,7 @@ export async function runGamePipeline(
       try {
         spec = await gen({ llm: repairLlm, map, targetConceptIds: [], learnMode: true });
       } catch (e) {
-        if (!(e instanceof InvalidSpecError)) throw e;
+        if (!(e instanceof InvalidSpecError) && !(e instanceof ParseError)) throw e;
         problems = [e.message];
         continue;
       }

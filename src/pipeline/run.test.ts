@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { runUnitPipeline, runGamePipeline } from "./run";
 import { createMemoryRepo } from "@/repo/memory";
-import type { LlmClient } from "@/lib/llm";
+import { ParseError, type LlmClient } from "@/lib/llm";
 
 const concept = (id: string) => ({ id, name: id, summary: "s", kind: "term", facts: ["f"], formulas: [], steps: [], misconceptions: [], relations: [], source_ref: null });
 const map = { unit: { title: "t", course: "c", level: "AP/IB" }, source_coverage: "x", concepts: [concept("c_a"), concept("c_b"), concept("c_c")] };
@@ -58,6 +58,15 @@ describe("runGamePipeline", () => {
     const llm: LlmClient = { parseStructured: vi.fn().mockResolvedValueOnce(broken).mockResolvedValue(spec) };
     await runGamePipeline({ llm, repo, resolveAssets: vi.fn().mockResolvedValue({}) }, g.id);
     expect(llm.parseStructured).toHaveBeenCalledTimes(2);
+    expect((await repo.getGame(g.id))?.status).toBe("ready");
+  });
+  it("treats schema parse errors as repairable", async () => {
+    const repo = createMemoryRepo();
+    const u = await repo.createUnit({ title: "t", course: "c", sources: [] }, null);
+    await repo.updateUnit(u.id, { status: "ready", conceptMap: map as never });
+    const g = await repo.createGame(u.id, "demo");
+    const llm: LlmClient = { parseStructured: vi.fn().mockRejectedValueOnce(new ParseError("bad json")).mockResolvedValue(spec) };
+    await runGamePipeline({ llm, repo, resolveAssets: vi.fn().mockResolvedValue({}) }, g.id);
     expect((await repo.getGame(g.id))?.status).toBe("ready");
   });
 });
