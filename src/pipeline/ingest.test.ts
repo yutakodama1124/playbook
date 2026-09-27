@@ -30,6 +30,6 @@ describe("ingestUnit", () => {
     expect(out).toBe(map);
     const args = (llm.parseStructured as ReturnType<typeof vi.fn>).mock.calls[0][0];
     expect(args.system).toMatch(/misconception/i);
-    expect(args.effort).toBe("high");
+    expect(args.effort).toBe("medium");
   });
 });

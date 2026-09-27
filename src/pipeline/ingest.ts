@@ -10,9 +10,9 @@ export type IngestInput = { title: string; course: string; sources: UnitSource[]
 
 export const INGEST_SYSTEM = `You analyze a student's school unit material and produce a Concept Map used to generate learning games.
 Rules:
-- Extract 6–15 concepts that a test on this unit would assess. Prefer concepts the material actually covers.
+- Extract 6–10 concepts (the most important ones) that a test on this unit would assess. Prefer concepts the material actually covers.
 - Each concept: ids like "c_electron_transport_chain" (lowercase, underscores). Atomic, correct facts. Ordered steps for processes. Formulas with variable meanings where relevant.
-- For every concept list 1–3 COMMON STUDENT MISCONCEPTIONS with why each is wrong — games use these as traps and corrections.
+- For every concept list 1–2 COMMON STUDENT MISCONCEPTIONS with why each is wrong — games use these as traps and corrections.
 - Relations must reference other concept ids in this map.
 - source_ref: where in the material the concept appears (e.g. "slide 7", "page 2", "photo 1"); null if you added it from general knowledge.
 - source_coverage: one sentence on what the material covered and anything you filled in.
@@ -40,5 +40,5 @@ export function buildIngestContent(input: IngestInput): ContentBlock[] {
 }
 
 export function ingestUnit(llm: LlmClient, input: IngestInput): Promise<ConceptMap> {
-  return llm.parseStructured({ schema: ConceptMapSchema, system: INGEST_SYSTEM, content: buildIngestContent(input), effort: "high" });
+  return llm.parseStructured({ schema: ConceptMapSchema, system: INGEST_SYSTEM, content: buildIngestContent(input), effort: "medium" });
 }
