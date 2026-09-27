@@ -23,7 +23,7 @@ export default function UnitPage({ params }: { params: Promise<{ id: string }> }
           <h2 className="mt-8 text-xl font-semibold">Concept Map</h2>
           <ConceptMapView map={unit.conceptMap} />
           <h2 className="mt-10 text-xl font-semibold">Arcade</h2>
-          <Arcade unitId={id} available={["case", "demo"]} />
+          <Arcade unitId={id} available={["case", "impostor", "demo"]} />
         </>
       )}
     </main>
