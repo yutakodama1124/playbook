@@ -13,11 +13,19 @@ export function createAssetResolver(deps: {
   return async (spec) => {
     const out: Record<string, string> = {};
     const library = await deps.repo.listAssets();
-    // Resolve all requests in parallel (a case needs a scene + ~5 portraits).
-    await Promise.all(spec.asset_requests.map(async (req) => {
+    // Pick from the library first (synchronously, so one game never reuses a portrait); portraits
+    // always come from the library when any unused one exists — drawing new ones is slow.
+    const used = new Set<string>();
+    const misses = spec.asset_requests.filter((req) => {
       const kind = req.role.startsWith("portrait") ? "portrait" : req.role === "boss" ? "boss" : "scene";
-      const hit = pickAsset(library.filter((a) => a.kind === kind), req.tags, 2);
-      if (hit) { out[req.role] = hit.url; return; }
+      const pool = library.filter((a) => a.kind === kind);
+      const hit = pickAsset(pool, req.tags, kind === "scene" ? 2 : 1, used) ?? (kind === "portrait" ? pickAsset(pool, [], 0, used) : null);
+      if (hit) { out[req.role] = hit.url; used.add(hit.url); return false; }
+      return true;
+    });
+    // Resolve the rest in parallel.
+    await Promise.all(misses.map(async (req) => {
+      const kind = req.role.startsWith("portrait") ? "portrait" : req.role === "boss" ? "boss" : "scene";
       if (env.devNoImages) { out[req.role] = PLACEHOLDER_URL; return; }
       const img = await generateImage(kind === "portrait" ? `portrait of a ${req.tags.join(", ")}, shoulders up, plain soft background` : req.tags.join(", "));
       const url = await deps.upload(img.bytes, `library/${nanoid()}.png`);

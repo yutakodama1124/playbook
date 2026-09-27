@@ -15,4 +15,11 @@ describe("asset matching", () => {
   it("returns null when nothing matches well enough", () => {
     expect(pickAsset([a("office", ["office"])], ["spaceship", "bridge"], 1)).toBeNull();
   });
+  it("matches on individual words inside multi-word tags", () => {
+    expect(scoreAsset(a("1", ["middle-aged man", "chemist"]), ["middle-aged", "chemist"])).toBe(2);
+  });
+  it("skips excluded urls", () => {
+    const lib = [a("lab", ["lab"]), a("lab2", ["lab"])];
+    expect(pickAsset(lib, ["lab"], 1, new Set(["lab"]))?.id).toBe("lab2");
+  });
 });
