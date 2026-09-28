@@ -1,11 +1,12 @@
 import { nanoid } from "nanoid";
-import type { AssetRow, GameRow, Repo, RoomPlayerRow, RoomRow, UnitRow } from "./types";
+import type { AssetRow, GameRow, MasteryEventRow, Repo, RoomPlayerRow, RoomRow, UnitRow } from "./types";
 
 export function createMemoryRepo(): Repo {
   const units = new Map<string, UnitRow>();
   const games = new Map<string, GameRow>();
   const assets: AssetRow[] = [];
   const rooms = new Map<string, RoomRow>();
+  const mastery: MasteryEventRow[] = [];
   const players: RoomPlayerRow[] = [];
   const votes = new Map<string, { roomId: string; round: number; voterId: string; targetId: string }>();
   const now = () => new Date().toISOString();
@@ -25,6 +26,9 @@ export function createMemoryRepo(): Repo {
       return row;
     },
     async getGame(id) { return games.get(id) ?? null; },
+    async listGames(unitId) { return [...games.values()].filter((g) => g.unitId === unitId); },
+    async addMasteryEvent(e) { mastery.push({ ...e, createdAt: now() }); },
+    async listMasteryEvents(deviceId, unitId) { return mastery.filter((m) => m.deviceId === deviceId && m.unitId === unitId); },
     async updateGame(id, patch) { const g = games.get(id); if (g) games.set(id, { ...g, ...patch }); },
     async listAssets() { return [...assets]; },
     async addAsset(a) { const row = { ...a, id: nanoid() }; assets.push(row); return row; },

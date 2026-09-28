@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
 import type { PublicCheck } from "@/domain/public-spec";
+import { deviceId } from "../device";
 
 type Result = { correct: boolean; feedback?: string; reveal?: string | null } | null;
 
-export function CheckCard({ gameId, check, onSolved, onHint }: { gameId: string; check: PublicCheck; onSolved?: (checkId: string, reveal?: string | null) => void; onHint?: () => void }) {
+export function CheckCard({ gameId, check, onSolved, onHint, onAnswered }: { gameId: string; check: PublicCheck; onSolved?: (checkId: string, reveal?: string | null) => void; onHint?: () => void; onAnswered?: (correct: boolean) => void }) {
   const [value, setValue] = useState<unknown>(() => initial(check));
   const [result, setResult] = useState<Result>(null);
   const [hints, setHints] = useState(0);
@@ -12,9 +13,10 @@ export function CheckCard({ gameId, check, onSolved, onHint }: { gameId: string;
 
   async function submit() {
     setBusy(true);
-    const res = await fetch(`/api/games/${gameId}/check`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ checkId: check.id, response: value }) });
+    const res = await fetch(`/api/games/${gameId}/check`, { method: "POST", headers: { "content-type": "application/json", "x-device-id": deviceId() }, body: JSON.stringify({ checkId: check.id, response: value }) });
     const r = (await res.json()) as Result;
     setResult(r); setBusy(false);
+    if (r) onAnswered?.(r.correct);
     if (r?.correct) onSolved?.(check.id, r.reveal);
   }
 

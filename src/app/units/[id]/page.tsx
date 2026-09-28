@@ -4,6 +4,7 @@ import type { ConceptMap } from "@/domain/concept-map";
 import { ConceptMapView } from "@/app/components/ConceptMapView";
 import { Arcade } from "@/app/components/Arcade";
 import { usePoll } from "@/app/components/usePoll";
+import { BossCard } from "@/app/components/boss/BossCard";
 
 type UnitView = { id: string; title: string; course: string; status: string; error: string | null; conceptMap: ConceptMap | null };
 
@@ -20,6 +21,7 @@ export default function UnitPage({ params }: { params: Promise<{ id: string }> }
       {unit.status === "failed" && <p className="mt-8 text-red-600">Something went wrong: {unit.error}</p>}
       {unit.status === "ready" && unit.conceptMap && (
         <>
+          <div className="mt-8"><BossCard unitId={id} /></div>
           <h2 className="mt-8 text-xl font-semibold">Concept Map</h2>
           <ConceptMapView map={unit.conceptMap} />
           <h2 className="mt-10 text-xl font-semibold">Arcade</h2>

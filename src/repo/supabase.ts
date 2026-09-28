@@ -28,7 +28,7 @@ export function createSupabaseRepo(): Repo {
       return r ? unitFrom(r) : null;
     },
     async updateUnit(id, p) {
-      must(await db.from("units").update({ status: p.status, error: p.error, concept_map: p.conceptMap }).eq("id", id));
+      must(await db.from("units").update({ status: p.status, error: p.error, concept_map: p.conceptMap, test_date: p.testDate }).eq("id", id));
     },
     async createGame(unitId, mode) {
       return gameFrom(must(await db.from("games").insert({ unit_id: unitId, mode }).select().single()));
@@ -36,6 +36,16 @@ export function createSupabaseRepo(): Repo {
     async getGame(id) {
       const r = must(await db.from("games").select().eq("id", id).maybeSingle());
       return r ? gameFrom(r) : null;
+    },
+    async listGames(unitId) {
+      return (must(await db.from("games").select().eq("unit_id", unitId).order("created_at")) ?? []).map(gameFrom);
+    },
+    async addMasteryEvent(e) {
+      must(await db.from("mastery_events").insert({ device_id: e.deviceId, unit_id: e.unitId, game_id: e.gameId, concept_ids: e.conceptIds, correct: e.correct }));
+    },
+    async listMasteryEvents(deviceId, unitId) {
+      return (must(await db.from("mastery_events").select().eq("device_id", deviceId).eq("unit_id", unitId)) ?? [])
+        .map((r: any) => ({ deviceId: r.device_id, unitId: r.unit_id, gameId: r.game_id, conceptIds: r.concept_ids, correct: r.correct, createdAt: r.created_at }));
     },
     async updateGame(id, p) {
       must(await db.from("games").update({ status: p.status, error: p.error, spec: p.spec, assets: p.assets, verifier_report: p.verifierReport }).eq("id", id));

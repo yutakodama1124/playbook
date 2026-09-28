@@ -13,10 +13,14 @@ export type VerifierReport = { ok: boolean; problems: string[] };
 export type RoomRow = { id: string; code: string; gameId: string; hostToken: string; state: unknown };
 export type RoomPlayerRow = { id: string; roomId: string; name: string; token: string; score: number };
 export type RoomVoteRow = { voterId: string; targetId: string };
+export type MasteryEventRow = { deviceId: string; unitId: string; gameId: string | null; conceptIds: string[]; correct: boolean; createdAt: string };
 export interface Repo {
   createUnit(input: IngestInput, testDate: string | null): Promise<UnitRow>;
   getUnit(id: string): Promise<UnitRow | null>;
-  updateUnit(id: string, patch: Partial<Pick<UnitRow, "status" | "error" | "conceptMap">>): Promise<void>;
+  updateUnit(id: string, patch: Partial<Pick<UnitRow, "status" | "error" | "conceptMap" | "testDate">>): Promise<void>;
+  listGames(unitId: string): Promise<GameRow[]>;
+  addMasteryEvent(e: Omit<MasteryEventRow, "createdAt">): Promise<void>;
+  listMasteryEvents(deviceId: string, unitId: string): Promise<MasteryEventRow[]>;
   createGame(unitId: string, mode: GameMode): Promise<GameRow>;
   getGame(id: string): Promise<GameRow | null>;
   updateGame(id: string, patch: Partial<Pick<GameRow, "status" | "error" | "spec" | "assets" | "verifierReport">>): Promise<void>;

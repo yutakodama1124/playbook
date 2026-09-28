@@ -5,6 +5,7 @@ import type { PublicGame } from "../game/types";
 import { CheckCard } from "../game/CheckCard";
 import { ChatPanel } from "./ChatPanel";
 import { Debrief, type AccuseResult } from "./Debrief";
+import { deviceId } from "../device";
 
 type Turn = { role: "student" | "character"; text: string };
 const THEME_LABEL = { mystery: "Case File", patient: "Patient File", system: "Incident File" } as const;
@@ -31,7 +32,7 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
   async function accuse() {
     if (!choice) return;
     setBusy(true);
-    const res = await fetch(`/api/games/${game.id}/accuse`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ optionId: choice, justification: reason }) });
+    const res = await fetch(`/api/games/${game.id}/accuse`, { method: "POST", headers: { "content-type": "application/json", "x-device-id": deviceId() }, body: JSON.stringify({ optionId: choice, justification: reason }) });
     setBusy(false);
     if (res.ok) { setResult(await res.json()); setAccusing(false); setPhase("debrief"); }
   }
