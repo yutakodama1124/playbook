@@ -1,5 +1,6 @@
 "use client";
 import { use } from "react";
+import Link from "next/link";
 import type { ConceptMap } from "@/domain/concept-map";
 import { ConceptMapView } from "@/app/components/ConceptMapView";
 import { Arcade } from "@/app/components/Arcade";
@@ -15,6 +16,7 @@ export default function UnitPage({ params }: { params: Promise<{ id: string }> }
   if (!unit.status) return <main className="p-8 text-red-600">Could not load this unit: {unit.error ?? "unknown error"}</main>;
   return (
     <main className="mx-auto max-w-4xl px-4 py-10">
+      <Link href="/" className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">Playbook</Link>
       <h1 className="text-3xl font-bold">{unit.title}</h1>
       <p className="text-neutral-600">{unit.course}</p>
       {(unit.status === "queued" || unit.status === "running") && <p className="mt-8 animate-pulse">Reading your material and mapping the key concepts…</p>}
