@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useBoss } from "./useBoss";
 import { BossHeader } from "./BossHeader";
+import { Button, Card, Label, buttonClass, inputClass } from "../ui";
 
 export function BossCard({ unitId }: { unitId: string }) {
   const { data, refresh } = useBoss(unitId);
@@ -15,21 +16,29 @@ export function BossCard({ unitId }: { unitId: string }) {
   }
 
   return (
-    <section className="space-y-3">
+    <Card className="space-y-5 p-5">
       <BossHeader data={data} />
       {!unit.testDate && (
-        <div className="flex items-center gap-2 text-sm">
-          <label htmlFor="testdate">When is your test?</label>
-          <input id="testdate" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="rounded border p-1" />
-          <button disabled={!date} onClick={saveDate} className="rounded bg-stone-900 px-3 py-1 text-white disabled:opacity-40">Set</button>
+        <div className="space-y-1.5">
+          <Label>When is your test?</Label>
+          <div className="flex gap-2"><input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={inputClass} /><Button variant="secondary" disabled={!date} onClick={saveDate}>Set</Button></div>
         </div>
       )}
-      {boss.shields.length > 0 && (
-        <p className="text-sm text-stone-600">Shields (your weak spots): {boss.shields.map((s) => <span key={s.id} className="mr-1 inline-block rounded bg-rose-100 px-2 py-0.5 text-rose-800">{s.name}</span>)}</p>
-      )}
+      <div>
+        <Label>Mastery</Label>
+        <ul className="mt-2 space-y-2">
+          {boss.concepts.map((c) => (
+            <li key={c.id} className="text-sm">
+              <div className="flex justify-between gap-3"><span className="truncate text-zinc-700">{c.name}</span><span className="tabular-nums text-zinc-500">{c.mastery}%</span></div>
+              <div className="mt-1 h-1 rounded bg-zinc-100"><div className="h-full rounded bg-accent" style={{ width: `${c.mastery}%` }} /></div>
+            </li>
+          ))}
+        </ul>
+        {boss.shields.length > 0 && <p className="mt-3 text-xs text-zinc-500">Concepts under 40% act as shields: the boss can&apos;t fall until you raise them.</p>}
+      </div>
       {attack.length > 0
-        ? <a href={`/units/${unitId}/boss`} className="block rounded-xl bg-rose-700 p-3 text-center font-bold text-white">Daily attack · {attack.length} question{attack.length === 1 ? "" : "s"} due</a>
-        : <p className="text-sm text-stone-500">{boss.defeated ? "Every concept mastered. Keep reviewing before the test." : "Play a game below to deal damage. Review questions appear here when concepts are due."}</p>}
-    </section>
+        ? <a href={`/units/${unitId}/boss`} className={buttonClass("primary", "md", "w-full")}>Daily review · {attack.length} question{attack.length === 1 ? "" : "s"}</a>
+        : <p className="text-sm text-zinc-500">{boss.defeated ? "Every concept is mastered. Keep reviewing until test day." : "Play a game to start dealing damage. Review questions appear here when concepts are due."}</p>}
+    </Card>
   );
 }

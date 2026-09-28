@@ -1,36 +1,37 @@
 import type { RoomView } from "@/modes/impostor/engine";
 
+/** Works on both the dark projector screen (big) and the light phone view. */
 export function Reveal({ view, big = false }: { view: RoomView; big?: boolean }) {
   const r = view.lastResult;
   if (!r) return null;
   const name = (id: string) => view.players.find((p) => p.id === id)?.name ?? "?";
+  const muted = big ? "text-zinc-400" : "text-zinc-500";
   return (
-    <div className={`space-y-4 ${big ? "text-xl" : ""}`}>
-      <div className={`rounded-2xl p-5 ${r.caught ? "bg-teal-700 text-white" : "bg-rose-700 text-white"}`}>
-        <p className="text-sm uppercase tracking-widest opacity-80">{r.caught ? "Impostor caught" : "The impostor escaped"}</p>
-        <p className={`${big ? "text-4xl" : "text-2xl"} font-bold`}>
-          {r.ejectedIds.length ? `${r.ejectedIds.map(name).join(", ")} was voted out` : "Tie — nobody was voted out"}
+    <div className="space-y-6">
+      <div>
+        <p className={`text-sm font-medium ${r.caught ? (big ? "text-emerald-400" : "text-emerald-700") : big ? "text-red-400" : "text-red-700"}`}>{r.caught ? "Impostor caught" : "The impostor got away"}</p>
+        <p className={`mt-1 font-semibold tracking-tight ${big ? "text-4xl" : "text-2xl"}`}>
+          {r.ejectedIds.length ? `${r.ejectedIds.map(name).join(", ")} was voted out` : "A tie. Nobody was voted out"}
         </p>
-        <p className="mt-1">Impostor: {r.impostorIds.map(name).join(" & ")}</p>
+        <p className={`mt-1 ${muted}`}>The impostor was {r.impostorIds.map(name).join(" and ")}.</p>
       </div>
-      <div className="rounded-2xl bg-white p-5 text-stone-900">
-        <p className="text-sm font-semibold uppercase text-rose-700">The fake fact</p>
-        <p className="line-through decoration-rose-600 decoration-2">{r.fake}</p>
-        <p className="mt-3 text-sm font-semibold uppercase text-teal-700">What&apos;s actually true</p>
-        <p>{r.correct_version}</p>
-        <p className="mt-3 text-stone-600">{r.explanation}</p>
+      <div className={`space-y-4 rounded-xl border p-5 ${big ? "border-zinc-800 bg-zinc-900" : "border-zinc-200 bg-white"}`}>
+        <div><p className={`text-sm ${muted}`}>The fake fact</p><p className={`mt-1 ${big ? "text-xl" : ""}`}>{r.fake}</p></div>
+        <div><p className={`text-sm ${muted}`}>What&apos;s actually true</p><p className={`mt-1 font-medium ${big ? "text-xl" : ""}`}>{r.correct_version}</p></div>
+        <p className={muted}>{r.explanation}</p>
       </div>
     </div>
   );
 }
 
-export function Scoreboard({ view }: { view: RoomView }) {
+export function Scoreboard({ view, dark = false }: { view: RoomView; dark?: boolean }) {
   const sorted = [...view.players].sort((a, b) => b.score - a.score);
   return (
-    <ol className="space-y-2">
+    <ol className={`divide-y rounded-xl border ${dark ? "divide-zinc-800 border-zinc-800 bg-zinc-900" : "divide-zinc-200 border-zinc-200 bg-white"}`}>
       {sorted.map((p, i) => (
-        <li key={p.id} className="flex items-center justify-between rounded-xl bg-white px-4 py-2 text-stone-900">
-          <span><span className="mr-3 font-bold text-stone-400">{i + 1}</span>{p.name}</span><span className="font-bold">{p.score}</span>
+        <li key={p.id} className="flex items-center justify-between px-4 py-2.5">
+          <span><span className={`mr-3 inline-block w-4 tabular-nums ${dark ? "text-zinc-500" : "text-zinc-400"}`}>{i + 1}</span>{p.name}</span>
+          <span className="font-semibold tabular-nums">{p.score}</span>
         </li>
       ))}
     </ol>

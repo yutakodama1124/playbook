@@ -3,18 +3,17 @@ import type { BossResponse } from "./useBoss";
 export function BossHeader({ data }: { data: BossResponse }) {
   const { boss, art, unit } = data;
   const pct = boss.maxHp ? Math.round((boss.hp / boss.maxHp) * 100) : 0;
+  const days = boss.daysLeft === null ? "No test date" : boss.daysLeft > 0 ? `Test in ${boss.daysLeft} day${boss.daysLeft === 1 ? "" : "s"}` : "Test day";
   return (
-    <div className="flex items-center gap-4 rounded-2xl bg-stone-900 p-4 text-white">
-      {art ? <img src={art} alt="" className="h-24 w-24 rounded-xl object-cover" /> : <div className="h-24 w-24 rounded-xl bg-stone-700" />}
-      <div className="flex-1 space-y-2">
-        <div className="flex items-baseline justify-between gap-2">
-          <p className="text-lg font-bold">{boss.defeated ? `${unit.title} Boss — defeated` : `${unit.title} Boss`}</p>
-          <p className="text-sm text-stone-300">{boss.daysLeft === null ? "No test date set" : boss.daysLeft > 0 ? `Test in ${boss.daysLeft} day${boss.daysLeft === 1 ? "" : "s"}` : "Test day"}</p>
+    <div className="flex gap-4">
+      {art ? <img src={art} alt="" className="h-20 w-20 shrink-0 rounded-lg border border-zinc-200 object-cover" /> : <div className="h-20 w-20 shrink-0 rounded-lg bg-zinc-100" />}
+      <div className="min-w-0 flex-1">
+        <p className="text-sm text-zinc-500">{days}</p>
+        <p className="truncate font-semibold">{boss.defeated ? "Boss defeated" : `${unit.title} boss`}</p>
+        <div className="mt-2 h-2 overflow-hidden rounded bg-zinc-100" role="progressbar" aria-valuenow={boss.hp} aria-valuemax={boss.maxHp} aria-label="Boss HP">
+          <div className="h-full bg-zinc-950 transition-[width] duration-700" style={{ width: `${pct}%` }} />
         </div>
-        <div className="h-4 overflow-hidden rounded-full bg-stone-700" role="progressbar" aria-valuenow={boss.hp} aria-valuemax={boss.maxHp} aria-label="Boss HP">
-          <div className="h-full rounded-full bg-rose-500 transition-all duration-700" style={{ width: `${pct}%` }} />
-        </div>
-        <p className="text-xs text-stone-400">{boss.hp} / {boss.maxHp} HP{boss.shields.length ? ` · ${boss.shields.length} shield${boss.shields.length === 1 ? "" : "s"} up` : ""}</p>
+        <p className="mt-1 text-xs tabular-nums text-zinc-500">{boss.hp} / {boss.maxHp} HP</p>
       </div>
     </div>
   );

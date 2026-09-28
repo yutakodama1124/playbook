@@ -6,43 +6,47 @@ import { Reveal, Scoreboard } from "@/app/components/impostor/Reveal";
 export default function PlayPage({ params }: { params: Promise<{ code: string }> }) {
   const { code } = use(params);
   const { data, error, token, post } = useRoom(code, "player");
-  if (!token && data) return <main className="p-8">You haven&apos;t joined this room on this device. <a className="underline" href={`/join?code=${code}`}>Join</a></main>;
-  if (!data) return <main className="p-8">{error ?? "Loading…"}</main>;
+  const joinLink = <a className="underline" href={`/join?code=${code}`}>Join this room</a>;
+  if (!token && data) return <main className="p-6 text-zinc-700">You haven&apos;t joined on this device. {joinLink}</main>;
+  if (!data) return <main className="p-6 text-zinc-500">{error ?? "Loading…"}</main>;
   const v = data.view, me = v.me;
-  if (!me) return <main className="p-8">You&apos;re not in this room. <a className="underline" href={`/join?code=${code}`}>Join</a></main>;
+  if (!me) return <main className="p-6 text-zinc-700">You&apos;re not in this room. {joinLink}</main>;
   const myName = v.players.find((p) => p.id === me.id)?.name;
 
   return (
-    <main className="min-h-screen bg-stone-100 px-4 py-6">
-      <header className="mb-6 flex justify-between text-sm text-stone-500"><span>{myName}</span>{v.phase !== "lobby" && <span>Round {Math.min(v.round, v.totalRounds)}/{v.totalRounds}</span>}</header>
-      {error && <p className="mb-3 rounded bg-rose-100 p-2 text-rose-800">{error}</p>}
+    <main className="mx-auto min-h-screen max-w-md px-4 py-5">
+      <header className="mb-8 flex justify-between border-b border-zinc-200 pb-3 text-sm text-zinc-500">
+        <span className="font-medium text-zinc-900">{myName}</span>
+        {v.phase !== "lobby" && v.phase !== "final" && <span className="tabular-nums">Round {Math.min(v.round, v.totalRounds)} of {v.totalRounds}</span>}
+      </header>
+      {error && <p className="mb-4 text-sm text-red-700">{error}</p>}
 
-      {v.phase === "lobby" && <p className="mt-20 text-center text-2xl font-semibold">You&apos;re in!<br /><span className="text-lg font-normal text-stone-500">Waiting for the host to start…</span></p>}
+      {v.phase === "lobby" && <div className="mt-24 text-center"><p className="text-2xl font-semibold tracking-tight">You&apos;re in</p><p className="mt-2 text-zinc-500">Waiting for the host to start.</p></div>}
 
       {v.phase === "discuss" && me.fact && (
-        <div className="space-y-4">
-          <p className="text-center text-sm uppercase tracking-widest text-stone-500">{v.topic}</p>
-          <div className={`rounded-3xl p-6 shadow-lg ${me.impostor ? "bg-rose-700 text-white" : "bg-white"}`}>
-            <p className="text-xs font-bold uppercase tracking-widest opacity-70">{me.impostor ? "You are the impostor — your fact is fake. Sell it." : "Your fact"}</p>
-            <p className="mt-3 text-2xl font-semibold leading-snug">{me.fact}</p>
+        <div className="space-y-5">
+          <p className="text-center text-sm text-zinc-500">{v.topic}</p>
+          <div className={`rounded-xl p-6 ${me.impostor ? "bg-zinc-950 text-white" : "border border-zinc-200 bg-white"}`}>
+            <p className={`text-sm font-medium ${me.impostor ? "text-red-400" : "text-zinc-500"}`}>{me.impostor ? "You're the impostor. This fact is fake — sell it." : "Your fact"}</p>
+            <p className="mt-3 text-2xl font-medium leading-snug">{me.fact}</p>
           </div>
-          <p className="text-center text-stone-500">Explain it out loud. Listen for the fact that sounds off.</p>
+          <p className="text-center text-sm text-zinc-500">Explain it out loud, then listen for the card that doesn&apos;t fit.</p>
         </div>
       )}
 
       {v.phase === "vote" && (
         <div className="space-y-3">
-          <p className="text-center text-2xl font-bold">Who has the fake?</p>
+          <p className="mb-4 text-center text-2xl font-semibold tracking-tight">Who has the fake?</p>
           {v.players.filter((p) => p.id !== me.id).map((p) => (
-            <button key={p.id} onClick={() => post("vote", { targetId: p.id })}
-              className={`w-full rounded-xl border-2 p-4 text-left text-xl ${me.myVote === p.id ? "border-rose-700 bg-rose-50 font-bold" : "border-stone-300 bg-white"}`}>{p.name}</button>
+            <button key={p.id} onClick={() => post("vote", { targetId: p.id })} aria-pressed={me.myVote === p.id}
+              className={`h-14 w-full rounded-lg border px-4 text-left text-lg ${me.myVote === p.id ? "border-zinc-950 bg-zinc-950 text-white" : "border-zinc-200 bg-white"}`}>{p.name}</button>
           ))}
-          {me.myVote && <p className="text-center text-sm text-stone-500">Vote saved — you can change it until the reveal.</p>}
+          {me.myVote && <p className="text-center text-sm text-zinc-500">Vote saved. You can change it until the reveal.</p>}
         </div>
       )}
 
-      {v.phase === "reveal" && <div className="space-y-4"><Reveal view={v} /><p className="text-center">Your score: <b>{v.players.find((p) => p.id === me.id)?.score}</b></p></div>}
-      {v.phase === "final" && <div className="space-y-4"><p className="text-center text-2xl font-bold">Final scores</p><Scoreboard view={v} /></div>}
+      {v.phase === "reveal" && <div className="space-y-6"><Reveal view={v} /><p className="text-center text-zinc-600">Your score: <span className="font-semibold tabular-nums text-zinc-900">{v.players.find((p) => p.id === me.id)?.score}</span></p></div>}
+      {v.phase === "final" && <div className="space-y-6"><p className="text-center text-2xl font-semibold tracking-tight">Final scores</p><Scoreboard view={v} /></div>}
     </main>
   );
 }

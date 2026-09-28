@@ -1,35 +1,41 @@
 "use client";
 import { use } from "react";
-import Link from "next/link";
 import type { ConceptMap } from "@/domain/concept-map";
 import { ConceptMapView } from "@/app/components/ConceptMapView";
 import { Arcade } from "@/app/components/Arcade";
 import { usePoll } from "@/app/components/usePoll";
 import { BossCard } from "@/app/components/boss/BossCard";
+import { PageHeader, Spinner } from "@/app/components/ui";
 
 type UnitView = { id: string; title: string; course: string; status: string; error: string | null; conceptMap: ConceptMap | null };
 
 export default function UnitPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const unit = usePoll<UnitView>(`/api/units/${id}`);
-  if (!unit) return <main className="p-8">Loading…</main>;
-  if (!unit.status) return <main className="p-8 text-red-600">Could not load this unit: {unit.error ?? "unknown error"}</main>;
   return (
-    <main className="mx-auto max-w-4xl px-4 py-10">
-      <Link href="/" className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">Playbook</Link>
-      <h1 className="text-3xl font-bold">{unit.title}</h1>
-      <p className="text-neutral-600">{unit.course}</p>
-      {(unit.status === "queued" || unit.status === "running") && <p className="mt-8 animate-pulse">Reading your material and mapping the key concepts…</p>}
-      {unit.status === "failed" && <p className="mt-8 text-red-600">Something went wrong: {unit.error}</p>}
-      {unit.status === "ready" && unit.conceptMap && (
-        <>
-          <div className="mt-8"><BossCard unitId={id} /></div>
-          <h2 className="mt-8 text-xl font-semibold">Concept Map</h2>
-          <ConceptMapView map={unit.conceptMap} />
-          <h2 className="mt-10 text-xl font-semibold">Arcade</h2>
-          <Arcade unitId={id} available={["case", "escape", "impostor"]} />
-        </>
-      )}
-    </main>
+    <>
+      <PageHeader />
+      <main className="mx-auto max-w-6xl px-4 pb-24 pt-10">
+        {!unit ? <Spinner /> : !unit.status ? <p className="text-red-700">Could not load this unit: {unit.error ?? "unknown error"}</p> : (
+          <>
+            <p className="text-sm text-zinc-500">{unit.course}</p>
+            <h1 className="mt-1 text-3xl font-semibold tracking-tight">{unit.title}</h1>
+            {(unit.status === "queued" || unit.status === "running") && (
+              <div className="mt-10 flex items-center gap-3 text-zinc-600"><Spinner />Reading your material and mapping the key concepts. This takes about a minute.</div>
+            )}
+            {unit.status === "failed" && <p className="mt-10 text-red-700">Something went wrong: {unit.error}</p>}
+            {unit.status === "ready" && unit.conceptMap && (
+              <div className="mt-8 grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+                <div className="space-y-10">
+                  <section><h2 className="text-lg font-semibold">Play</h2><Arcade unitId={id} available={["case", "escape", "impostor"]} /></section>
+                  <section><h2 className="text-lg font-semibold">Concept map</h2><ConceptMapView map={unit.conceptMap} /></section>
+                </div>
+                <aside className="lg:sticky lg:top-6 lg:self-start"><BossCard unitId={id} /></aside>
+              </div>
+            )}
+          </>
+        )}
+      </main>
+    </>
   );
 }

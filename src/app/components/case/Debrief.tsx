@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { Card, buttonClass } from "../ui";
+
 export type AccuseResult = {
   correct: boolean; feedback: string | null; coaching: string; correctOptionId: string;
   steps: { step: string; concept_id: string; covered: boolean }[];
@@ -5,27 +8,28 @@ export type AccuseResult = {
 };
 
 export function Debrief({ result, outro, conceptName, unitId }: { result: AccuseResult; outro: string; conceptName: (id: string) => string; unitId: string }) {
+  const covered = result.steps.filter((s) => s.covered).length;
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <div className={`rounded-2xl p-6 ${result.correct ? "bg-teal-700 text-white" : "bg-rose-100 text-rose-900"}`}>
-        <p className="text-sm uppercase tracking-wide opacity-80">{result.correct ? "Case closed" : "Wrong call"}</p>
-        <p className="mt-1 text-2xl font-bold">{result.correct ? outro : "The real answer was elsewhere."}</p>
-        {result.feedback && <p className="mt-3">{result.feedback}</p>}
+    <div className="mx-auto max-w-2xl space-y-8">
+      <div>
+        <p className={`text-sm font-medium ${result.correct ? "text-emerald-700" : "text-red-700"}`}>{result.correct ? "Case closed" : "Not the right call"}</p>
+        <h1 className="mt-1 text-3xl font-semibold tracking-tight">{result.correct ? outro : "The evidence pointed somewhere else."}</h1>
+        {result.feedback && <p className="mt-3 text-zinc-700">{result.feedback}</p>}
       </div>
-      <section className="rounded-2xl border-2 border-stone-300 bg-white p-6">
-        <h2 className="text-lg font-bold">The science behind the case</h2>
-        <p className="mt-2 text-stone-700">{result.solution.summary}</p>
-        <ol className="mt-4 space-y-3">
+      <Card className="p-6">
+        <div className="flex items-baseline justify-between"><h2 className="font-semibold">The science behind the case</h2><p className="text-sm tabular-nums text-zinc-500">You explained {covered} of {result.steps.length} steps</p></div>
+        <p className="mt-2 text-zinc-700">{result.solution.summary}</p>
+        <ol className="mt-5 space-y-4">
           {result.steps.map((s, i) => (
-            <li key={i} className="flex gap-3">
-              <span className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${s.covered ? "bg-teal-600 text-white" : "bg-stone-200 text-stone-600"}`}>{s.covered ? "✓" : i + 1}</span>
-              <div><p>{s.step}</p><p className="text-xs text-stone-500">{conceptName(s.concept_id)}{s.covered ? " — you explained this" : " — review this"}</p></div>
+            <li key={i} className="grid grid-cols-[24px_1fr] gap-3">
+              <span className={`text-sm tabular-nums ${s.covered ? "text-emerald-700" : "text-zinc-400"}`}>{s.covered ? "✓" : i + 1}</span>
+              <div><p className="text-zinc-800">{s.step}</p><p className="mt-0.5 text-sm text-zinc-500">{conceptName(s.concept_id)} · {s.covered ? "you explained this" : "worth reviewing"}</p></div>
             </li>
           ))}
         </ol>
-        <p className="mt-4 rounded-lg bg-amber-50 p-3 text-sm">{result.coaching}</p>
-      </section>
-      <a href={`/units/${unitId}`} className="block rounded-xl bg-stone-900 p-3 text-center font-semibold text-white">Back to the Arcade</a>
+        <p className="mt-6 border-t border-zinc-100 pt-4 text-sm text-zinc-700">{result.coaching}</p>
+      </Card>
+      <Link href={`/units/${unitId}`} className={buttonClass("primary", "lg", "w-full")}>Back to the unit</Link>
     </div>
   );
 }

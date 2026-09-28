@@ -2,6 +2,7 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { saveToken } from "@/app/components/impostor/useRoom";
+import { Button, Label, inputClass } from "@/app/components/ui";
 
 function JoinForm() {
   const router = useRouter();
@@ -24,12 +25,13 @@ function JoinForm() {
   }
 
   return (
-    <form onSubmit={join} className="space-y-4">
-      <input value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} maxLength={5} placeholder="CODE" autoCapitalize="characters"
-        className="w-full rounded-xl border-2 p-4 text-center font-mono text-3xl tracking-widest" />
-      <input value={name} onChange={(e) => setName(e.target.value)} maxLength={20} placeholder="Your name" className="w-full rounded-xl border-2 p-4 text-xl" />
-      {error && <p className="text-rose-700">{error}</p>}
-      <button disabled={busy || code.length !== 5 || !name.trim()} className="w-full rounded-xl bg-stone-900 p-4 text-xl font-bold text-white disabled:opacity-40">{busy ? "Joining…" : "Join"}</button>
+    <form onSubmit={join} className="space-y-5">
+      <div className="space-y-1.5"><Label>Room code</Label>
+        <input value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} maxLength={5} placeholder="ABCDE" autoCapitalize="characters" autoComplete="off"
+          className={`${inputClass} h-14 text-center font-mono text-2xl tracking-[0.3em]`} /></div>
+      <div className="space-y-1.5"><Label>Your name</Label><input value={name} onChange={(e) => setName(e.target.value)} maxLength={20} className={`${inputClass} h-12 text-base`} /></div>
+      {error && <p className="text-sm text-red-700">{error}</p>}
+      <Button type="submit" size="lg" className="w-full" disabled={busy || code.length !== 5 || !name.trim()}>{busy ? "Joining…" : "Join game"}</Button>
     </form>
   );
 }
@@ -37,7 +39,8 @@ function JoinForm() {
 export default function JoinPage() {
   return (
     <main className="mx-auto max-w-sm px-4 py-16">
-      <h1 className="mb-8 text-center text-3xl font-bold">Join Impostor</h1>
+      <p className="text-sm font-semibold tracking-tight">Playbook</p>
+      <h1 className="mb-8 mt-6 text-2xl font-semibold tracking-tight">Join Impostor</h1>
       <Suspense><JoinForm /></Suspense>
     </main>
   );
