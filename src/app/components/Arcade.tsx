@@ -7,7 +7,6 @@ const MODES: { mode: GameMode | null; name: string; blurb: string }[] = [
   { mode: "case", name: "Case Files", blurb: "Interrogate suspects. The science cracks the case." },
   { mode: "escape", name: "Escape Room", blurb: "Every lock needs a concept to open." },
   { mode: "impostor", name: "Impostor", blurb: "One fact is fake. Find who's lying." },
-  { mode: "demo", name: "Warm-up", blurb: "3 quick challenges (pipeline test)." },
   { mode: null, name: "Heist", blurb: "Coming soon" },
   { mode: null, name: "Keep It Alive", blurb: "Coming soon" },
   { mode: null, name: "Card Battler", blurb: "Coming soon" },

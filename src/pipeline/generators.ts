@@ -26,5 +26,6 @@ Never write concept ids in student-facing text; use concept names.\nasset_reques
 
 import { generateCase } from "@/modes/case/generate";
 import { generateImpostor } from "@/modes/impostor/generate";
+import { generateEscape } from "@/modes/escape/generate";
 
-export const generators: Partial<Record<GameMode, Generator>> = { demo, case: generateCase, impostor: generateImpostor };
+export const generators: Partial<Record<GameMode, Generator>> = { demo, case: generateCase, impostor: generateImpostor, escape: generateEscape };

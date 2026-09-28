@@ -2,9 +2,9 @@
 import { useState } from "react";
 import type { PublicCheck } from "@/domain/public-spec";
 
-type Result = { correct: boolean; feedback?: string } | null;
+type Result = { correct: boolean; feedback?: string; reveal?: string | null } | null;
 
-export function CheckCard({ gameId, check, onSolved }: { gameId: string; check: PublicCheck; onSolved?: (checkId: string) => void }) {
+export function CheckCard({ gameId, check, onSolved, onHint }: { gameId: string; check: PublicCheck; onSolved?: (checkId: string, reveal?: string | null) => void; onHint?: () => void }) {
   const [value, setValue] = useState<unknown>(() => initial(check));
   const [result, setResult] = useState<Result>(null);
   const [hints, setHints] = useState(0);
@@ -15,7 +15,7 @@ export function CheckCard({ gameId, check, onSolved }: { gameId: string; check: 
     const res = await fetch(`/api/games/${gameId}/check`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ checkId: check.id, response: value }) });
     const r = (await res.json()) as Result;
     setResult(r); setBusy(false);
-    if (r?.correct) onSolved?.(check.id);
+    if (r?.correct) onSolved?.(check.id, r.reveal);
   }
 
   const solved = result?.correct;
@@ -26,11 +26,12 @@ export function CheckCard({ gameId, check, onSolved }: { gameId: string; check: 
       {!solved && (
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <button onClick={submit} disabled={busy} className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">{busy ? "Checking…" : "Check"}</button>
-          {hints < 3 && <button onClick={() => setHints(hints + 1)} className="rounded-lg border border-stone-300 px-3 py-2 text-sm">Hint {hints + 1}/3</button>}
+          {hints < 3 && <button onClick={() => { setHints(hints + 1); onHint?.(); }} className="rounded-lg border border-stone-300 px-3 py-2 text-sm">Hint {hints + 1}/3</button>}
         </div>
       )}
       {result && !result.correct && <p className="mt-2 text-sm text-rose-700">Not quite. {result.feedback ?? "Look at the evidence again."}</p>}
       {solved && <p className="mt-2 text-sm font-semibold text-teal-800">Correct.</p>}
+      {solved && result?.reveal && <p className="mt-2 rounded-lg bg-amber-100 p-3 text-sm">🔓 {result.reveal}</p>}
       {hints > 0 && !solved && (
         <ol className="mt-3 space-y-1 text-sm text-stone-700">
           {check.hints.slice(0, hints).map((h, i) => <li key={i} className="rounded bg-amber-50 p-2">💡 {h}</li>)}

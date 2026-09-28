@@ -2,6 +2,8 @@ import type { Check, GameSpec } from "./game-spec";
 import { redactCase } from "@/modes/case/redact";
 import type { CaseContent } from "@/modes/case/schema";
 import type { ImpostorContent } from "@/modes/impostor/schema";
+import { redactEscape } from "@/modes/escape/logic";
+import type { EscapeContent } from "@/modes/escape/schema";
 
 type Common = Pick<Check, "id" | "kind" | "concept_ids" | "prompt" | "hints">;
 export type PublicCheck = Common & { options?: string[]; items?: string[]; left?: string[]; right?: string[] };
@@ -22,6 +24,7 @@ function stripCheck(c: Check): PublicCheck {
 export function toPublicSpec(spec: GameSpec): PublicSpec {
   const content =
     spec.mode === "case" ? redactCase(spec.content as CaseContent)
+    : spec.mode === "escape" ? redactEscape(spec.content as EscapeContent)
     : spec.mode === "impostor" ? { rounds: (spec.content as ImpostorContent).rounds.map((r) => ({ topic: r.topic })) } // facts only via room API
     : spec.content;
   return { ...spec, checks: spec.checks.map(stripCheck), content };

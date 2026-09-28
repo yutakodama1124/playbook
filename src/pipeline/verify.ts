@@ -6,6 +6,8 @@ import { CaseContentSchema } from "@/modes/case/schema";
 import { validateCase } from "@/modes/case/validate";
 import { ImpostorContentSchema } from "@/modes/impostor/schema";
 import { validateImpostor } from "@/modes/impostor/validate";
+import { EscapeContentSchema, type EscapeContent } from "@/modes/escape/schema";
+import { validateEscape } from "@/modes/escape/logic";
 
 const CONCEPT_ID = /\bc_[a-z0-9]+(?:_[a-z0-9]+)*\b/;
 
@@ -26,6 +28,10 @@ function modeProblems(spec: GameSpec, map: ConceptMap): string[] {
   if (spec.mode === "impostor") {
     const parsed = ImpostorContentSchema.safeParse(spec.content);
     return parsed.success ? validateImpostor(parsed.data, map) : [`impostor content invalid: ${parsed.error.issues[0]?.message}`];
+  }
+  if (spec.mode === "escape") {
+    const parsed = EscapeContentSchema.safeParse(spec.content);
+    return parsed.success ? validateEscape({ ...spec, content: parsed.data } as GameSpec<EscapeContent>, map) : [`escape content invalid: ${parsed.error.issues[0]?.message}`];
   }
   return [];
 }

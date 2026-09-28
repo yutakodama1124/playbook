@@ -4,6 +4,8 @@ import { usePoll } from "@/app/components/usePoll";
 import type { PublicGame } from "@/app/components/game/types";
 import { CaseFilesGame } from "@/app/components/case/CaseFilesGame";
 import { ImpostorStart } from "@/app/components/impostor/ImpostorStart";
+import { EscapeRoomGame } from "@/app/components/escape/EscapeRoomGame";
+import type { PublicEscapeContent } from "@/modes/escape/logic";
 import { CheckCard } from "@/app/components/game/CheckCard";
 import type { PublicCaseContent } from "@/modes/case/redact";
 
@@ -27,6 +29,7 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
 
   if (game.mode === "case") return <CaseFilesGame game={game as PublicGame<PublicCaseContent>} />;
   if (game.mode === "impostor") return <ImpostorStart game={game} />;
+  if (game.mode === "escape") return <EscapeRoomGame game={game as PublicGame<PublicEscapeContent>} />;
   return (
     <main className="mx-auto max-w-2xl space-y-4 px-4 py-10">
       <h1 className="text-2xl font-bold">{game.spec.title}</h1>
