@@ -12,6 +12,10 @@ export function validateImpostor(c: ImpostorContent, map: ConceptMap): string[] 
     const distinct = new Set(r.true_facts.map((f) => f.trim().toLowerCase()));
     if (distinct.size < MIN_TRUE_FACTS) problems.push(`round ${i + 1} needs at least ${MIN_TRUE_FACTS} distinct true facts`);
     if (distinct.has(r.corrupted_fact.trim().toLowerCase())) problems.push(`round ${i + 1}: corrupted fact also appears as a true fact`);
+    const lengths = r.true_facts.map((f) => f.length).sort((a, b) => a - b);
+    const median = lengths[Math.floor(lengths.length / 2)] ?? 0;
+    if (median && (r.corrupted_fact.length < median * 0.6 || r.corrupted_fact.length > median * 1.6))
+      problems.push(`round ${i + 1}: corrupted fact length (${r.corrupted_fact.length} chars) stands out from the true facts (median ${median}) — match their length and style`);
     for (const id of r.concept_ids) if (!concepts.has(id)) problems.push(`round ${i + 1} references unknown concept ${id}`);
   });
   return problems;

@@ -14,6 +14,14 @@ describe("validateImpostor", () => {
   });
 });
 
+describe("fake-fact length tell", () => {
+  it("flags a corrupted fact much shorter or longer than the true facts", () => {
+    const r = content.rounds[0];
+    const bad = { rounds: content.rounds.map((x, i) => (i === 0 ? { ...r, true_facts: r.true_facts.map((f) => `${f} with plenty of extra specific detail about the process`), corrupted_fact: "Wrong." } : x)) };
+    expect(validateImpostor(bad, map).join()).toMatch(/round 1: corrupted fact length/);
+  });
+});
+
 describe("impostorChecks", () => {
   it("makes one 'which is fake' choice check per round with the fake among 3 true facts", () => {
     const checks = impostorChecks(content);

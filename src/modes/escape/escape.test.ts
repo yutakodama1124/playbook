@@ -15,6 +15,13 @@ describe("validateEscape", () => {
   });
 });
 
+describe("clue objects", () => {
+  it("requires at least one clue object per room", () => {
+    const bad = { ...spec, content: { ...content, rooms: content.rooms.map((r) => ({ ...r, hotspots: r.hotspots.map((h) => ({ ...h, lock_check_id: h.lock_check_id || "k1" })) })) } };
+    expect(validateEscape(bad, map).join()).toMatch(/room r1 needs at least 1 clue object/);
+  });
+});
+
 describe("redactEscape / clueFor", () => {
   it("hides clues until solved and returns the clue for a solved lock", () => {
     const json = JSON.stringify(redactEscape(content));

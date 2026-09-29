@@ -26,4 +26,10 @@ describe("validateCase", () => {
     expect(p).toMatch(/c_nope/);
     expect(p).toMatch(/ghost/);
   });
+  it("requires 2+ evidence items supporting the correct answer and 1+ making each wrong option tempting", () => {
+    const bad = { ...content, evidence: content.evidence.map((e) => ({ ...e, points_to: [] })) };
+    const p = validateCase(bad, map).join("|");
+    expect(p).toMatch(/correct option .* at least 2/);
+    expect(p).toMatch(/wrong option o2 .* no evidence/);
+  });
 });

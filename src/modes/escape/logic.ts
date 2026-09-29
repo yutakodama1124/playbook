@@ -11,6 +11,7 @@ export function validateEscape(spec: GameSpec<EscapeContent>, map: ConceptMap): 
   for (const r of c.rooms) {
     if (r.hotspots.length < 3) problems.push(`room ${r.id} needs at least 3 hotspots`);
     const locks = r.hotspots.filter((h) => h.lock_check_id);
+    if (r.hotspots.length - locks.length < 1) problems.push(`room ${r.id} needs at least 1 clue object (hotspot with no lock) holding information for its locks`);
     if (locks.length < 2) problems.push(`room ${r.id} needs at least 2 locks`);
     for (const h of locks) {
       if (!checkIds.has(h.lock_check_id)) problems.push(`hotspot ${h.id} lock ${h.lock_check_id} is not a check`);

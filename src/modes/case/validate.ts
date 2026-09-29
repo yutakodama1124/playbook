@@ -26,6 +26,16 @@ export function validateCase(c: CaseContent, map: ConceptMap): string[] {
     for (const id of e.concept_ids) if (!concepts.has(id)) problems.push(`evidence ${e.id} references unknown concept ${id}`);
     for (const id of e.points_to) if (!refIds.has(id)) problems.push(`evidence ${e.id} points to unknown id ${id}`);
   }
+  // Fair-play rules: the answer must be provable, and every wrong option must be tempting for a reason.
+  const supports = (optId: string) => {
+    const o = c.accusation.options.find((x) => x.id === optId);
+    return c.evidence.filter((e) => e.points_to.includes(optId) || (!!o?.character_id && e.points_to.includes(o.character_id))).length;
+  };
+  if (optionIds.has(c.accusation.correct_option_id) && supports(c.accusation.correct_option_id) < 2)
+    problems.push("correct option needs at least 2 evidence items pointing to it (fair play: the answer must be provable)");
+  for (const o of c.accusation.options)
+    if (o.id !== c.accusation.correct_option_id && supports(o.id) === 0)
+      problems.push(`wrong option ${o.id} has no evidence making it tempting — add a red-herring clue tied to a misconception`);
   if (c.solution.chain.length < 2) problems.push("solution chain needs at least 2 steps");
   for (const s of c.solution.chain) if (!concepts.has(s.concept_id)) problems.push(`solution step references unknown concept ${s.concept_id}`);
   for (const f of c.field_guide) if (!concepts.has(f.concept_id)) problems.push(`field guide references unknown concept ${f.concept_id}`);

@@ -69,4 +69,26 @@ describe("runGamePipeline", () => {
     await runGamePipeline({ llm, repo, resolveAssets: vi.fn().mockResolvedValue({}) }, g.id);
     expect((await repo.getGame(g.id))?.status).toBe("ready");
   });
+  it("sends reviewer problems back for repair and only publishes once the review passes", async () => {
+    const repo = createMemoryRepo();
+    const u = await repo.createUnit({ title: "t", course: "c", sources: [] }, null);
+    await repo.updateUnit(u.id, { status: "ready", conceptMap: map as never });
+    const g = await repo.createGame(u.id, "demo");
+    const llm: LlmClient = { parseStructured: vi.fn().mockResolvedValue(spec) };
+    const review = vi.fn().mockResolvedValueOnce(["[blocker] k1: two answers work — fix: tighten wording"]).mockResolvedValue([]);
+    await runGamePipeline({ llm, repo, resolveAssets: vi.fn().mockResolvedValue({}), review }, g.id);
+    expect(review).toHaveBeenCalledTimes(2);
+    const second = (llm.parseStructured as ReturnType<typeof vi.fn>).mock.calls[1][0];
+    expect(JSON.stringify(second.content)).toContain("two answers work");
+    expect((await repo.getGame(g.id))?.status).toBe("ready");
+  });
+  it("does not ship a game the reviewer keeps rejecting", async () => {
+    const repo = createMemoryRepo();
+    const u = await repo.createUnit({ title: "t", course: "c", sources: [] }, null);
+    await repo.updateUnit(u.id, { status: "ready", conceptMap: map as never });
+    const g = await repo.createGame(u.id, "demo");
+    const llm: LlmClient = { parseStructured: vi.fn().mockResolvedValue(spec) };
+    await runGamePipeline({ llm, repo, resolveAssets: vi.fn(), review: vi.fn().mockResolvedValue(["[major] nonsense"]) }, g.id);
+    expect((await repo.getGame(g.id))?.status).toBe("failed");
+  });
 });

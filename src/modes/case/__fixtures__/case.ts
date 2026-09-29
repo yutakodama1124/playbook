@@ -17,7 +17,7 @@ export const content: CaseContent = {
   characters: [ch("p1", "Dana Reyes", "pharmacist"), ch("p2", "Chef Omar", "chef"), ch("p3", "Lin Park", "gardener"), ch("m1", "Dr. Vale", "scientist", true)],
   evidence: [
     { id: "e1", title: "Tox report", text: "Complex IV blocked.", concept_ids: ["c_etc"], points_to: ["p1"] },
-    { id: "e2", title: "Sensor log", text: "ATP fell in 4 minutes.", concept_ids: ["c_atp"], points_to: [] },
+    { id: "e2", title: "Sensor log", text: "ATP fell in 4 minutes.", concept_ids: ["c_atp"], points_to: ["o1"] },
     { id: "e3", title: "Kitchen receipt", text: "Yeast order.", concept_ids: ["c_ferment"], points_to: ["p2"] },
     { id: "e4", title: "Garden diary", text: "Watered at noon.", concept_ids: [], points_to: ["p3"] },
   ],

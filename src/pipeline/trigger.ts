@@ -7,9 +7,10 @@ export async function runJobInline(job: Job): Promise<void> {
   const { getRepo } = await import("@/repo/supabase");
   const { runUnitPipeline, runGamePipeline } = await import("./run");
   const { createAssetResolver, supabaseUpload } = await import("@/assets/resolver");
+  const { createReviewer } = await import("./review");
   const llm = createLlmClient(), repo = getRepo();
   if (job.type === "unit") return runUnitPipeline({ llm, repo }, job.unitId);
-  return runGamePipeline({ llm, repo, resolveAssets: createAssetResolver({ repo, llm, upload: supabaseUpload }) }, job.gameId);
+  return runGamePipeline({ llm, repo, resolveAssets: createAssetResolver({ repo, llm, upload: supabaseUpload }), review: createReviewer(llm) }, job.gameId);
 }
 
 async function startRenderTaskDefault(taskName: string, args: unknown[]) {

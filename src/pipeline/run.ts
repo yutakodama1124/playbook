@@ -5,6 +5,7 @@ import { InvalidSpecError } from "@/domain/llm-check";
 import { generators, type Generator } from "./generators";
 import { ingestUnit } from "./ingest";
 import { verifyGame } from "./verify";
+import type { Reviewer } from "./review";
 
 export type AssetResolver = (spec: GameSpec) => Promise<Record<string, string>>;
 const MAX_REPAIRS = 2;
@@ -23,7 +24,7 @@ export async function runUnitPipeline({ llm, repo }: { llm: LlmClient; repo: Rep
 }
 
 export async function runGamePipeline(
-  { llm, repo, resolveAssets }: { llm: LlmClient; repo: Repo; resolveAssets: AssetResolver },
+  { llm, repo, resolveAssets, review }: { llm: LlmClient; repo: Repo; resolveAssets: AssetResolver; review?: Reviewer },
   gameId: string,
 ) {
   const game = await repo.getGame(gameId);
@@ -39,7 +40,7 @@ export async function runGamePipeline(
     let problems: string[] = [];
     for (let attempt = 0; attempt <= MAX_REPAIRS; attempt++) {
       const repairLlm: LlmClient = problems.length
-        ? { parseStructured: (a) => llm.parseStructured({ ...a, content: [...a.content, { type: "text", text: `Your previous attempt failed verification. Fix these problems:\n- ${problems.join("\n- ")}` }] }) }
+        ? { parseStructured: (a) => llm.parseStructured({ ...a, content: [...a.content, { type: "text", text: `Your previous attempt failed quality review. Fix every one of these problems, keeping everything else that worked:\n- ${problems.join("\n- ")}` }] }) }
         : llm;
       let spec: GameSpec;
       try {
@@ -50,6 +51,15 @@ export async function runGamePipeline(
         continue;
       }
       const report = verifyGame(spec, map);
+      if (report.ok && review) {
+        // Quality gate: an AI playtester re-derives every answer and flags confusing or pointless content.
+        const reviewProblems = await review(spec, map);
+        if (reviewProblems.length) {
+          problems = reviewProblems;
+          await repo.updateGame(gameId, { verifierReport: { ok: false, problems: reviewProblems } });
+          continue;
+        }
+      }
       if (report.ok) {
         const assets = await resolveAssets(spec);
         await repo.updateGame(gameId, { status: "ready", spec, assets, verifierReport: report, error: null });
@@ -58,7 +68,7 @@ export async function runGamePipeline(
       problems = report.problems;
       await repo.updateGame(gameId, { verifierReport: report });
     }
-    throw new Error(`verification failed after ${MAX_REPAIRS} repairs: ${problems.join("; ")}`);
+    throw new Error(`quality checks failed after ${MAX_REPAIRS} repairs: ${problems.join("; ")}`);
   } catch (e) {
     await repo.updateGame(gameId, { status: "failed", error: msg(e) });
   }
