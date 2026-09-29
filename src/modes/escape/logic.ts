@@ -18,6 +18,15 @@ export function validateEscape(spec: GameSpec<EscapeContent>, map: ConceptMap): 
       used.set(h.lock_check_id, (used.get(h.lock_check_id) ?? 0) + 1);
     }
   }
+  // Meta-puzzle: one exit lock in the last room, fed by fragments from every other lock.
+  const exits = c.rooms.flatMap((r, i) => r.hotspots.filter((h) => h.is_exit).map((h) => ({ h, last: i === c.rooms.length - 1 })));
+  if (exits.length !== 1) problems.push(`escape room needs exactly 1 exit lock (is_exit), got ${exits.length}`);
+  for (const { h, last } of exits) {
+    if (!last) problems.push(`exit lock ${h.id} must be in the last room`);
+    if (!h.lock_check_id) problems.push(`exit ${h.id} must be a lock`);
+  }
+  for (const r of c.rooms) for (const h of r.hotspots)
+    if (h.lock_check_id && !h.is_exit && !h.reveals_clue.trim()) problems.push(`lock ${h.id} must reveal a fragment (reveals_clue) that feeds the final exit`);
   for (const [id, n] of used) if (n > 1) problems.push(`check ${id} is used by more than one hotspot`);
   for (const id of checkIds) if (!used.has(id)) problems.push(`check ${id} is not used by any hotspot`);
   for (const f of c.field_guide) if (!concepts.has(f.concept_id)) problems.push(`field guide references unknown concept ${f.concept_id}`);

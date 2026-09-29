@@ -32,11 +32,15 @@ export function EscapeRoomGame({ game }: { game: PublicGame<PublicEscapeContent>
 
   const room = c.rooms[roomIdx];
   const locks = room.hotspots.filter((h) => h.lock_check_id);
+  // Meta-puzzle: the exit lock stays sealed until every other lock in the game is open.
+  const feeders = c.rooms.flatMap((r) => r.hotspots.filter((h) => h.lock_check_id && !h.is_exit));
+  const exitReady = feeders.every((h) => h.lock_check_id in solved);
   const opened = locks.filter((h) => h.lock_check_id in solved).length;
   const roomOpen = opened === locks.length;
   const hotspot = room.hotspots.find((h) => h.id === open);
   const check = hotspot?.lock_check_id ? spec.checks.find((k) => k.id === hotspot.lock_check_id) : undefined;
-  const status = (h: (typeof room.hotspots)[number]) => (!h.lock_check_id ? "Clue" : h.lock_check_id in solved ? "Open" : "Locked");
+  const status = (h: (typeof room.hotspots)[number]) =>
+    !h.lock_check_id ? "Clue" : h.lock_check_id in solved ? "Open" : h.is_exit ? (exitReady ? "Final lock" : "Sealed") : "Locked";
 
   if (phase === "briefing")
     return (
@@ -45,6 +49,7 @@ export function EscapeRoomGame({ game }: { game: PublicGame<PublicEscapeContent>
         <main className="mx-auto max-w-3xl px-4 pb-24 pt-10">
           <p className="text-sm text-zinc-500">Escape room · 2 rooms · 20 minutes</p>
           <h1 className="mt-1 text-3xl font-semibold tracking-tight">{spec.title}</h1>
+          {spec.hook && <p className="mt-6 text-2xl font-medium leading-snug text-zinc-900">{spec.hook}</p>}
           <p className="mt-4 text-lg leading-relaxed text-zinc-700">{c.premise}</p>
           <div className="mt-8 border-t border-zinc-200 pt-6"><Label>Briefing</Label><p className="mt-2 leading-relaxed text-zinc-700">{spec.briefing}</p></div>
           <Button size="lg" className="mt-8 w-full" onClick={() => setPhase("play")}>Start the clock</Button>
@@ -109,7 +114,7 @@ export function EscapeRoomGame({ game }: { game: PublicGame<PublicEscapeContent>
                 <li key={h.id}>
                   <button onClick={() => setOpen(h.id)} aria-current={open === h.id} className={`flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm ${open === h.id ? "bg-zinc-50" : ""}`}>
                     <span className="w-4 tabular-nums text-zinc-400">{i + 1}</span><span className="flex-1 font-medium">{h.label}</span>
-                    <span className={`text-xs ${status(h) === "Open" ? "text-accent" : status(h) === "Locked" ? "text-zinc-900" : "text-zinc-400"}`}>{status(h)}</span>
+                    <span className={`text-xs ${status(h) === "Open" ? "text-accent" : status(h) === "Locked" || status(h) === "Final lock" ? "text-zinc-900" : "text-zinc-400"}`}>{status(h)}</span>
                   </button>
                 </li>
               ))}
@@ -120,13 +125,15 @@ export function EscapeRoomGame({ game }: { game: PublicGame<PublicEscapeContent>
             {hotspot ? (
               <div className="space-y-3">
                 <Card className="p-4"><p className="font-medium">{hotspot.label}</p><p className="mt-1 text-sm leading-relaxed text-zinc-700">{hotspot.description}</p></Card>
-                {check && <CheckCard key={check.id} gameId={game.id} check={check} onHint={() => setHintsUsed((n) => n + 1)}
+                {hotspot.is_exit && !exitReady
+                  ? <p className="text-sm text-zinc-600">This is the final lock. It needs the fragments from every other lock — open those first.</p>
+                  : check && <CheckCard key={check.id} gameId={game.id} check={check} onHint={() => setHintsUsed((n) => n + 1)}
                   onSolved={(id, clue) => setSolved((s) => ({ ...s, [id]: clue ?? null }))} />}
               </div>
             ) : <p className="text-sm text-zinc-500">Select a numbered object to examine it. Clue objects hold information you need for the locks.</p>}
 
             {Object.values(solved).some(Boolean) && (
-              <Card className="p-4"><Label>Unlocked notes</Label><ul className="mt-2 space-y-1.5 text-sm text-zinc-700">{Object.values(solved).filter(Boolean).map((cl, i) => <li key={i}>{cl}</li>)}</ul></Card>
+              <Card className="p-4"><Label>Fragments collected</Label><ul className="mt-2 space-y-1.5 text-sm text-zinc-700">{Object.values(solved).filter(Boolean).map((cl, i) => <li key={i}>{cl}</li>)}</ul></Card>
             )}
 
             {roomOpen && (

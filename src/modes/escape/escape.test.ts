@@ -15,6 +15,17 @@ describe("validateEscape", () => {
   });
 });
 
+describe("meta-puzzle finale", () => {
+  it("requires exactly one exit lock, in the last room", () => {
+    const noExit = { ...spec, content: { ...content, rooms: content.rooms.map((r) => ({ ...r, hotspots: r.hotspots.map((h) => ({ ...h, is_exit: false })) })) } };
+    expect(validateEscape(noExit, map).join()).toMatch(/exactly 1 exit lock/);
+  });
+  it("requires every other lock to reveal a fragment for the finale", () => {
+    const bad = { ...spec, content: { ...content, rooms: content.rooms.map((r) => ({ ...r, hotspots: r.hotspots.map((h) => (h.id === "h2" ? { ...h, reveals_clue: "" } : h)) })) } };
+    expect(validateEscape(bad, map).join()).toMatch(/h2 .*fragment/);
+  });
+});
+
 describe("clue objects", () => {
   it("requires at least one clue object per room", () => {
     const bad = { ...spec, content: { ...content, rooms: content.rooms.map((r) => ({ ...r, hotspots: r.hotspots.map((h) => ({ ...h, lock_check_id: h.lock_check_id || "k1" })) })) } };
@@ -28,7 +39,7 @@ describe("redactEscape / clueFor", () => {
     expect(json).not.toContain("SECRET CLUE");
     expect(json).toContain("Look at h1");
     expect(clueFor(spec, "k1")).toBe("SECRET CLUE ONE");
-    expect(clueFor(spec, "k2")).toBeNull();
+    expect(clueFor(spec, "k4")).toBeNull(); // the exit lock ends the game; it reveals nothing
   });
 });
 
