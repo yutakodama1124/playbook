@@ -43,7 +43,7 @@ export default function HostPage({ params }: { params: Promise<{ code: string }>
       {v.phase === "discuss" && (
         <div className="mx-auto max-w-4xl space-y-10 text-center">
           <div><p className="text-zinc-400">This round</p><p className="mt-2 text-5xl font-semibold tracking-tight">{v.topic}</p></div>
-          <p className="text-2xl leading-relaxed text-zinc-300">Read your card, then explain your fact out loud in one sentence. One card is fake. Listen for what doesn&apos;t fit.</p>
+          <p className="text-2xl leading-relaxed text-zinc-300">Take turns: read your fact, then explain why it&apos;s true. One card is fake, so its reason has to be invented. Push back on explanations that don&apos;t hold up.</p>
           <Countdown key={v.round} seconds={DISCUSS_SECONDS} />
           <button className={btn} onClick={() => post("action", { action: "vote" })}>Open voting</button>
         </div>

@@ -27,10 +27,16 @@ export default function PlayPage({ params }: { params: Promise<{ code: string }>
         <div className="space-y-5">
           <p className="text-center text-sm text-zinc-500">{v.topic}</p>
           <div className={`rounded-xl p-6 ${me.impostor ? "bg-zinc-950 text-white" : "border border-zinc-200 bg-white"}`}>
-            <p className={`text-sm font-medium ${me.impostor ? "text-red-400" : "text-zinc-500"}`}>{me.impostor ? "You're the impostor. This fact is fake — sell it." : "Your fact"}</p>
+            <p className={`text-sm font-medium ${me.impostor ? "text-red-400" : "text-zinc-500"}`}>{me.impostor ? "You're the impostor. This fact is fake." : "Your fact"}</p>
             <p className="mt-3 text-2xl font-medium leading-snug">{me.fact}</p>
           </div>
-          <p className="text-center text-sm text-zinc-500">Explain it out loud, then listen for the card that doesn&apos;t fit.</p>
+          <div className="space-y-2 rounded-xl border border-zinc-200 bg-white p-4 text-sm text-zinc-700">
+            <p className="font-medium text-zinc-900">Your turn to speak</p>
+            <p>{me.impostor
+              ? "Read your fact, then give a convincing reason why it's true. Sound as sure as everyone else."
+              : "Read your fact, then explain in one sentence why it's true. The impostor will have to make up a reason."}</p>
+            {me.shared && <p className="text-accent">Someone else holds this exact fact. Listen for it — you can vouch for each other.</p>}
+          </div>
         </div>
       )}
 
