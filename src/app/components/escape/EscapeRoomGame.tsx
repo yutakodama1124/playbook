@@ -17,6 +17,7 @@ const fmt = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "
 export function EscapeRoomGame({ game }: { game: PublicGame<PublicEscapeContent> }) {
   const spec = game.spec!, c = spec.content;
   const [phase, setPhase] = useState<"briefing" | "play" | "done">("briefing");
+  const [timeUpSeen, setTimeUpSeen] = useState(false);
   const [roomIdx, setRoomIdx] = useState(0);
   const [open, setOpen] = useState<string | null>(null);
   const [solved, setSolved] = useState<Record<string, string | null>>({}); // checkId -> clue
@@ -77,6 +78,19 @@ export function EscapeRoomGame({ game }: { game: PublicGame<PublicEscapeContent>
       </>
     );
   }
+
+  if (left === 0 && !timeUpSeen)
+    return (
+      <>
+        <PageHeader />
+        <main className="mx-auto max-w-2xl space-y-6 px-4 pb-24 pt-10">
+          <p className="text-sm font-medium text-red-700">Time&apos;s up</p>
+          <h1 className="text-3xl font-semibold tracking-tight">{spec.outro_lose}</h1>
+          <p className="text-zinc-600">You opened {feeders.filter((h) => h.lock_check_id in solved).length} of {feeders.length} locks. The clock has stopped counting, but you can keep going and finish the room.</p>
+          <Button size="lg" className="w-full" onClick={() => setTimeUpSeen(true)}>Keep solving</Button>
+        </main>
+      </>
+    );
 
   return (
     <>

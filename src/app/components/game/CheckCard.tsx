@@ -4,7 +4,7 @@ import type { PublicCheck } from "@/domain/public-spec";
 import { deviceId } from "../device";
 import { Button, Card, inputClass } from "../ui";
 
-type Result = { correct: boolean; feedback?: string; reveal?: string | null } | null;
+type Result = { correct: boolean; feedback?: string; reveal?: string | null; error?: string } | null;
 
 export function CheckCard({ gameId, check, onSolved, onHint, onAnswered }: {
   gameId: string; check: PublicCheck; onSolved?: (checkId: string, reveal?: string | null) => void; onHint?: () => void; onAnswered?: (correct: boolean) => void;
@@ -16,11 +16,18 @@ export function CheckCard({ gameId, check, onSolved, onHint, onAnswered }: {
 
   async function submit() {
     setBusy(true);
-    const res = await fetch(`/api/games/${gameId}/check`, { method: "POST", headers: { "content-type": "application/json", "x-device-id": deviceId() }, body: JSON.stringify({ checkId: check.id, response: value }) });
-    const r = (await res.json()) as Result;
-    setResult(r); setBusy(false);
-    if (r) onAnswered?.(r.correct);
-    if (r?.correct) onSolved?.(check.id, r.reveal);
+    try {
+      const res = await fetch(`/api/games/${gameId}/check`, { method: "POST", headers: { "content-type": "application/json", "x-device-id": deviceId() }, body: JSON.stringify({ checkId: check.id, response: value }) });
+      const r = (await res.json().catch(() => null)) as Result;
+      if (!res.ok || !r || typeof r.correct !== "boolean") { setResult({ correct: false, error: r?.error ?? "Couldn't check that answer. Try again." }); return; }
+      setResult(r);
+      onAnswered?.(r.correct);
+      if (r.correct) onSolved?.(check.id, r.reveal);
+    } catch {
+      setResult({ correct: false, error: "Couldn't reach the server. Try again." });
+    } finally {
+      setBusy(false);
+    }
   }
 
   const solved = !!result?.correct;
@@ -29,7 +36,8 @@ export function CheckCard({ gameId, check, onSolved, onHint, onAnswered }: {
       <p className="font-medium leading-snug text-zinc-900">{check.prompt}</p>
       <div className="mt-4">{input(check, value, setValue, solved)}</div>
 
-      {result && !result.correct && <p className="mt-3 text-sm text-red-700">Not quite. {result.feedback ?? "Look at the evidence again."}</p>}
+      {result?.error && <p className="mt-3 text-sm text-zinc-600">{result.error}</p>}
+      {result && !result.correct && !result.error && <p className="mt-3 text-sm text-red-700">Not quite. {result.feedback ?? "Look at the evidence again."}</p>}
       {solved && <p className="mt-3 text-sm font-medium text-emerald-700">Correct.</p>}
       {solved && result?.reveal && <p className="mt-2 rounded-lg bg-zinc-50 px-3 py-2 text-sm text-zinc-700"><span className="font-medium">Unlocked:</span> {result.reveal}</p>}
 

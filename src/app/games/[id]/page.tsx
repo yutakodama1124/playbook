@@ -42,7 +42,7 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
             ))}
           </ol>
           {game?.verifierReport && !game.verifierReport.ok && (
-            <p className="mt-8 border-t border-zinc-200 pt-4 text-sm text-zinc-600">The playtester found {game.verifierReport.problems.length} issue{game.verifierReport.problems.length === 1 ? "" : "s"} in the first draft. Fixing them before you play.</p>
+            <p className="mt-8 border-t border-zinc-200 pt-4 text-sm text-zinc-600">The playtester found {game.verifierReport.count} issue{game.verifierReport.count === 1 ? "" : "s"} in a draft. Fixing them before you play.</p>
           )}
         </main>
       </>

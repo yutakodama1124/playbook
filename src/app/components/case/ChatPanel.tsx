@@ -19,13 +19,19 @@ export function ChatPanel({ gameId, character, portrait, turns, setTurns, onUnlo
     if (!question || busy) return;
     const next = [...turns, { role: "student" as const, text: question }];
     setTurns(next); setQ(""); setBusy(true); setError(null);
-    const res = await fetch(`/api/games/${gameId}/chat`, { method: "POST", headers: { "content-type": "application/json" },
-      body: JSON.stringify({ characterId: character.id, history: turns.filter((t) => t.role !== "system"), question }) });
-    const json = await res.json();
-    setBusy(false);
-    if (!res.ok) { setError(json.error); return; }
+    let json: { reply?: string; unlocked?: Evidence[]; error?: string } | null = null;
+    try {
+      const res = await fetch(`/api/games/${gameId}/chat`, { method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ characterId: character.id, history: turns.filter((t) => t.role !== "system"), question }) });
+      json = await res.json().catch(() => null);
+      if (!res.ok || !json?.reply) { setError(json?.error ?? "No answer this time. Try asking again."); return; }
+    } catch {
+      setError("Couldn't reach the server. Try again."); return;
+    } finally {
+      setBusy(false);
+    }
     const found = (json.unlocked ?? []) as Evidence[];
-    setTurns([...next, { role: "character", text: json.reply }, ...found.map((e) => ({ role: "system" as const, text: `New evidence added to the file: ${e.title}` }))]);
+    setTurns([...next, { role: "character", text: json.reply! }, ...found.map((e) => ({ role: "system" as const, text: `New evidence added to the file: ${e.title}` }))]);
     if (found.length) onUnlocked?.(found);
   }
 

@@ -27,9 +27,11 @@ export default function Home() {
     e.preventDefault();
     setBusy(true); setError(null);
     const form = new FormData(e.currentTarget);
-    const res = await fetch("/api/units", { method: "POST", body: form });
-    const json = await res.json();
-    if (!res.ok) { setError(json.error); setBusy(false); return; }
+    const size = form.getAll("files").reduce((n, f) => n + (f instanceof File ? f.size : 0), 0);
+    if (size > 4 * 1024 * 1024) { setError("Files are too large (4 MB total). Try fewer pages or a smaller photo."); setBusy(false); return; }
+    const res = await fetch("/api/units", { method: "POST", body: form }).catch(() => null);
+    const json = res ? await res.json().catch(() => null) : null;
+    if (!res?.ok || !json) { setError(json?.error ?? "Upload failed. Check your connection and try again."); setBusy(false); return; }
     rememberUnit({ id: json.id, title: String(form.get("title")), course: String(form.get("course")) });
     router.push(`/units/${json.id}`);
   }

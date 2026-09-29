@@ -25,6 +25,15 @@ export function createAssetResolver(deps: {
     });
     // Resolve the rest in parallel.
     await Promise.all(misses.map(async (req) => {
+      try {
+        await drawAndStore(req);
+      } catch {
+        out[req.role] = PLACEHOLDER_URL; // one failed image must not fail the whole game
+      }
+    }));
+    return out;
+
+    async function drawAndStore(req: (typeof misses)[number]) {
       const kind = req.role.startsWith("portrait") ? "portrait" : req.role === "boss" ? "boss" : "scene";
       if (env.devNoImages) { out[req.role] = PLACEHOLDER_URL; return; }
       const img = await generateImage(kind === "portrait" ? `portrait of a ${req.tags.join(", ")}, shoulders up, plain soft background` : req.tags.join(", "));
@@ -33,8 +42,7 @@ export function createAssetResolver(deps: {
       const row = await deps.repo.addAsset({ url, ...tags, tags: [...new Set([...tags.tags, ...req.tags])], styleVersion: STYLE_VERSION });
       library.push(row);
       out[req.role] = url;
-    }));
-    return out;
+    }
   };
 }
 

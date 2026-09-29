@@ -29,7 +29,9 @@ export function createLlmClient(anthropic: Anthropic = new Anthropic()): LlmClie
       // so these two fields are spread from an untyped object.
       const fallback = { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" } as Record<string, unknown>;
       // Streaming avoids SDK/HTTP timeouts on long generations (e.g. 32k-token case files).
-      const res = await anthropic.beta.messages.stream({
+      let res;
+      try {
+        res = await anthropic.beta.messages.stream({
         model: MODEL,
         max_tokens: maxTokens,
         thinking: { type: "adaptive" },
@@ -40,6 +42,12 @@ export function createLlmClient(anthropic: Anthropic = new Anthropic()): LlmClie
         output_config: mode === "json" ? { effort } : { effort, format: zodOutputFormat(schema) },
         ...fallback,
       } as Parameters<typeof anthropic.beta.messages.stream>[0]).finalMessage();
+      } catch (e) {
+        // With a strict format the SDK throws its own parse error on refusals/truncation; make that repairable.
+        if (e instanceof Anthropic.APIError) throw e;
+        if (e instanceof Anthropic.AnthropicError) throw new ParseError(`Structured output failed: ${e.message}`);
+        throw e;
+      }
       if (res.stop_reason === "refusal") throw new RefusalError("Claude declined this request");
       if (mode === "json") return parseJsonText(schema, res.content, res.stop_reason);
       if (res.parsed_output == null) throw new ParseError(`No valid structured output (stop_reason=${res.stop_reason})`);
