@@ -36,7 +36,7 @@ export const content: CaseContent = {
 };
 
 export const spec: GameSpec<CaseContent> = {
-  mode: "case", title: "The Dark Greenhouse", briefing: "b", intro: "i", outro_win: "w", outro_lose: "l",
+  mode: "case", title: "The Dark Greenhouse", hook: "Why would every plant cell stop making energy at once?", briefing: "b", intro: "i", outro_win: "w", outro_lose: "l",
   concept_ids: ["c_etc"], asset_requests: [], content,
   checks: [{ id: "d1", kind: "choice", concept_ids: ["c_etc"], prompt: "Which stage stops first?", hints: ["1", "2", "3"],
     options: ["Glycolysis", "ETC"], answer: "ETC", feedback_by_wrong: { Glycolysis: "Glycolysis needs no O2." } },

@@ -17,6 +17,6 @@ export const content: EscapeContent = {
 
 const check = (id: string) => ({ id, kind: "number" as const, concept_ids: ["c_atp"], prompt: `Q ${id}`, hints: ["1", "2", "3"], answer: 2, tolerance: 0, formula: "1+1" });
 export const spec: GameSpec<EscapeContent> = {
-  mode: "escape", title: "T", briefing: "b", intro: "i", outro_win: "w", outro_lose: "l", concept_ids: ["c_atp"],
+  mode: "escape", title: "T", hook: "How do you open a door with chemistry?", briefing: "b", intro: "i", outro_win: "w", outro_lose: "l", concept_ids: ["c_atp"],
   asset_requests: [], content, checks: ["k1", "k2", "k3", "k4"].map(check),
 };

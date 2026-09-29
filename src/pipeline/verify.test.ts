@@ -45,4 +45,8 @@ describe("verifyGame", () => {
     expect(verifyGame(bad, caseMap).problems.join()).toMatch(/concept id.*briefing/);
     expect(verifyGame(caseSpec, caseMap).ok).toBe(true);
   });
+  it("requires a hook question for case and escape games", () => {
+    const bad = { ...caseSpec, hook: "" } as GameSpec;
+    expect(verifyGame(bad, caseMap).problems.join()).toMatch(/missing hook/);
+  });
 });

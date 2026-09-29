@@ -21,6 +21,7 @@ function idLeaks(value: unknown, path: string, out: string[]) {
 
 /** Mode-specific structural checks on spec.content. */
 function modeProblems(spec: GameSpec, map: ConceptMap): string[] {
+  if ((spec.mode === "case" || spec.mode === "escape") && !spec.hook?.trim()) return ["missing hook: open with one intriguing question that creates a knowledge gap"];
   if (spec.mode === "case") {
     const parsed = CaseContentSchema.safeParse(spec.content);
     return parsed.success ? validateCase(parsed.data, map, spec.checks) : [`case content invalid: ${parsed.error.issues[0]?.message}`];
