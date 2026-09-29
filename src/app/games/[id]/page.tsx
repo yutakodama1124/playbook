@@ -1,5 +1,6 @@
 "use client";
 import { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { usePoll } from "@/app/components/usePoll";
 import type { PublicGame } from "@/app/components/game/types";
 import { CaseFilesGame } from "@/app/components/case/CaseFilesGame";
@@ -7,14 +8,23 @@ import { ImpostorStart } from "@/app/components/impostor/ImpostorStart";
 import { EscapeRoomGame } from "@/app/components/escape/EscapeRoomGame";
 import type { PublicEscapeContent } from "@/modes/escape/logic";
 import type { PublicCaseContent } from "@/modes/case/redact";
-import { PageHeader, Spinner } from "@/app/components/ui";
+import { Button, PageHeader, Spinner } from "@/app/components/ui";
 
 const STEPS = ["Reading the concept map", "Designing puzzles around the concepts", "Writing clues and characters", "Checking that it can be solved", "Choosing artwork"];
 
 export default function GamePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const game = usePoll<PublicGame>(`/api/games/${id}`, 3000);
+  const router = useRouter();
   const [step, setStep] = useState(0);
+  const [retrying, setRetrying] = useState(false);
+  async function retry() {
+    if (!game) return;
+    setRetrying(true);
+    const res = await fetch(`/api/units/${game.unitId}/games`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ mode: game.mode }) });
+    const json = await res.json();
+    if (res.ok) router.push(`/games/${json.id}`); else setRetrying(false);
+  }
   useEffect(() => { const t = setInterval(() => setStep((s) => Math.min(s + 1, STEPS.length - 1)), 15000); return () => clearInterval(t); }, []);
 
   if (!game || game.status === "queued" || game.status === "running")
@@ -31,11 +41,14 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
               </li>
             ))}
           </ol>
+          {game?.verifierReport && !game.verifierReport.ok && (
+            <p className="mt-8 border-t border-zinc-200 pt-4 text-sm text-zinc-600">The playtester found {game.verifierReport.problems.length} issue{game.verifierReport.problems.length === 1 ? "" : "s"} in the first draft. Fixing them before you play.</p>
+          )}
         </main>
       </>
     );
   if (game.status === "failed" || !game.spec)
-    return <><PageHeader /><main className="mx-auto max-w-md px-4 py-24"><h1 className="text-xl font-semibold">This game couldn&apos;t be built</h1><p className="mt-2 text-sm text-zinc-600">{game.error ?? "Unknown error"}</p></main></>;
+    return <><PageHeader /><main className="mx-auto max-w-md px-4 py-24"><h1 className="text-xl font-semibold">This game couldn&apos;t be built</h1><p className="mt-2 text-sm text-zinc-600">It didn&apos;t pass our quality checks, so we didn&apos;t show it to you. Building a new one usually works.</p><Button className="mt-6" disabled={retrying} onClick={retry}>{retrying ? "Starting…" : "Build a new one"}</Button></main></>;
 
   if (game.mode === "case") return <CaseFilesGame game={game as PublicGame<PublicCaseContent>} />;
   if (game.mode === "impostor") return <ImpostorStart game={game} />;

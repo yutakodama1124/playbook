@@ -24,6 +24,7 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
   const [active, setActive] = useState(c.characters.find((x) => !x.is_mentor)?.id ?? c.characters[0].id);
   const [chats, setChats] = useState<Record<string, Turn[]>>({});
   const [tab, setTab] = useState<"board" | "guide">("board");
+  const [pane, setPane] = useState<"evidence" | "people" | "board">("evidence"); // phone layout: one pane at a time
   const [confirmed, setConfirmed] = useState<string[]>([]);
   const [found, setFound] = useState<Evidence[]>([]);
   const [accusing, setAccusing] = useState(false);
@@ -51,7 +52,7 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
       <>
         <PageHeader />
         <main className="mx-auto max-w-3xl px-4 pb-24 pt-10">
-          {scene && <img src={scene} alt="" className="aspect-[21/9] w-full rounded-xl border border-zinc-200 object-cover" />}
+          {scene && <img src={scene} alt={c.setting} className="aspect-[21/9] w-full rounded-xl border border-zinc-200 object-cover" />}
           <p className="mt-8 text-sm text-zinc-500">{FILE_LABEL[c.theme]} · {c.setting}</p>
           <h1 className="mt-1 text-3xl font-semibold tracking-tight">{spec.title}</h1>
           {spec.hook && <p className="mt-6 text-2xl font-medium leading-snug text-zinc-900">{spec.hook}</p>}
@@ -78,8 +79,14 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
           <div><p className="text-sm text-zinc-500">{FILE_LABEL[c.theme]}</p><h1 className="text-xl font-semibold tracking-tight">{spec.title}</h1></div>
         </div>
 
+        <div className="mt-5 grid grid-cols-3 rounded-lg border border-zinc-200 bg-white p-0.5 lg:hidden" role="tablist">
+          {(["evidence", "people", "board"] as const).map((p) => (
+            <button key={p} role="tab" aria-selected={pane === p} onClick={() => setPane(p)} className={`rounded-md py-2 text-sm font-medium capitalize ${pane === p ? "bg-zinc-950 text-white" : "text-zinc-600"}`}>{p}</button>
+          ))}
+        </div>
+
         <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_1.15fr_1fr]">
-          <section className="space-y-4">
+          <section className={`space-y-4 ${pane === "evidence" ? "" : "hidden"} lg:block`}>
             <Card className="p-4"><Label>Summary</Label><p className="mt-1.5 text-sm leading-relaxed text-zinc-700">{c.premise}</p></Card>
             <div>
               <Label>Evidence</Label>
@@ -104,18 +111,18 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
               <div>
                 <Label>Leads</Label>
                 <ul className="mt-2 space-y-1.5 text-sm text-zinc-600">
-                  {openLeads.map((l) => <li key={l.evidence_id}><button onClick={() => setActive(l.character_id)} className="text-left hover:text-zinc-900"><span className="font-medium text-zinc-900">{charName(l.character_id)}</span> knows something about {l.topic}.</button></li>)}
+                  {openLeads.map((l) => <li key={l.evidence_id}><button onClick={() => { setActive(l.character_id); setPane("people"); }} className="text-left hover:text-zinc-900"><span className="font-medium text-zinc-900">{charName(l.character_id)}</span> knows something about {l.topic}.</button></li>)}
                 </ul>
               </div>
             )}
           </section>
 
-          <section className="space-y-4">
+          <section className={`space-y-4 ${pane === "people" ? "" : "hidden"} lg:block`}>
             <Label>People</Label>
             <div className="grid grid-cols-4 gap-2">
               {c.characters.map((ch) => (
                 <button key={ch.id} onClick={() => setActive(ch.id)} aria-pressed={active === ch.id} className={`rounded-lg border p-1.5 text-left transition-colors ${active === ch.id ? "border-zinc-900 bg-white" : "border-transparent hover:border-zinc-200"}`}>
-                  {game.assets[`portrait:${ch.id}`] ? <img src={game.assets[`portrait:${ch.id}`]} alt="" className="aspect-square w-full rounded-md object-cover" /> : <div className="aspect-square rounded-md bg-zinc-100" />}
+                  {game.assets[`portrait:${ch.id}`] ? <img src={game.assets[`portrait:${ch.id}`]} alt={`Portrait of ${ch.name}`} className="aspect-square w-full rounded-md object-cover" /> : <div className="aspect-square rounded-md bg-zinc-100" />}
                   <p className="mt-1.5 truncate text-xs font-medium">{ch.name}</p>
                   <p className="truncate text-[11px] text-zinc-500">{ch.is_mentor ? "Mentor" : ch.role}</p>
                 </button>
@@ -126,7 +133,7 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
               onUnlocked={(ev) => setFound((prev) => [...prev, ...ev.filter((e) => !prev.some((p) => p.id === e.id))])} />
           </section>
 
-          <section className="space-y-4">
+          <section className={`space-y-4 ${pane === "board" ? "" : "hidden"} lg:block`}>
             <div className="inline-flex rounded-lg border border-zinc-200 bg-white p-0.5" role="tablist">
               {(["board", "guide"] as const).map((t) => (
                 <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)} className={`rounded-md px-3 py-1.5 text-sm font-medium ${tab === t ? "bg-zinc-950 text-white" : "text-zinc-600 hover:text-zinc-900"}`}>{t === "board" ? "Case board" : "Field guide"}</button>

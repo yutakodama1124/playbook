@@ -38,7 +38,6 @@ export function Arcade({ unitId, available }: { unitId: string; available: GameM
         </button>
       ))}
       {msg && <p className="text-sm text-red-700">{msg}</p>}
-      <p className="text-sm text-zinc-400">In development: Heist, Keep It Alive, Card Battler.</p>
     </div>
   );
 }

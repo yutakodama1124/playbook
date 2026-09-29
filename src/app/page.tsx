@@ -41,9 +41,9 @@ export default function Home() {
         <section className="mx-auto max-w-3xl px-4 pb-14 pt-20 text-center md:pt-28">
           <h1 className="text-5xl font-semibold tracking-tight text-zinc-950 md:text-6xl">Turn any unit into a game.</h1>
           <p className="mx-auto mt-5 max-w-lg text-lg text-zinc-600">Upload your notes. Play a game you can only win by understanding them.</p>
-          <div className="mt-8 flex justify-center gap-3">
-            <a href="#start" className={buttonClass("primary", "lg")}>Build a game from my notes</a>
-            <a href="#modes" className={buttonClass("secondary", "lg")}>See the games</a>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <a href="#start" className={buttonClass("primary", "lg", "w-full sm:w-auto")}>Build a game from my notes</a>
+            <a href="#modes" className={buttonClass("secondary", "lg", "w-full sm:w-auto")}>See the games</a>
           </div>
         </section>
 
