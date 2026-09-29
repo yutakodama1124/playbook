@@ -32,19 +32,28 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<AccuseResult | null>(null);
+  const [accuseError, setAccuseError] = useState<string | null>(null);
   const scene = game.assets.scene;
   const conceptName = (id: string) => c.field_guide.find((f) => f.concept_id === id)?.title ?? id;
   const evidence = [...c.evidence, ...found.filter((f) => !c.evidence.some((e) => e.id === f.id))];
   const evidenceTitle = (id: string) => evidence.find((e) => e.id === id)?.title ?? null;
   const openLeads = c.leads.filter((l) => !found.some((f) => f.id === l.evidence_id));
   const charName = (id: string) => c.characters.find((x) => x.id === id)?.name ?? "someone";
+  const boardDone = legacy || confirmed.length === c.board.length; // the accusation is the payoff of a solved board
 
   async function accuse() {
     if (!choice) return;
-    setBusy(true);
-    const res = await fetch(`/api/games/${game.id}/accuse`, { method: "POST", headers: { "content-type": "application/json", "x-device-id": deviceId() }, body: JSON.stringify({ optionId: choice, justification: reason }) });
-    setBusy(false);
-    if (res.ok) { setResult(await res.json()); setAccusing(false); setPhase("debrief"); }
+    setBusy(true); setAccuseError(null);
+    try {
+      const res = await fetch(`/api/games/${game.id}/accuse`, { method: "POST", headers: { "content-type": "application/json", "x-device-id": deviceId() }, body: JSON.stringify({ optionId: choice, justification: reason }) });
+      const json = await res.json().catch(() => null);
+      if (res.ok && json) { setResult(json); setAccusing(false); setPhase("debrief"); }
+      else setAccuseError(json?.error ?? "Your reasoning couldn't be reviewed. Try again.");
+    } catch {
+      setAccuseError("Couldn't reach the server. Try again.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   if (phase === "briefing")
@@ -71,7 +80,7 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
     <>
       <PageHeader>
         <span className="hidden text-sm tabular-nums text-zinc-500 sm:inline">{legacy ? `${evidence.length} evidence` : `${confirmed.length} of ${c.board.length} confirmed · ${evidence.length} evidence`}</span>
-        <Button variant="danger" size="sm" onClick={() => setAccusing(true)}>{ACCUSE_LABEL[c.theme]}</Button>
+        <Button variant="danger" size="sm" disabled={!boardDone} title={boardDone ? undefined : "Confirm the case board first"} onClick={() => setAccusing(true)}>{ACCUSE_LABEL[c.theme]}</Button>
       </PageHeader>
       <main className="mx-auto max-w-7xl px-4 pb-24 pt-6">
         <div className="flex items-center gap-4">
@@ -111,7 +120,8 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
               <div>
                 <Label>Leads</Label>
                 <ul className="mt-2 space-y-1.5 text-sm text-zinc-600">
-                  {openLeads.map((l) => <li key={l.evidence_id}><button onClick={() => { setActive(l.character_id); setPane("people"); }} className="text-left hover:text-zinc-900"><span className="font-medium text-zinc-900">{charName(l.character_id)}</span> knows something about {l.topic}.</button></li>)}
+                  {/* Who, not what: the student has to work out the right question. */}
+                  {[...new Set(openLeads.map((l) => l.character_id))].map((cid) => <li key={cid}><button onClick={() => { setActive(cid); setPane("people"); }} className="text-left hover:text-zinc-900"><span className="font-medium text-zinc-900">{charName(cid)}</span> knows more than they&apos;ve said. Ask the right question.</button></li>)}
                 </ul>
               </div>
             )}
@@ -164,6 +174,7 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
               <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={4} maxLength={2000}
                 placeholder="Which evidence proves it, and what concept explains why?" className={inputClass} />
             </div>
+            {accuseError && <p className="text-sm text-red-700">{accuseError}</p>}
             <div className="flex gap-2">
               <Button variant="secondary" onClick={() => setAccusing(false)}>Keep investigating</Button>
               <Button className="flex-1" disabled={!choice || reason.trim().length < 15 || busy} onClick={accuse}>{busy ? "Reviewing your reasoning…" : "Submit"}</Button>
