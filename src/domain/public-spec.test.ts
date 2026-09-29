@@ -12,6 +12,8 @@ describe("toPublicSpec", () => {
     expect(pub.checks[0]).toEqual({ id: "d1", kind: "choice", concept_ids: ["c_etc"], prompt: "Which stage stops first?", hints: ["1", "2", "3"], options: ["Glycolysis", "ETC"] });
     expect(json).toContain("Dr. Vale");
     expect(json).toContain("Tox report");
+    expect(json).toContain("who had the pharmacy key"); // locked evidence appears only as a lead
+    expect(json).not.toContain("Dana signed out the key");
   });
   it("hides impostor facts", () => {
     const pub = toPublicSpec({ ...spec, mode: "impostor", content: impostorContent, checks: [] });

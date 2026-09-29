@@ -23,7 +23,7 @@ function idLeaks(value: unknown, path: string, out: string[]) {
 function modeProblems(spec: GameSpec, map: ConceptMap): string[] {
   if (spec.mode === "case") {
     const parsed = CaseContentSchema.safeParse(spec.content);
-    return parsed.success ? validateCase(parsed.data, map) : [`case content invalid: ${parsed.error.issues[0]?.message}`];
+    return parsed.success ? validateCase(parsed.data, map, spec.checks) : [`case content invalid: ${parsed.error.issues[0]?.message}`];
   }
   if (spec.mode === "impostor") {
     const parsed = ImpostorContentSchema.safeParse(spec.content);

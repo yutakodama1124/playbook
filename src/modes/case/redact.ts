@@ -5,7 +5,9 @@ export type PublicCaseContent = {
   premise: string;
   setting: string;
   characters: { id: string; name: string; role: string; bio: string; is_mentor: boolean }[];
-  evidence: { id: string; title: string; text: string; concept_ids: string[] }[];
+  evidence: { id: string; title: string; text: string; concept_ids: string[] }[];   // available from the start
+  leads: { evidence_id: string; character_id: string; topic: string }[];             // locked evidence, shown as who to ask
+  board: { id: string; question: string; check_id: string; evidence_ids: string[] }[];
   accusation: { prompt: string; options: { id: string; label: string; character_id: string | null }[] };
   field_guide: CaseContent["field_guide"];
 };
@@ -16,7 +18,9 @@ export function redactCase(c: CaseContent): PublicCaseContent {
     premise: c.premise,
     setting: c.setting,
     characters: c.characters.map(({ id, name, role, bio, is_mentor }) => ({ id, name, role, bio, is_mentor })),
-    evidence: c.evidence.map(({ id, title, text, concept_ids }) => ({ id, title, text, concept_ids })),
+    evidence: c.evidence.filter((e) => !e.unlocked_by).map(({ id, title, text, concept_ids }) => ({ id, title, text, concept_ids })),
+    leads: c.evidence.filter((e) => e.unlocked_by).map((e) => ({ evidence_id: e.id, character_id: e.unlocked_by, topic: e.unlock_topic })),
+    board: c.board,
     accusation: { prompt: c.accusation.prompt, options: c.accusation.options },
     field_guide: c.field_guide,
   };

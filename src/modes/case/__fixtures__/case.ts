@@ -16,10 +16,16 @@ export const content: CaseContent = {
   setting_tags: ["greenhouse", "plants"],
   characters: [ch("p1", "Dana Reyes", "pharmacist"), ch("p2", "Chef Omar", "chef"), ch("p3", "Lin Park", "gardener"), ch("m1", "Dr. Vale", "scientist", true)],
   evidence: [
-    { id: "e1", title: "Tox report", text: "Complex IV blocked.", concept_ids: ["c_etc"], points_to: ["p1"] },
-    { id: "e2", title: "Sensor log", text: "ATP fell in 4 minutes.", concept_ids: ["c_atp"], points_to: ["o1"] },
-    { id: "e3", title: "Kitchen receipt", text: "Yeast order.", concept_ids: ["c_ferment"], points_to: ["p2"] },
-    { id: "e4", title: "Garden diary", text: "Watered at noon.", concept_ids: [], points_to: ["p3"] },
+    { id: "e1", title: "Tox report", text: "Complex IV blocked.", concept_ids: ["c_etc"], points_to: ["p1"], unlocked_by: "", unlock_topic: "" },
+    { id: "e2", title: "Sensor log", text: "ATP fell in 4 minutes.", concept_ids: ["c_atp"], points_to: ["o1"], unlocked_by: "", unlock_topic: "" },
+    { id: "e3", title: "Kitchen receipt", text: "Yeast order.", concept_ids: ["c_ferment"], points_to: ["p2"], unlocked_by: "", unlock_topic: "" },
+    { id: "e4", title: "Garden diary", text: "Watered at noon.", concept_ids: [], points_to: ["p3"], unlocked_by: "p3", unlock_topic: "the watering schedule" },
+    { id: "e5", title: "Pharmacy key log", text: "LOCKED SECRET EVIDENCE: Dana signed out the key.", concept_ids: ["c_etc"], points_to: ["p1"], unlocked_by: "p2", unlock_topic: "who had the pharmacy key" },
+  ],
+  board: [
+    { id: "b1", question: "Which stage stopped first?", check_id: "d1", evidence_ids: ["e1"] },
+    { id: "b2", question: "How many minutes did ATP take to fall?", check_id: "d2", evidence_ids: ["e2"] },
+    { id: "b3", question: "Who had access to the inhibitor?", check_id: "d3", evidence_ids: ["e5"] },
   ],
   accusation: { prompt: "Who sabotaged the greenhouse?", options: [
     { id: "o1", label: "Dana Reyes", character_id: "p1" }, { id: "o2", label: "Chef Omar", character_id: "p2" }, { id: "o3", label: "Lin Park", character_id: "p3" }],
@@ -33,5 +39,7 @@ export const spec: GameSpec<CaseContent> = {
   mode: "case", title: "The Dark Greenhouse", briefing: "b", intro: "i", outro_win: "w", outro_lose: "l",
   concept_ids: ["c_etc"], asset_requests: [], content,
   checks: [{ id: "d1", kind: "choice", concept_ids: ["c_etc"], prompt: "Which stage stops first?", hints: ["1", "2", "3"],
-    options: ["Glycolysis", "ETC"], answer: "ETC", feedback_by_wrong: { Glycolysis: "Glycolysis needs no O2." } }],
+    options: ["Glycolysis", "ETC"], answer: "ETC", feedback_by_wrong: { Glycolysis: "Glycolysis needs no O2." } },
+    { id: "d2", kind: "number", concept_ids: ["c_atp"], prompt: "Minutes?", hints: ["1", "2", "3"], answer: 4, tolerance: 0, formula: null },
+    { id: "d3", kind: "choice", concept_ids: ["c_etc"], prompt: "Who?", hints: ["1", "2", "3"], options: ["Dana Reyes", "Chef Omar"], answer: "Dana Reyes", feedback_by_wrong: { "Chef Omar": "His yeast acts slowly." } }],
 };

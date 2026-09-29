@@ -2,26 +2,30 @@
 import { useState } from "react";
 import type { PublicCaseContent } from "@/modes/case/redact";
 import type { PublicGame } from "../game/types";
+import { ChatPanel, type Evidence } from "./ChatPanel";
+import { CaseBoard } from "./CaseBoard";
 import { CheckCard } from "../game/CheckCard";
-import { ChatPanel } from "./ChatPanel";
 import { Debrief, type AccuseResult } from "./Debrief";
 import { deviceId } from "../device";
 import { Button, Card, Label, PageHeader, inputClass } from "../ui";
 
-type Turn = { role: "student" | "character"; text: string };
+type Turn = { role: "student" | "character" | "system"; text: string };
 const FILE_LABEL = { mystery: "Case file", patient: "Patient file", system: "Incident report" } as const;
 const ACCUSE_LABEL = { mystery: "Make an accusation", patient: "Make a diagnosis", system: "Name the root cause" } as const;
 
 export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> }) {
   const spec = game.spec!;
-  const c = spec.content;
+  // Games generated before the case-board update have no board/leads: fall back to deduction cards.
+  const c = { ...spec.content, board: spec.content.board ?? [], leads: spec.content.leads ?? [] };
+  const legacy = c.board.length === 0;
   const [phase, setPhase] = useState<"briefing" | "investigate" | "debrief">("briefing");
   const [openEvidence, setOpenEvidence] = useState<string | null>(null);
   const [pinned, setPinned] = useState<string[]>([]);
   const [active, setActive] = useState(c.characters.find((x) => !x.is_mentor)?.id ?? c.characters[0].id);
   const [chats, setChats] = useState<Record<string, Turn[]>>({});
-  const [tab, setTab] = useState<"deduce" | "guide">("deduce");
-  const [solved, setSolved] = useState<string[]>([]);
+  const [tab, setTab] = useState<"board" | "guide">("board");
+  const [confirmed, setConfirmed] = useState<string[]>([]);
+  const [found, setFound] = useState<Evidence[]>([]);
   const [accusing, setAccusing] = useState(false);
   const [choice, setChoice] = useState<string | null>(null);
   const [reason, setReason] = useState("");
@@ -29,6 +33,10 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
   const [result, setResult] = useState<AccuseResult | null>(null);
   const scene = game.assets.scene;
   const conceptName = (id: string) => c.field_guide.find((f) => f.concept_id === id)?.title ?? id;
+  const evidence = [...c.evidence, ...found.filter((f) => !c.evidence.some((e) => e.id === f.id))];
+  const evidenceTitle = (id: string) => evidence.find((e) => e.id === id)?.title ?? null;
+  const openLeads = c.leads.filter((l) => !found.some((f) => f.id === l.evidence_id));
+  const charName = (id: string) => c.characters.find((x) => x.id === id)?.name ?? "someone";
 
   async function accuse() {
     if (!choice) return;
@@ -46,6 +54,7 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
           {scene && <img src={scene} alt="" className="aspect-[21/9] w-full rounded-xl border border-zinc-200 object-cover" />}
           <p className="mt-8 text-sm text-zinc-500">{FILE_LABEL[c.theme]} · {c.setting}</p>
           <h1 className="mt-1 text-3xl font-semibold tracking-tight">{spec.title}</h1>
+          {spec.hook && <p className="mt-6 text-2xl font-medium leading-snug text-zinc-900">{spec.hook}</p>}
           <p className="mt-4 text-lg leading-relaxed text-zinc-700">{spec.intro}</p>
           <div className="mt-8 border-t border-zinc-200 pt-6"><Label>Briefing</Label><p className="mt-2 leading-relaxed text-zinc-700">{spec.briefing}</p></div>
           <Button size="lg" className="mt-8 w-full" onClick={() => setPhase("investigate")}>Open the file</Button>
@@ -60,7 +69,7 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
   return (
     <>
       <PageHeader>
-        <span className="hidden text-sm tabular-nums text-zinc-500 sm:inline">{solved.length} of {spec.checks.length} deductions</span>
+        <span className="hidden text-sm tabular-nums text-zinc-500 sm:inline">{legacy ? `${evidence.length} evidence` : `${confirmed.length} of ${c.board.length} confirmed · ${evidence.length} evidence`}</span>
         <Button variant="danger" size="sm" onClick={() => setAccusing(true)}>{ACCUSE_LABEL[c.theme]}</Button>
       </PageHeader>
       <main className="mx-auto max-w-7xl px-4 pb-24 pt-6">
@@ -75,7 +84,7 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
             <div>
               <Label>Evidence</Label>
               <ul className="mt-2 divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white">
-                {c.evidence.map((e) => (
+                {evidence.map((e) => (
                   <li key={e.id}>
                     <button onClick={() => setOpenEvidence(openEvidence === e.id ? null : e.id)} aria-expanded={openEvidence === e.id} className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm">
                       <span className="font-medium">{e.title}</span>
@@ -91,6 +100,14 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
                 ))}
               </ul>
             </div>
+            {openLeads.length > 0 && (
+              <div>
+                <Label>Leads</Label>
+                <ul className="mt-2 space-y-1.5 text-sm text-zinc-600">
+                  {openLeads.map((l) => <li key={l.evidence_id}><button onClick={() => setActive(l.character_id)} className="text-left hover:text-zinc-900"><span className="font-medium text-zinc-900">{charName(l.character_id)}</span> knows something about {l.topic}.</button></li>)}
+                </ul>
+              </div>
+            )}
           </section>
 
           <section className="space-y-4">
@@ -105,17 +122,20 @@ export function CaseFilesGame({ game }: { game: PublicGame<PublicCaseContent> })
               ))}
             </div>
             <ChatPanel key={active} gameId={game.id} character={activeChar} portrait={game.assets[`portrait:${active}`]}
-              turns={chats[active] ?? []} setTurns={(t) => setChats({ ...chats, [active]: t })} />
+              turns={chats[active] ?? []} setTurns={(t) => setChats((prev) => ({ ...prev, [active]: t }))}
+              onUnlocked={(ev) => setFound((prev) => [...prev, ...ev.filter((e) => !prev.some((p) => p.id === e.id))])} />
           </section>
 
           <section className="space-y-4">
             <div className="inline-flex rounded-lg border border-zinc-200 bg-white p-0.5" role="tablist">
-              {(["deduce", "guide"] as const).map((t) => (
-                <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)} className={`rounded-md px-3 py-1.5 text-sm font-medium ${tab === t ? "bg-zinc-950 text-white" : "text-zinc-600 hover:text-zinc-900"}`}>{t === "deduce" ? "Deductions" : "Field guide"}</button>
+              {(["board", "guide"] as const).map((t) => (
+                <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)} className={`rounded-md px-3 py-1.5 text-sm font-medium ${tab === t ? "bg-zinc-950 text-white" : "text-zinc-600 hover:text-zinc-900"}`}>{t === "board" ? "Case board" : "Field guide"}</button>
               ))}
             </div>
-            {tab === "deduce"
-              ? spec.checks.map((ch) => <CheckCard key={ch.id} gameId={game.id} check={ch} onSolved={(id) => setSolved((s) => (s.includes(id) ? s : [...s, id]))} />)
+            {tab === "board" && legacy
+              ? spec.checks.map((ch) => <CheckCard key={ch.id} gameId={game.id} check={ch} />)
+              : tab === "board"
+              ? <CaseBoard gameId={game.id} board={c.board} checks={spec.checks} evidenceTitle={evidenceTitle} confirmed={confirmed} setConfirmed={setConfirmed} />
               : <ul className="divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white">{c.field_guide.map((f) => (
                   <li key={f.concept_id} className="p-4"><p className="font-medium">{f.title}</p><p className="mt-1 text-sm leading-relaxed text-zinc-600">{f.explanation}</p>
                     {f.source_ref && <p className="mt-1.5 text-xs text-zinc-400">From your notes: {f.source_ref}</p>}</li>))}</ul>}

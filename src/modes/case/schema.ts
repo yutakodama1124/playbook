@@ -27,6 +27,8 @@ export const CaseContentSchema = z.object({
     text: z.string(),              // written so reading it teaches the concept it hinges on
     concept_ids: z.array(z.string()),
     points_to: z.array(z.string()), // character ids or accusation option ids it implicates/supports
+    unlocked_by: z.string(),        // "" = in the file from the start; otherwise the character id who reveals it when asked
+    unlock_topic: z.string(),       // what the student must ask that character about (shown as a lead, e.g. "the storage log")
   })),
   accusation: z.object({
     prompt: z.string(),
@@ -38,6 +40,13 @@ export const CaseContentSchema = z.object({
     summary: z.string(),
     chain: z.array(z.object({ step: z.string(), concept_id: z.string() })),
   }),
+  // Obra Dinn-style case board: the solution as questions the player answers; confirmed only in batches.
+  board: z.array(z.object({
+    id: z.string(),
+    question: z.string(),
+    check_id: z.string(),            // choice or number check that grades this row
+    evidence_ids: z.array(z.string()), // evidence needed to answer it
+  })),
   field_guide: z.array(z.object({
     concept_id: z.string(), title: z.string(), explanation: z.string(), source_ref: z.string().nullable(),
   })),

@@ -24,6 +24,7 @@ export type Check = z.infer<typeof CheckSchema>;
 export const GameSpecEnvelopeSchema = z.object({
   mode: GameModeSchema,
   title: z.string(),
+  hook: z.string().default(""), // curiosity question shown before anything is explained
   briefing: z.string(),       // pre-training intro (spec §0.1)
   intro: z.string(),
   outro_win: z.string(),
@@ -33,4 +34,4 @@ export const GameSpecEnvelopeSchema = z.object({
   asset_requests: z.array(z.object({ role: z.string(), tags: z.array(z.string()).min(1) })).default([]),
   content: z.unknown(),        // mode-specific; validated by the mode's own schema
 });
-export type GameSpec<C = unknown> = Omit<z.infer<typeof GameSpecEnvelopeSchema>, "content"> & { content: C };
+export type GameSpec<C = unknown> = Omit<z.infer<typeof GameSpecEnvelopeSchema>, "content" | "hook"> & { hook?: string; content: C }; // hook optional: older games lack it
