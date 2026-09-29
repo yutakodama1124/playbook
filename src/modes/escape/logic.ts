@@ -10,6 +10,8 @@ export function validateEscape(spec: GameSpec<EscapeContent>, map: ConceptMap): 
   if (c.rooms.length !== 2) problems.push(`escape room needs exactly 2 rooms, got ${c.rooms.length}`);
   for (const r of c.rooms) {
     if (r.hotspots.length < 3) problems.push(`room ${r.id} needs at least 3 hotspots`);
+    if (r.hotspots.length > 5) problems.push(`room ${r.id} has more than 5 hotspots`);
+    if (new Set(r.hotspots.map((h) => h.zone)).size !== r.hotspots.length) problems.push(`room ${r.id}: each hotspot needs its own zone (markers would overlap)`);
     const locks = r.hotspots.filter((h) => h.lock_check_id);
     if (r.hotspots.length - locks.length < 1) problems.push(`room ${r.id} needs at least 1 clue object (hotspot with no lock) holding information for its locks`);
     if (locks.length < 2) problems.push(`room ${r.id} needs at least 2 locks`);

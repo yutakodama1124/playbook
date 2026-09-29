@@ -10,7 +10,7 @@ describe("assignRoles", () => {
     const a = assignRoles(players(5), content.rounds[0], fixedRng);
     const roles = Object.values(a);
     expect(roles.filter((r) => r.impostor)).toHaveLength(1);
-    expect(roles.filter((r) => r.impostor).every((r) => r.fact === "Fake fact 1")).toBe(true);
+    expect(roles.filter((r) => r.impostor).every((r) => r.fact === "Fake fact 1.x")).toBe(true);
     const crewFacts = roles.filter((r) => !r.impostor).map((r) => r.fact);
     expect(new Set(crewFacts).size).toBe(crewFacts.length - 1); // distinct except the one vouching pair
     expect(Object.values(assignRoles(players(7), content.rounds[0], fixedRng)).filter((r) => r.impostor)).toHaveLength(2);
@@ -25,6 +25,10 @@ describe("vouching pairs (like Among Us common tasks)", () => {
     const [x, y] = crew.filter((r) => r.shared);
     expect(x.fact).toBe(y.fact);
     expect(Object.values(assignRoles(players(4), content.rounds[0], fixedRng)).some((r) => r.shared)).toBe(false);
+  });
+  it("skips vouching pairs when there are 2 impostors (they share the fake, so a pair hint would expose them)", () => {
+    const a = assignRoles(players(8), content.rounds[0], fixedRng);
+    expect(Object.values(a).some((r) => r.shared)).toBe(false);
   });
 });
 
@@ -51,11 +55,11 @@ describe("tally", () => {
 });
 
 describe("viewFor", () => {
-  const state: RoomState = { phase: "discuss", round: 0, assignment: { p0: { fact: "Fake fact 1", impostor: true }, p1: { fact: "True fact 1.0", impostor: false }, p2: { fact: "True fact 1.1", impostor: false } }, results: [] };
+  const state: RoomState = { phase: "discuss", round: 0, assignment: { p0: { fact: "Fake fact 1.x", impostor: true }, p1: { fact: "True fact 1.0", impostor: false }, p2: { fact: "True fact 1.1", impostor: false } }, results: [] };
   it("shows a player only their own card; never shows cards to the host", () => {
     const pv = viewFor(state, content, players(3), [], { kind: "player", id: "p1" });
     expect(pv.me).toMatchObject({ id: "p1", fact: "True fact 1.0", impostor: false, myVote: null });
-    expect(JSON.stringify(pv)).not.toContain("Fake fact 1");
+    expect(JSON.stringify(pv)).not.toContain("Fake fact 1.x");
     const hv = viewFor(state, content, players(3), [], { kind: "host" });
     expect(hv.me).toBeNull();
     expect(JSON.stringify(hv)).not.toContain("fact 1");

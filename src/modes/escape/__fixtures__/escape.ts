@@ -5,7 +5,8 @@ import type { EscapeContent } from "../schema";
 const concept = (id: string) => ({ id, name: id, summary: "s", kind: "process" as const, facts: ["f"], formulas: [], steps: [], misconceptions: [], relations: [], source_ref: null });
 export const map: ConceptMap = { unit: { title: "Resp", course: "AP Bio", level: "AP/IB" }, source_coverage: "x", concepts: [concept("c_atp"), concept("c_etc"), concept("c_gly")] };
 
-const hs = (id: string, lock: string, clue = "", is_exit = false) => ({ id, label: `Object ${id}`, zone: "center" as const, description: `Look at ${id}`, lock_check_id: lock, reveals_clue: clue, is_exit });
+const ZONES = { h1: "top-left", h2: "center", h3: "bottom-right", h4: "top-left", h5: "center", h6: "bottom-right" } as const;
+const hs = (id: keyof typeof ZONES, lock: string, clue = "", is_exit = false) => ({ id, label: `Object ${id}`, zone: ZONES[id], description: `Look at ${id}`, lock_check_id: lock, reveals_clue: clue, is_exit });
 export const content: EscapeContent = {
   premise: "Locked in the lab.",
   rooms: [

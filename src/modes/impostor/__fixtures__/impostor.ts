@@ -7,6 +7,6 @@ export const map: ConceptMap = { unit: { title: "Photo", course: "AP Bio", level
 const round = (i: number) => ({
   topic: `Topic ${i}`, concept_ids: ["c_light"],
   true_facts: Array.from({ length: 9 }, (_, k) => `True fact ${i}.${k}`),
-  corrupted_fact: `Fake fact ${i}`, correct_version: `Fixed fact ${i}`, explanation: `Why ${i}`,
+  corrupted_fact: `Fake fact ${i}.x`, correct_version: `Fixed fact ${i}`, explanation: `Why ${i}`,
 });
 export const content: ImpostorContent = { rounds: [1, 2, 3, 4, 5].map(round) };

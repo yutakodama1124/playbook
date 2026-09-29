@@ -49,7 +49,7 @@ describe("rooms", () => {
     const after = await roomView(repo, code, hostToken);
     expect(after.view.phase).toBe("reveal");
     expect(after.view.lastResult?.caught).toBe(true);
-    expect(after.view.lastResult?.fake).toBe("Fake fact 1");
+    expect(after.view.lastResult?.fake).toBe("Fake fact 1.x");
     expect(after.view.players.filter((p) => p.score === 1)).toHaveLength(2);
   });
 

@@ -5,7 +5,7 @@ import { content, map } from "./__fixtures__/impostor";
 describe("validateImpostor", () => {
   it("accepts a valid set of rounds", () => expect(validateImpostor(content, map)).toEqual([]));
   it("requires 5 rounds, 9+ distinct true facts, known concepts, and a fake that isn't also listed as true", () => {
-    const bad = { rounds: [{ ...content.rounds[0], concept_ids: ["c_zz"], true_facts: ["a", "a", "Fake fact 1"] }] };
+    const bad = { rounds: [{ ...content.rounds[0], concept_ids: ["c_zz"], true_facts: ["a", "a", "Fake fact 1.x"] }] };
     const p = validateImpostor(bad, map).join("|");
     expect(p).toMatch(/5 rounds/);
     expect(p).toMatch(/9 distinct/);
@@ -22,6 +22,18 @@ describe("fake-fact length tell", () => {
   });
 });
 
+describe("fake-fact quality", () => {
+  it("rejects a fake identical to its correction, missing concept ids, or a fake that is the longest card", () => {
+    const r = content.rounds[0];
+    const fake = `${r.true_facts[0]} and more`;
+    const bad = { rounds: content.rounds.map((x, i) => (i === 0 ? { ...r, concept_ids: [], correct_version: fake, corrupted_fact: fake } : x)) };
+    const p = validateImpostor(bad, map).join("|");
+    expect(p).toMatch(/round 1 needs concept_ids/);
+    expect(p).toMatch(/round 1: correct_version must differ/);
+    expect(p).toMatch(/round 1: corrupted fact is the longest/);
+  });
+});
+
 describe("impostorChecks", () => {
   it("makes one 'which is fake' choice check per round with the fake among 3 true facts", () => {
     const checks = impostorChecks(content);
@@ -29,9 +41,9 @@ describe("impostorChecks", () => {
     const c = checks[0];
     expect(c.kind).toBe("choice");
     if (c.kind !== "choice") return;
-    expect(c.answer).toBe("Fake fact 1");
+    expect(c.answer).toBe("Fake fact 1.x");
     expect(c.options).toHaveLength(4);
-    expect(c.options).toContain("Fake fact 1");
+    expect(c.options).toContain("Fake fact 1.x");
     expect(Object.keys(c.feedback_by_wrong)).toHaveLength(3);
   });
 });

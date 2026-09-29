@@ -25,7 +25,8 @@ export function assignRoles(players: Player[], round: ImpostorRound, rng: () => 
   const out: Assignment = {};
   const crew = order.slice(impostors);
   // Vouching pair: with 4+ crew, two crewmates secretly hold the same fact and can back each other up.
-  const pair = crew.length >= 4;
+  // (Skipped with 2 impostors: they share the fake, so "someone has your exact card" would expose them.)
+  const pair = crew.length >= 4 && impostors === 1;
   order.slice(0, impostors).forEach((p) => { out[p.id] = { fact: round.corrupted_fact, impostor: true }; });
   crew.forEach((p, i) => {
     const idx = pair && i === crew.length - 1 ? 0 : i; // last crewmate shares the first crewmate's fact

@@ -26,6 +26,13 @@ describe("meta-puzzle finale", () => {
   });
 });
 
+describe("layout", () => {
+  it("requires distinct zones within a room so markers don't overlap", () => {
+    const bad = { ...spec, content: { ...content, rooms: content.rooms.map((r) => ({ ...r, hotspots: r.hotspots.map((h) => ({ ...h, zone: "center" as const })) })) } };
+    expect(validateEscape(bad, map).join()).toMatch(/room r1.*zone/);
+  });
+});
+
 describe("clue objects", () => {
   it("requires at least one clue object per room", () => {
     const bad = { ...spec, content: { ...content, rooms: content.rooms.map((r) => ({ ...r, hotspots: r.hotspots.map((h) => ({ ...h, lock_check_id: h.lock_check_id || "k1" })) })) } };
