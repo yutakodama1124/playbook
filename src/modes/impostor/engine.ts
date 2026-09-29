@@ -13,6 +13,7 @@ export type Viewer = { kind: "host" } | { kind: "player"; id: string };
 export const MIN_PLAYERS = 3, MAX_PLAYERS = 10;
 
 function shuffle<T>(xs: T[], rng: () => number): T[] {
+  // Copy before Fisher-Yates so fixtures and caller-owned arrays stay unchanged.
   const a = [...xs];
   for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
   return a;
@@ -44,6 +45,7 @@ export function tally(votes: Vote[], assignment: Assignment) {
   const impostorIds = Object.keys(assignment).filter((id) => assignment[id].impostor);
   const caught = ejectedIds.some((id) => assignment[id]?.impostor);
   const deltas: Record<string, number> = {};
+  // Crew score for a correct vote. Surviving impostors score more when they frame crew.
   for (const v of votes) if (!assignment[v.voterId]?.impostor && assignment[v.targetId]?.impostor) deltas[v.voterId] = (deltas[v.voterId] ?? 0) + 1;
   const framed = ejectedIds.filter((id) => !assignment[id]?.impostor).length; // crewmates voted out
   for (const id of impostorIds) if (!ejectedIds.includes(id)) deltas[id] = (deltas[id] ?? 0) + 2 + framed;

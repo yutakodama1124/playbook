@@ -1,7 +1,7 @@
 import type { GameMode } from "@/domain/game-spec";
 import type { GameRow } from "@/repo/types";
 
-/** Cost guards for public, unauthenticated endpoints that trigger paid AI calls. */
+/** Cost guards for public endpoints that trigger paid model and image API calls. */
 export const LIMITS = { gamesPerUnit: 12, gamesPerHour: 40, unitsPerHour: 20, uploadBytes: 4 * 1024 * 1024 };
 
 export type GameDecision = { reuse: string } | { ok: true } | { error: string; status: number };

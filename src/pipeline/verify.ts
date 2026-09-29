@@ -19,6 +19,7 @@ function idLeaks(value: unknown, path: string, out: string[], conceptIds: Set<st
     return;
   }
   if (Array.isArray(value)) { value.forEach((v, i) => idLeaks(v, `${path}[${i}]`, out, conceptIds)); return; }
+  // Identifier-bearing fields are internal references. Everything else may reach student UI.
   if (value && typeof value === "object")
     for (const [k, v] of Object.entries(value)) if (!ID_FIELDS.test(k)) idLeaks(v, path ? `${path}.${k}` : k, out, conceptIds);
 }
@@ -60,6 +61,7 @@ export function verifyGame(spec: GameSpec, map: ConceptMap): VerifierReport {
       for (const o of c.options) if (norm(o) !== norm(c.answer) && !Object.keys(c.feedback_by_wrong).some((k) => norm(k) === norm(o)))
         problems.push(`check ${c.id}: missing feedback for wrong option "${o}"`);
     if (c.kind === "number" && c.formula) {
+      // Recompute numeric answers instead of trusting generated answer keys.
       try {
         const v = Number(evaluate(c.formula));
         if (!Number.isFinite(v) || Math.abs(v - c.answer) > Math.max(c.tolerance, 1e-9))

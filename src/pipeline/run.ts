@@ -36,7 +36,8 @@ export async function runGamePipeline(
   try {
     if (!gen) throw new Error(`mode ${game.mode} is not implemented yet`);
     const map = unit.conceptMap;
-    // Feed verifier problems back into the next attempt so it fixes them.
+    // Keep repair feedback local to this run. Each retry starts from the original client
+    // and adds only the latest verifier report, avoiding stale instructions from older attempts.
     let problems: string[] = [];
     for (let attempt = 0; attempt <= MAX_REPAIRS; attempt++) {
       const repairLlm: LlmClient = problems.length
@@ -52,7 +53,8 @@ export async function runGamePipeline(
       }
       const report = verifyGame(spec, map);
       if (report.ok && review) {
-        // Quality gate: an AI playtester re-derives every answer and flags confusing or pointless content.
+        // Run subjective review only after deterministic checks pass. This saves a remote call
+        // when schema, answer-key, or mode rules already prove the game invalid.
         const reviewProblems = await review(spec, map);
         if (reviewProblems.length) {
           problems = reviewProblems;

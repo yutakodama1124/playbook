@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// Flat, grammar-safe shape (no unions/records) — Claude fills this directly.
+// Flat, grammar-safe shape (no unions/records) returned directly by the model.
 export const CaseCharacterSchema = z.object({
   id: z.string(),
   name: z.string(),

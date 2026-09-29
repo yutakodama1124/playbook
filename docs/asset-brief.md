@@ -1,4 +1,4 @@
-# Playbook — Art Asset Brief (for Codex / image generation)
+# Playbook — Art Asset Brief
 
 Generate the images below and save them into the `assets-import/` folder at the repo root.
 They become the reusable art library that every game pulls from.

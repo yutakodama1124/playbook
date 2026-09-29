@@ -1,5 +1,5 @@
-// Import hand-made art (e.g. from Codex) into the asset library:
-// reads assets-import/<kind>-<description>.(png|jpg|jpeg|webp), uploads to Supabase, tags with Claude vision.
+// Import hand-made art into the asset library:
+// reads assets-import/<kind>-<description>.(png|jpg|jpeg|webp), uploads to Supabase, then tags each image.
 // Usage: npx tsx --env-file=.env.local scripts/import-assets.mts
 import { readdirSync, readFileSync, renameSync, mkdirSync } from "node:fs";
 import { createLlmClient } from "../src/lib/llm.ts";

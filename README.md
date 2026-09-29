@@ -42,7 +42,7 @@ flowchart LR
    - **Rule checks in code** — every numeric answer is recomputed from its formula, every choice answer exists, concept ids are real, and mode rules hold (Case Files: 3+ clues for the answer, every wrong option made tempting by evidence, 2+ pieces of evidence that must be discovered; Escape Room: one exit meta-lock fed by every other lock; Impostor: the fake fact can't stand out by length).
    - **AI playtester** — a separate Claude review independently derives every answer from the in-game information, tries to solve puzzles *without* the concept, and checks for contradictions and "quiz in costume" design. Serious problems are sent back to the generator (up to 2 repair rounds); if the game still fails, it is not shown.
 4. **Play.** Answers are checked **in code, not by AI**. Answer keys, character secrets, and locked clues **never reach the browser** — the server sends a redacted version and releases clues only after a lock is solved. Character chat has a leak guard so a suspect can't blurt out the solution.
-5. **Art** comes from a reusable, auto-tagged image library (hand-made with Codex plus generated images), so most games cost nothing extra to illustrate.
+5. **Art** comes from a reusable, auto-tagged image library, so most games cost nothing extra to illustrate.
 
 ### Stack
 
@@ -68,10 +68,6 @@ npm test                     # unit tests
 ```
 
 Environment: `ANTHROPIC_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `AI_GATEWAY_API_KEY`, `RENDER_API_KEY`, `PIPELINE_MODE` (`inline` locally, `render` in production). Apply the SQL files in `supabase/migrations/` to your Supabase project.
-
-## AI use
-
-AI is used inside the product (Claude builds and reviews the games; image models draw the art) and was used to build it (Claude Code wrote most of the code under my direction; Codex made the art library). See [AI_USE.md](AI_USE.md) for the full log of what AI did and what I decided and verified.
 
 ## Research behind the design
 

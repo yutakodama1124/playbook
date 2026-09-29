@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CheckSchema, GameSpecEnvelopeSchema, type Check, type GameSpec } from "./game-spec";
 
-// Flat shape Claude fills in. The strict discriminated union (CheckSchema) is too large for
+// Flat shape returned by the provider. The strict discriminated union (CheckSchema) is too large for
 // structured-output grammars, so generators ask for this and convert with fromLlmCheck().
 export const LlmCheckSchema = z.object({
   id: z.string(),
@@ -58,7 +58,7 @@ function convert(c: LlmCheck): Check {
   }
 }
 
-/** Envelope Claude fills: same as GameSpec but with flat checks and a mode-specific content schema. */
+/** Provider response envelope: GameSpec fields with flat checks and mode-specific content. */
 export function llmEnvelope<C extends z.ZodTypeAny>(mode: GameSpec["mode"], content: C) {
   return GameSpecEnvelopeSchema.extend({ mode: z.literal(mode), checks: z.array(LlmCheckSchema), content });
 }
