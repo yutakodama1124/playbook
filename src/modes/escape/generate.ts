@@ -16,15 +16,16 @@ STRUCTURE
 - Room 1 then room 2 (harder). Each room: 3–5 hotspots spread across different zones of a 3x3 grid (zone = where the object sits in the scene).
 - Each room has 1+ CLUE objects (lock_check_id "") whose description contains the data needed for that room's locks, written so reading it teaches the concept (real numbers, labels, readings — not lectures).
 - Each room has 2–3 LOCKS (lock_check_id = a check id). Every check is used by exactly one hotspot.
-- Every lock except the exit reveals a FRAGMENT in reveals_clue (a word, number, or step) that the final lock needs.
+- Every lock except the exit reveals a FRAGMENT in reveals_clue. At least 3 fragments must be numbers or items the exit's formula/answer directly uses; any other fragment must state a rule that changes how the exit is solved. The exit's answer must not appear anywhere in the room text.
+- Each hotspot in a room uses a different zone. At most one lock per room may be a pure calculation; the others must require predicting, diagnosing, or deciding (the concept decides the answer, not arithmetic).
 - FINALE (meta-puzzle): exactly one hotspot in room 2 has is_exit=true. It is a lock whose check can only be solved by combining the fragments from the other locks with the concept (e.g. order the fragments as the stages of the process, or combine the values in the unit's formula). Its prompt tells the player to use the fragments they have collected. It reveals nothing (reveals_clue "").
 
 THE 13 RULES OF ESCAPE ROOM PUZZLES (follow all)
 Fair (designed for success); everything needed is clued; exactly one answer; players can tell when they're right; clue and lock clearly linked by label/wording; the "aha" follows real logic; each lock solvable in under 5 minutes; no red herrings; no outside knowledge beyond the unit; consistent conventions throughout.
 
-CHECKS (4–6 total): number: answer_number, tolerance, formula (mathjs expression computing answer_number); choice: options, answer=[correct], wrong_feedback for EVERY wrong option (misconception-based); order: options=items shuffled, answer=correct sequence; set: options, answer=correct members; match: pairs. Leave unused fields empty/null. Hints: exactly 3 — point to the right clue object, explain the concept, worked SIMILAR example; never the answer.
+CHECKS (4–6 total): number: answer_number, tolerance, formula (mathjs expression computing answer_number); choice: options, answer=[correct], wrong_feedback for EVERY wrong option (misconception-based); order: options=items shuffled, answer=correct sequence; set: options, answer=correct members; match: pairs. Leave unused fields empty/null; number checks always include a formula. Order items must NOT start in the correct order. Hints: exactly 3 — point to the right clue object, explain the concept (for number locks, name the most likely wrong value and its misconception), worked SIMILAR example with different numbers that is not one step from the answer; never the answer.
 Field guide: one entry per concept used, with source_ref copied from the concept. scene_tags: 3–5 plain tags describing each room's look.
-NEVER write concept ids in student-facing text; use concept names. The briefing introduces the key concepts in-world (2–4 sentences) without giving answers. asset_requests: [].`;
+NEVER write concept ids in student-facing text; use concept names. Never start a non-concept id with "c_". The briefing introduces the key concepts in-world (2–4 sentences) without giving answers. asset_requests: [].`;
 
 export const generateEscape: Generator = async ({ llm, map, targetConceptIds }) => {
   const out = await llm.parseStructured({

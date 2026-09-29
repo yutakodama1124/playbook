@@ -10,10 +10,10 @@ const SYSTEM = `You write rounds for "Impostor", a party game for studying (like
 Each round, every player gets a fact card about one sub-topic. One player secretly gets a CORRUPTED fact. Each player reads their fact aloud AND explains why it's true; the group questions weak explanations and votes out who they think has the fake. The fun comes from bluffing and argument (like Werewolf / Among Us), so facts must be things a student can explain and defend, not isolated trivia. Only students who truly understand the concept can spot the fake or catch a bluffed explanation.
 Write exactly ${ROUNDS} rounds, each on a different sub-topic, getting harder each round.
 Per round:
-- true_facts: ${MIN_TRUE_FACTS}–10 distinct, correct, specific facts about the sub-topic, each one sentence, similar length and style. Prefer mechanism-level facts (what happens, where, why, with what effect) that invite an explanation; no facts that directly contradict or expose the fake.
-- corrupted_fact: ONE sentence in the same style that is subtly wrong — built from a real student misconception in the map (swap a location, direction, cause, or quantity). It must be plausible, never absurd.
+- true_facts: ${MIN_TRUE_FACTS}–10 distinct, correct, specific facts about the sub-topic, each ONE sentence containing a causal clause (because / so / which / as), so a player can explain WHY it's true. No names, numbers, or locations stated without a reason. At least one true fact lets a student who understands the concept REASON to the fake's error (never by repeating its words).
+- corrupted_fact: ONE sentence on this round's exact sub-topic, sharing key terms with at least 2 true facts, built from a real misconception in the map by swapping a location, direction, cause, or quantity. Plausible, never absurd. Its length must be within ±15% of the median true fact and it must not be the longest card.
 - correct_version: the corrupted sentence, fixed. explanation: 1–2 sentences on the misconception and why it's wrong.
-Use concept names in text, never concept ids. checks: [] (leave empty). briefing: 1–2 sentences on how to play. asset_requests: [].`;
+Fill topic and concept_ids for every round. Round 1 must still require understanding, not a famous misconception. Use concept names in text, never concept ids. checks: [] (leave empty). briefing: 1–2 sentences on how to play. asset_requests: [].`;
 
 export const generateImpostor: Generator = async ({ llm, map, targetConceptIds }) => {
   const out = await llm.parseStructured({
