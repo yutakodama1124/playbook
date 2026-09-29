@@ -26,6 +26,17 @@ export function createMemoryRepo(): Repo {
       return row;
     },
     async getGame(id) { return games.get(id) ?? null; },
+    async countCreatedSince(table, sinceIso) {
+      const rows = table === "units" ? [...units.values()] : [...games.values()];
+      return rows.filter((r) => r.createdAt >= sinceIso).length;
+    },
+    async updateRoomStateIf(id, expect, state) {
+      const r = rooms.get(id);
+      const cur = r?.state as { phase: string; round: number } | undefined;
+      if (!r || cur?.phase !== expect.phase || cur?.round !== expect.round) return false;
+      rooms.set(id, { ...r, state });
+      return true;
+    },
     async listGames(unitId) { return [...games.values()].filter((g) => g.unitId === unitId); },
     async addMasteryEvent(e) { mastery.push({ ...e, createdAt: now() }); },
     async listMasteryEvents(deviceId, unitId) { return mastery.filter((m) => m.deviceId === deviceId && m.unitId === unitId); },

@@ -44,4 +44,22 @@ describe("validateCase", () => {
     const noneLocked = { ...content, evidence: content.evidence.map((e) => ({ ...e, unlocked_by: "", unlock_topic: "" })) };
     expect(validateCase(noneLocked, map, spec.checks).join()).toMatch(/at least 2 evidence items discovered/);
   });
+  it("rejects a mentor as an option, duplicate evidence ids, rows without evidence, and catch-all clues", () => {
+    const bad = { ...content,
+      accusation: { ...content.accusation, options: [...content.accusation.options, { id: "o4", label: "Dr. Vale", character_id: "m1" }],
+        wrong_option_feedback: [...content.accusation.wrong_option_feedback, { option_id: "o4", feedback: "x" }] },
+      evidence: [...content.evidence, { ...content.evidence[0] }],
+      board: content.board.map((r, i) => (i === 0 ? { ...r, evidence_ids: [] } : r)) };
+    const p = validateCase(bad, map, spec.checks).join("|");
+    expect(p).toMatch(/mentor .* option/);
+    expect(p).toMatch(/duplicate evidence id e1/);
+    expect(p).toMatch(/board row b1 .* evidence/);
+    const catchAll = { ...content, evidence: content.evidence.map((e) => ({ ...e, points_to: ["o1", "o2", "o3"] })) };
+    expect(validateCase(catchAll, map, spec.checks).join()).toMatch(/correct option needs at least 3/);
+  });
+  it("requires each discovered evidence item to be needed by some board row", () => {
+    const bad = { ...content, board: content.board.map((r) => ({ ...r, evidence_ids: r.evidence_ids.filter((id) => id !== "e5") || ["e1"] })) };
+    const fixed = { ...bad, board: bad.board.map((r) => (r.evidence_ids.length ? r : { ...r, evidence_ids: ["e1"] })) };
+    expect(validateCase(fixed, map, spec.checks).join()).toMatch(/e5 .*not needed by any board row/);
+  });
 });

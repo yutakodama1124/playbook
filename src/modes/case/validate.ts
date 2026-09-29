@@ -13,6 +13,10 @@ export function validateCase(c: CaseContent, map: ConceptMap, checks: Check[]): 
   if (mentors !== 1) problems.push(`case needs exactly 1 mentor character, found ${mentors}`);
   if (c.characters.length - mentors < 3) problems.push("case needs at least 3 non-mentor characters");
   if (charIds.size !== c.characters.length) problems.push("duplicate character ids");
+  const seenEvidence = new Set<string>();
+  for (const e of c.evidence) { if (seenEvidence.has(e.id)) problems.push(`duplicate evidence id ${e.id}`); seenEvidence.add(e.id); }
+  const mentorIds = new Set(c.characters.filter((x) => x.is_mentor).map((x) => x.id));
+  for (const o of c.accusation.options) if (o.character_id && mentorIds.has(o.character_id)) problems.push(`option ${o.id} names the mentor — the mentor can't be an option`);
 
   if (!optionIds.has(c.accusation.correct_option_id)) problems.push(`accusation correct_option_id ${c.accusation.correct_option_id} is not an option`);
   if (c.accusation.options.length < 3) problems.push("accusation needs at least 3 options");
@@ -30,7 +34,8 @@ export function validateCase(c: CaseContent, map: ConceptMap, checks: Check[]): 
   // Fair-play rules: the answer must be provable, and every wrong option must be tempting for a reason.
   const supports = (optId: string) => {
     const o = c.accusation.options.find((x) => x.id === optId);
-    return c.evidence.filter((e) => e.points_to.includes(optId) || (!!o?.character_id && e.points_to.includes(o.character_id))).length;
+    // A clue that points at everything proves nothing: only items implicating at most 2 targets count.
+    return c.evidence.filter((e) => e.points_to.length <= 2 && (e.points_to.includes(optId) || (!!o?.character_id && e.points_to.includes(o.character_id)))).length;
   };
   // Three Clue Rule: players miss clues, so the key conclusion needs redundancy.
   if (optionIds.has(c.accusation.correct_option_id) && supports(c.accusation.correct_option_id) < 3)
@@ -57,8 +62,11 @@ export function validateCase(c: CaseContent, map: ConceptMap, checks: Check[]): 
     if (!k) problems.push(`board row ${row.id} uses unknown check ${row.check_id}`);
     else if (k.kind !== "choice" && k.kind !== "number") problems.push(`board row ${row.id} must use a choice or number check, not ${k.kind}`);
     usedChecks.set(row.check_id, (usedChecks.get(row.check_id) ?? 0) + 1);
+    if (row.evidence_ids.length === 0) problems.push(`board row ${row.id} must cite the evidence needed to answer it`);
     for (const id of row.evidence_ids) if (!evidenceIds.has(id)) problems.push(`board row ${row.id} cites unknown evidence ${id}`);
   }
+  const cited = new Set(c.board.flatMap((r) => r.evidence_ids));
+  for (const e of locked) if (!cited.has(e.id)) problems.push(`discovered evidence ${e.id} is not needed by any board row — make it matter`);
   for (const [id, n] of usedChecks) if (n > 1) problems.push(`check ${id} is used by more than one board row`);
   for (const k of checks) if (!usedChecks.has(k.id)) problems.push(`check ${k.id} is not on the case board`);
   if (c.solution.chain.length < 2) problems.push("solution chain needs at least 2 steps");

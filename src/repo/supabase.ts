@@ -37,6 +37,17 @@ export function createSupabaseRepo(): Repo {
       const r = must(await db.from("games").select().eq("id", id).maybeSingle());
       return r ? gameFrom(r) : null;
     },
+    async countCreatedSince(table, sinceIso) {
+      const { count, error } = await db.from(table).select("id", { count: "exact", head: true }).gte("created_at", sinceIso);
+      if (error) throw new Error(error.message);
+      return count ?? 0;
+    },
+    async updateRoomStateIf(id, expect, state) {
+      // Compare-and-set on the phase/round so concurrent host clicks can't double-apply a transition.
+      const data = must(await db.from("rooms").update({ state }).eq("id", id)
+        .eq("state->>phase", expect.phase).eq("state->>round", String(expect.round)).select("id"));
+      return (data ?? []).length > 0;
+    },
     async listGames(unitId) {
       return (must(await db.from("games").select().eq("unit_id", unitId).order("created_at")) ?? []).map(gameFrom);
     },

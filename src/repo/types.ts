@@ -19,6 +19,8 @@ export interface Repo {
   getUnit(id: string): Promise<UnitRow | null>;
   updateUnit(id: string, patch: Partial<Pick<UnitRow, "status" | "error" | "conceptMap" | "testDate">>): Promise<void>;
   listGames(unitId: string): Promise<GameRow[]>;
+  countCreatedSince(table: "units" | "games", sinceIso: string): Promise<number>;
+  updateRoomStateIf(id: string, expect: { phase: string; round: number }, state: unknown): Promise<boolean>;
   addMasteryEvent(e: Omit<MasteryEventRow, "createdAt">): Promise<void>;
   listMasteryEvents(deviceId: string, unitId: string): Promise<MasteryEventRow[]>;
   createGame(unitId: string, mode: GameMode): Promise<GameRow>;

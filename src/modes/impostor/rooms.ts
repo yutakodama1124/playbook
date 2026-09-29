@@ -74,13 +74,16 @@ export async function hostAction(repo: Repo, code: string, token: string, action
     if (state.phase !== "vote") throw new Error("not voting");
     const votes = await repo.listVotes(room.id, state.round);
     const t = tally(votes, state.assignment);
-    for (const p of players) if (t.deltas[p.id]) await repo.setScore(p.id, p.score + t.deltas[p.id]);
     const r = content.rounds[state.round];
     next = { ...state, phase: "reveal", results: [...state.results, {
       round: state.round, ejectedIds: t.ejectedIds, impostorIds: t.impostorIds, caught: t.caught, counts: t.counts,
       fake: r.corrupted_fact, correct_version: r.correct_version, explanation: r.explanation }] };
+    // Claim the transition first; only the request that wins applies scores (no double-apply on double-click).
+    if (!(await repo.updateRoomStateIf(room.id, { phase: state.phase, round: state.round }, next))) return;
+    for (const p of players) if (t.deltas[p.id]) await repo.setScore(p.id, p.score + t.deltas[p.id]);
+    return;
   }
-  await repo.updateRoomState(room.id, next);
+  if (!(await repo.updateRoomStateIf(room.id, { phase: state.phase, round: state.round }, next))) return; // another click already moved on
 }
 
 export async function castVote(repo: Repo, code: string, token: string, targetId: string) {

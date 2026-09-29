@@ -22,9 +22,9 @@ export type LlmCheck = z.infer<typeof LlmCheckSchema>;
 /** A generated spec that can't be converted; the pipeline feeds the message back for repair. */
 export class InvalidSpecError extends Error {}
 
-function threeHints(h: string[]): string[] {
-  const out = h.slice(0, 3);
-  while (out.length < 3) out.push(out[out.length - 1] ?? "Re-read the concept in the Field Guide.");
+function threeHints(id: string, h: string[]): string[] {
+  const out = h.map((x) => x.trim()).filter(Boolean).slice(0, 3);
+  if (out.length < 3) throw new InvalidSpecError(`check ${id}: needs exactly 3 hints (nudge, concept, similar example), got ${out.length}`);
   return out;
 }
 
@@ -38,7 +38,7 @@ export function fromLlmCheck(c: LlmCheck): Check {
 }
 
 function convert(c: LlmCheck): Check {
-  const base = { id: c.id, concept_ids: c.concept_ids, prompt: c.prompt, hints: threeHints(c.hints) };
+  const base = { id: c.id, concept_ids: c.concept_ids, prompt: c.prompt, hints: threeHints(c.id, c.hints) };
   const fail = (why: string): never => { throw new InvalidSpecError(`check ${c.id}: ${why}`); };
   switch (c.kind) {
     case "number":

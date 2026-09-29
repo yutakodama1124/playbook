@@ -19,9 +19,9 @@ describe("fromLlmCheck", () => {
     expect(fromLlmCheck({ ...base, kind: "match", pairs: [{ left: "l1", right: "r1" }, { left: "l2", right: "r2" }] }))
       .toMatchObject({ kind: "match", left: ["l1", "l2"], right: ["r1", "r2"], answer: { l1: "r1", l2: "r2" } });
   });
-  it("normalizes hints to exactly 3", () => {
+  it("trims extra hints but rejects fewer than 3", () => {
     expect(fromLlmCheck({ ...base, answer_number: 1, tolerance: 0, hints: ["a", "b", "c", "d"] }).hints).toEqual(["a", "b", "c"]);
-    expect(fromLlmCheck({ ...base, answer_number: 1, tolerance: 0, hints: ["a"] }).hints).toHaveLength(3);
+    expect(() => fromLlmCheck({ ...base, answer_number: 1, tolerance: 0, hints: ["a"] })).toThrow(/3 hints/);
   });
   it("throws a clear error for a number check without an answer", () => {
     expect(() => fromLlmCheck(base)).toThrow(/check k/);

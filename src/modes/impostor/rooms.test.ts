@@ -60,4 +60,16 @@ describe("rooms", () => {
     expect((await roomView(repo, code, hostToken)).view.phase).toBe("final");
     await expect(joinRoom(repo, code, "Late")).rejects.toThrow(/started/);
   });
+  it("ignores a duplicate reveal (double-click) instead of applying scores twice", async () => {
+    const { code, hostToken, ps } = await lobby(3);
+    await hostAction(repo, code, hostToken, "next");
+    const views = await Promise.all(ps.map((p) => roomView(repo, code, p.token)));
+    const impostor = views.find((v) => v.view.me?.impostor)!.view.me!.id;
+    await hostAction(repo, code, hostToken, "vote");
+    for (const p of ps) if (p.playerId !== impostor) await castVote(repo, code, p.token, impostor);
+    await Promise.all([hostAction(repo, code, hostToken, "reveal"), hostAction(repo, code, hostToken, "reveal").catch(() => {})]);
+    const after = await roomView(repo, code, hostToken);
+    expect(after.view.players.filter((p) => p.score === 1)).toHaveLength(2);
+    expect(after.view.players.every((p) => p.score <= 1)).toBe(true);
+  });
 });

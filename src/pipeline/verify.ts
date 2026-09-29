@@ -9,14 +9,18 @@ import { validateImpostor } from "@/modes/impostor/validate";
 import { EscapeContentSchema, type EscapeContent } from "@/modes/escape/schema";
 import { validateEscape } from "@/modes/escape/logic";
 
-const CONCEPT_ID = /\bc_[a-z0-9]+(?:_[a-z0-9]+)*\b/;
+const ID_TOKEN = /\bc_[a-z0-9]+(?:_[a-z0-9]+)*\b/g;
+const ID_FIELDS = /(^id$|_id$|_ids$|^points_to$|^role$|^unlocked_by$)/;
 
-/** Students must see concept names, never raw ids like "c_electron_transport_chain". */
-function idLeaks(value: unknown, path: string, out: string[]) {
-  if (typeof value === "string") { if (CONCEPT_ID.test(value)) out.push(`raw concept id in student-facing text at ${path}; use the concept's name`); return; }
-  if (Array.isArray(value)) { value.forEach((v, i) => idLeaks(v, `${path}[${i}]`, out)); return; }
+/** Students must see concept names, never raw concept ids like "c_electron_transport_chain". */
+function idLeaks(value: unknown, path: string, out: string[], conceptIds: Set<string>) {
+  if (typeof value === "string") {
+    if ((value.match(ID_TOKEN) ?? []).some((t) => conceptIds.has(t))) out.push(`raw concept id in student-facing text at ${path}; use the concept's name`);
+    return;
+  }
+  if (Array.isArray(value)) { value.forEach((v, i) => idLeaks(v, `${path}[${i}]`, out, conceptIds)); return; }
   if (value && typeof value === "object")
-    for (const [k, v] of Object.entries(value)) if (!/(^id$|_id$|_ids$)/.test(k)) idLeaks(v, path ? `${path}.${k}` : k, out);
+    for (const [k, v] of Object.entries(value)) if (!ID_FIELDS.test(k)) idLeaks(v, path ? `${path}.${k}` : k, out, conceptIds);
 }
 
 /** Mode-specific structural checks on spec.content. */
@@ -51,6 +55,10 @@ export function verifyGame(spec: GameSpec, map: ConceptMap): VerifierReport {
     seen.add(c.id);
     for (const id of c.concept_ids) if (!known.has(id)) problems.push(`check ${c.id} references unknown concept ${id}`);
 
+    if (c.kind === "number" && !c.formula) problems.push(`check ${c.id}: number checks need a formula that computes the answer`);
+    if (c.kind === "choice")
+      for (const o of c.options) if (norm(o) !== norm(c.answer) && !Object.keys(c.feedback_by_wrong).some((k) => norm(k) === norm(o)))
+        problems.push(`check ${c.id}: missing feedback for wrong option "${o}"`);
     if (c.kind === "number" && c.formula) {
       try {
         const v = Number(evaluate(c.formula));
@@ -75,6 +83,6 @@ export function verifyGame(spec: GameSpec, map: ConceptMap): VerifierReport {
     }
   }
   problems.push(...modeProblems(spec, map));
-  idLeaks(spec, "", problems);
+  idLeaks(spec, "", problems, known);
   return { ok: problems.length === 0, problems };
 }

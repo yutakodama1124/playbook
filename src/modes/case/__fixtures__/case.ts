@@ -24,7 +24,7 @@ export const content: CaseContent = {
   ],
   board: [
     { id: "b1", question: "Which stage stopped first?", check_id: "d1", evidence_ids: ["e1"] },
-    { id: "b2", question: "How many minutes did ATP take to fall?", check_id: "d2", evidence_ids: ["e2"] },
+    { id: "b2", question: "How many minutes did ATP take to fall?", check_id: "d2", evidence_ids: ["e2", "e4"] },
     { id: "b3", question: "Who had access to the inhibitor?", check_id: "d3", evidence_ids: ["e5"] },
   ],
   accusation: { prompt: "Who sabotaged the greenhouse?", options: [
@@ -40,6 +40,6 @@ export const spec: GameSpec<CaseContent> = {
   concept_ids: ["c_etc"], asset_requests: [], content,
   checks: [{ id: "d1", kind: "choice", concept_ids: ["c_etc"], prompt: "Which stage stops first?", hints: ["1", "2", "3"],
     options: ["Glycolysis", "ETC"], answer: "ETC", feedback_by_wrong: { Glycolysis: "Glycolysis needs no O2." } },
-    { id: "d2", kind: "number", concept_ids: ["c_atp"], prompt: "Minutes?", hints: ["1", "2", "3"], answer: 4, tolerance: 0, formula: null },
+    { id: "d2", kind: "number", concept_ids: ["c_atp"], prompt: "Minutes?", hints: ["1", "2", "3"], answer: 4, tolerance: 0, formula: "4" },
     { id: "d3", kind: "choice", concept_ids: ["c_etc"], prompt: "Who?", hints: ["1", "2", "3"], options: ["Dana Reyes", "Chef Omar"], answer: "Dana Reyes", feedback_by_wrong: { "Chef Omar": "His yeast acts slowly." } }],
 };

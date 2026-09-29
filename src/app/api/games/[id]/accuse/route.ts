@@ -4,6 +4,7 @@ import { gradeAccusation } from "@/modes/case/accuse";
 import type { CaseContent } from "@/modes/case/schema";
 import type { GameSpec } from "@/domain/game-spec";
 import { loadReadyGame } from "../../load";
+import { allow, clientIp } from "../../../rate-limit";
 import { recordAnswer } from "@/modes/boss/boss";
 import { getRepo } from "@/repo/supabase";
 
@@ -14,7 +15,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const g = await loadReadyGame(id);
   if ("error" in g) return g.error;
   if (g.spec.mode !== "case") return NextResponse.json({ error: "not a case" }, { status: 400 });
-  const { optionId, justification } = await req.json();
+  if (!allow(`accuse:${clientIp(req)}`, 10, 60_000)) return NextResponse.json({ error: "Too many attempts. Wait a minute and try again." }, { status: 429 });
+  const { optionId, justification } = await req.json().catch(() => ({}));
   try {
     const result = await gradeAccusation(createLlmClient(), g.spec as GameSpec<CaseContent>, String(optionId), String(justification ?? ""));
     const device = req.headers.get("x-device-id") ?? "";

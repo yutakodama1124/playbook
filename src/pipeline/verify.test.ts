@@ -25,7 +25,7 @@ describe("verifyGame", () => {
   });
   it("flags choice answers missing from options and order answers that aren't a permutation", () => {
     const bad = { ...base, checks: [
-      { id: "k2", kind: "choice", concept_ids: ["c_a"], prompt: "p", hints, options: ["x", "y"], answer: "z", feedback_by_wrong: {} },
+      { id: "k2", kind: "choice", concept_ids: ["c_a"], prompt: "p", hints, options: ["x", "y"], answer: "z", feedback_by_wrong: { x: "no", y: "no" } },
       { id: "k3", kind: "order", concept_ids: ["c_a"], prompt: "p", hints, items: ["a", "b"], answer: ["a", "c"] },
     ] } as GameSpec;
     const r = verifyGame(bad, map);
@@ -48,5 +48,18 @@ describe("verifyGame", () => {
   it("requires a hook question for case and escape games", () => {
     const bad = { ...caseSpec, hook: "" } as GameSpec;
     expect(verifyGame(bad, caseMap).problems.join()).toMatch(/missing hook/);
+  });
+  it("only flags real concept ids in text (not ids that merely start with c_)", () => {
+    const ok = { ...caseSpec, briefing: "Ask c_theo about it." } as GameSpec; // not a concept id in the map
+    expect(verifyGame(ok, caseMap).problems.join()).not.toMatch(/raw concept id/);
+  });
+  it("requires a formula on number checks and feedback for every wrong choice", () => {
+    const bad = { ...base, checks: [
+      { ...base.checks[0], formula: null },
+      { id: "k2", kind: "choice", concept_ids: ["c_a"], prompt: "p", hints, options: ["x", "y", "z"], answer: "x", feedback_by_wrong: { y: "no" } },
+    ] } as GameSpec;
+    const p = verifyGame(bad, map).problems.join("|");
+    expect(p).toMatch(/k1.*formula/);
+    expect(p).toMatch(/k2.*feedback.*z/);
   });
 });
