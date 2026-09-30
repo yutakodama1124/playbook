@@ -47,3 +47,20 @@ describe("impostorChecks", () => {
     expect(Object.keys(c.feedback_by_wrong)).toHaveLength(3);
   });
 });
+
+describe("readability limits", () => {
+  const words = (n: number) => Array.from({ length: n }, (_, i) => `w${i}`).join(" ");
+  it("flags true facts, fakes, and explanations that are too wordy", () => {
+    const r = content.rounds[1];
+    const bad = { rounds: content.rounds.map((x, i) => (i === 1 ? { ...r, true_facts: [...r.true_facts.slice(1), `long ${words(25)}`], corrupted_fact: `fake ${words(25)}`, explanation: words(41) } : x)) };
+    const p = validateImpostor(bad, map).join("|");
+    expect(p).toMatch(/round 2: true fact 9 is too long \(26 words, max 25\)/);
+    expect(p).toMatch(/round 2: corrupted fact is too long \(26 words, max 25\)/);
+    expect(p).toMatch(/round 2: explanation is too long \(41 words, max 40\)/);
+  });
+  it("allows text right at the limits", () => {
+    const r = content.rounds[1];
+    const ok = { rounds: content.rounds.map((x, i) => (i === 1 ? { ...r, explanation: words(40) } : x)) };
+    expect(validateImpostor(ok, map)).toEqual([]);
+  });
+});

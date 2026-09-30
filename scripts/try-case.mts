@@ -15,6 +15,5 @@ console.log(JSON.stringify(verifyGame(spec, unit.conceptMap)));
 const c = spec.content as CaseContent;
 console.log(spec.title, "|", c.theme, "|", c.premise);
 console.log("people:", c.characters.map((x) => `${x.name} (${x.role}${x.is_mentor ? ", mentor" : ""})`).join("; "));
-console.log("options:", c.accusation.options.map((o) => o.label).join(" / "), "| correct:", c.accusation.correct_option_id);
-console.log("chain:", c.solution.chain.map((s) => s.step).join(" -> "));
-console.log("checks:", spec.checks.map((k) => `${k.kind}: ${k.prompt}`).join("\n  "));
+console.log("finale:", c.finale.options.map((o) => o.label).join(" / "), "| correct:", c.finale.correct_option_id);
+for (const t of c.testimonies) console.log(`${t.title}: lie = "${t.statements.find((s) => s.id === t.contradiction.statement_id)?.text}" vs ${t.contradiction.evidence_id}`);

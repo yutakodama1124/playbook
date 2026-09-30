@@ -13,18 +13,17 @@ describe("caseAssetRequests", () => {
 });
 
 describe("generateCase", () => {
-  it("returns a case spec with deterministic asset requests and converted checks", async () => {
+  it("returns a case spec with deterministic asset requests", async () => {
     const llmOut = { mode: "case", title: "T", briefing: "b", intro: "i", outro_win: "w", outro_lose: "l", concept_ids: ["c_etc"],
       asset_requests: [{ role: "junk", tags: ["x"] }], content,
-      checks: [{ id: "d1", kind: "number", concept_ids: ["c_atp"], prompt: "p", hints: ["1", "2", "3"], answer_number: 2, tolerance: 0, formula: "1+1",
-        options: [], answer: [], pairs: [], wrong_feedback: [] }] };
+      checks: [] };
     const llm: LlmClient = { parseStructured: vi.fn().mockResolvedValue(llmOut) };
     const spec = await generateCase({ llm, map, targetConceptIds: [], learnMode: true });
     expect(spec.mode).toBe("case");
-    expect(spec.checks[0]).toMatchObject({ kind: "number", answer: 2 });
+    expect(spec.checks).toEqual([]);
     expect(spec.asset_requests.map((a) => a.role)).not.toContain("junk");
     const args = (llm.parseStructured as ReturnType<typeof vi.fn>).mock.calls[0][0];
-    expect(args.system).toMatch(/concept/i);
+    expect(args.system).toMatch(/PRESS/);
     expect(args.system).not.toMatch(/murder/i);
   });
 });

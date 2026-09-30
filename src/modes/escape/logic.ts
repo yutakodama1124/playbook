@@ -2,6 +2,11 @@ import type { ConceptMap } from "@/domain/concept-map";
 import type { GameSpec } from "@/domain/game-spec";
 import type { EscapeContent } from "./schema";
 
+/** Readability limits (word counts) so generated text stays short and game-like, not a textbook. */
+export const ESCAPE_WORD_LIMITS = { premise: 60, room: 40, hotspot: 45, fragment: 15, prompt: 40 } as const;
+export const wordCount = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
+const tooLong = (what: string, s: string, max: number) => { const n = wordCount(s); return n > max ? `${what} is too long (${n} words, max ${max}) — use shorter, simpler sentences` : null; };
+
 export function validateEscape(spec: GameSpec<EscapeContent>, map: ConceptMap): string[] {
   const c = spec.content, problems: string[] = [];
   const checkIds = new Set(spec.checks.map((k) => k.id));
@@ -31,6 +36,12 @@ export function validateEscape(spec: GameSpec<EscapeContent>, map: ConceptMap): 
     if (h.lock_check_id && !h.is_exit && !h.reveals_clue.trim()) problems.push(`lock ${h.id} must reveal a fragment (reveals_clue) that feeds the final exit`);
   for (const [id, n] of used) if (n > 1) problems.push(`check ${id} is used by more than one hotspot`);
   for (const id of checkIds) if (!used.has(id)) problems.push(`check ${id} is not used by any hotspot`);
+  const L = ESCAPE_WORD_LIMITS;
+  const wordy = [tooLong("premise", c.premise, L.premise),
+    ...c.rooms.flatMap((r) => [tooLong(`room ${r.id} description`, r.description, L.room),
+      ...r.hotspots.flatMap((h) => [tooLong(`hotspot ${h.id} description`, h.description, L.hotspot), tooLong(`hotspot ${h.id} fragment (reveals_clue)`, h.reveals_clue, L.fragment)])]),
+    ...spec.checks.map((k) => tooLong(`check ${k.id} prompt`, k.prompt, L.prompt))];
+  for (const w of wordy) if (w) problems.push(w);
   for (const f of c.field_guide) if (!concepts.has(f.concept_id)) problems.push(`field guide references unknown concept ${f.concept_id}`);
   return problems;
 }

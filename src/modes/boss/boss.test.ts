@@ -10,7 +10,8 @@ beforeEach(async () => {
   const u = await repo.createUnit({ title: "Cellular Respiration", course: "AP Biology", sources: [] }, "2026-10-04");
   await repo.updateUnit(u.id, { status: "ready", conceptMap: map });
   const g = await repo.createGame(u.id, "case");
-  await repo.updateGame(g.id, { status: "ready", spec: caseSpec });
+  await repo.updateGame(g.id, { status: "ready", spec: { ...caseSpec, checks: [{ id: "d1", kind: "choice", concept_ids: ["c_etc"], prompt: "Which stage stops first?", hints: ["1", "2", "3"],
+    options: ["Glycolysis", "ETC"], answer: "ETC", feedback_by_wrong: { Glycolysis: "Glycolysis needs no O2." } }] } });
   await repo.addAsset({ url: "boss-bio", kind: "boss", tags: ["cell", "biology", "golem"], mood: null, positions: {}, styleVersion: 1 });
   await repo.addAsset({ url: "boss-phys", kind: "boss", tags: ["physics", "gear"], mood: null, positions: {}, styleVersion: 1 });
   unitId = u.id; gameId = g.id;

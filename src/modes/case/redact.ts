@@ -1,27 +1,18 @@
 import type { CaseContent } from "./schema";
+import { startingEvidence } from "./trial";
 
-export type PublicCaseContent = {
-  theme: CaseContent["theme"];
-  premise: string;
-  setting: string;
-  characters: { id: string; name: string; role: string; bio: string; is_mentor: boolean }[];
-  evidence: { id: string; title: string; text: string; concept_ids: string[] }[];   // available from the start
-  leads: { evidence_id: string; character_id: string; topic: string }[];             // locked evidence, shown as who to ask
-  board: { id: string; question: string; check_id: string; evidence_ids: string[] }[];
-  accusation: { prompt: string; options: { id: string; label: string; character_id: string | null }[] };
-  field_guide: CaseContent["field_guide"];
-};
-
-export function redactCase(c: CaseContent): PublicCaseContent {
+/** What the browser may see: testimony text and in-file evidence. No contradictions, press replies, locked evidence, or answers. */
+export function redactCase(c: CaseContent) {
   return {
-    theme: c.theme,
-    premise: c.premise,
-    setting: c.setting,
+    theme: c.theme, premise: c.premise, setting: c.setting,
     characters: c.characters.map(({ id, name, role, bio, is_mentor }) => ({ id, name, role, bio, is_mentor })),
-    evidence: c.evidence.filter((e) => !e.unlocked_by).map(({ id, title, text, concept_ids }) => ({ id, title, text, concept_ids })),
-    leads: c.evidence.filter((e) => e.unlocked_by).map((e) => ({ evidence_id: e.id, character_id: e.unlocked_by, topic: e.unlock_topic })),
-    board: c.board,
-    accusation: { prompt: c.accusation.prompt, options: c.accusation.options },
+    evidence: startingEvidence(c),
+    testimonies: c.testimonies.map((t) => ({
+      id: t.id, witness_id: t.witness_id, title: t.title, hints: t.hints,
+      statements: t.statements.map(({ id, text }) => ({ id, text })),
+    })),
+    finale: { question: c.finale.question, options: c.finale.options },
     field_guide: c.field_guide,
   };
 }
+export type PublicCaseContent = ReturnType<typeof redactCase>;

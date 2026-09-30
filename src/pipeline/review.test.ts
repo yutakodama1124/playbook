@@ -21,7 +21,7 @@ describe("createReviewer", () => {
     await createReviewer(llm)(spec, map);
     const args = (llm.parseStructured as ReturnType<typeof vi.fn>).mock.calls[0][0];
     const text = JSON.stringify(args.content);
-    expect(text).toContain("Dana used a complex IV inhibitor"); // reviewer sees the solution
+    expect(text).toContain("SOLUTION TEXT"); // reviewer sees the solution
     expect(args.system).toMatch(/derive/i);
     expect(args.system).toMatch(/guess/i);
   });

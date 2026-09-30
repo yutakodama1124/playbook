@@ -7,13 +7,13 @@ import { CasePreview, EscapePreview, ImpostorPreview } from "./components/landin
 import { SAMPLES } from "./samples";
 
 const MODES = [
-  { name: "Case Files", line: "Question suspects. Only the science closes the case.", preview: <CasePreview /> },
-  { name: "Escape Room", line: "Every lock opens with a concept, not a guess.", preview: <EscapePreview /> },
-  { name: "Impostor", line: "One fact is fake. Find who's bluffing. 3–10 players.", preview: <ImpostorPreview /> },
+  { name: "Case Files", line: "Witnesses lie. Catch them with the science.", preview: <CasePreview /> },
+  { name: "Escape Room", line: "Solve the locks. Get out before time runs out.", preview: <EscapePreview /> },
+  { name: "Impostor", line: "One card is fake. Find the bluffer. 3–10 players.", preview: <ImpostorPreview /> },
 ];
 const STEPS = [
   ["Upload your notes", "Slides, PDFs, photos, or pasted text. Playbook maps the key concepts and common mistakes."],
-  ["Play the game", "Hints explain the concept instead of giving the answer. Every game is checked to be solvable."],
+  ["Play", "Lives, points, streaks. Stuck? Your partner explains the idea, never the answer."],
   ["Beat the boss", "Your test is the boss. Review questions come back on a schedule before test day."],
 ];
 
@@ -43,7 +43,7 @@ export default function Home() {
       <main className="pb-24">
         <section className="mx-auto max-w-3xl px-4 pb-14 pt-20 text-center md:pt-28">
           <h1 className="text-5xl font-semibold tracking-tight text-zinc-950 md:text-6xl">Turn any unit into a game.</h1>
-          <p className="mx-auto mt-5 max-w-lg text-lg text-zinc-600">Upload your notes. Play a game you can only win by understanding them.</p>
+          <p className="mx-auto mt-5 max-w-lg text-lg text-zinc-600">Your notes are the level. Catch lying witnesses, break out of rooms, outbluff your friends. You only win if you get it.</p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <a href="#start" className={buttonClass("primary", "lg", "w-full sm:w-auto")}>Build a game from my notes</a>
             <a href="#try" className={buttonClass("secondary", "lg", "w-full sm:w-auto")}>Try a sample game</a>

@@ -1,11 +1,11 @@
 {
  "mode": "escape",
- "title": "Dome 7: Running on Empty",
- "hook": "A greenhouse is flooded with light and surrounded by CO2, yet its plants have almost stopped making sugar. What could they possibly be short of?",
- "briefing": "Plants run on two linked machines. In the thylakoid membranes, light energy splits water and drives electrons down a chain, pumping hydrogen ions and producing ATP and NADPH. In the stroma, the Calvin cycle spends that ATP and NADPH so Rubisco can turn CO2 into sugar, and the whole system can only run as fast as its scarcest supply allows.",
- "intro": "Emergency lockdown. Dome 7's oxygen generator is offline and the greenhouse is now the only thing keeping the station breathable. A power surge sealed every subsystem behind a diagnostic lock. Restart the light reactor, then the carbon-fixation bay, then prove you know the dome's true output to unseal the airlock.",
- "outro_win": "The airlock hisses open. The greenhouse is back at full output, and you know exactly which supply to boost next.",
- "outro_lose": "The clock ran out with the greenhouse still sealed. Open the Field Guide, revisit the locks you missed, and try again.",
+ "title": "Dome 7: Plants on Strike",
+ "hook": "The greenhouse has tons of light and CO2. So why did the plants stop making sugar?",
+ "briefing": "Your plants run two machines. The light machine splits water and makes ATP and NADPH. The Calvin cycle spends them so Rubisco can turn CO2 into sugar. The whole thing only runs as fast as its scarcest supply.",
+ "intro": "Alarms! Dome 7's oxygen maker just died, and the greenhouse is now your only air. A power surge locked everything. Fix the light room, fix the carbon bay, then crack the airlock.",
+ "outro_win": "The airlock hisses open. The plants are back to work, and you can breathe again. Nice botany, hero.",
+ "outro_lose": "Time's up, and the plants are still sulking. Check the Field Guide, retry the locks you missed, and go again.",
  "concept_ids": [
   "c_photolysis",
   "c_electron_transport",
@@ -22,11 +22,11 @@
    "concept_ids": [
     "c_photolysis"
    ],
-   "prompt": "The sample cabinet will only open for the flask that was given heavy-oxygen WATER. Which flask was it?",
+   "prompt": "The cabinet only opens for the flask that got heavy-oxygen WATER. Which flask was it?",
    "hints": [
-    "Re-read the Tracer lab notebook: compare the mass of the O2 each flask released.",
-    "Photosystem II splits water to replace the electrons it loses; ask which molecule's oxygen atoms end up in the O2 gas.",
-    "Similar case: if heavy-oxygen CO2 were the source of O2 gas, the flask fed heavy CO2 would release heavy O2 (mass 36). Apply the same logic to the real data."
+    "Check the Tracer lab notebook. Compare the mass of the O2 from each flask.",
+    "Photosystem II splits water to replace its lost electrons. Whose oxygen atoms end up in the O2 gas?",
+    "Similar case: if CO2 made the O2, the heavy-CO2 flask would give heavy O2 (mass 36). Use that logic on the real data."
    ],
    "answer_number": null,
    "tolerance": null,
@@ -44,15 +44,15 @@
    "wrong_feedback": [
     {
      "option": "Flask B",
-     "feedback": "Flask B released ordinary O2 (mass 32). If you picked it, you may be assuming the O2 comes from CO2. Which molecule does Photosystem II split?"
+     "feedback": "Flask B gave normal O2 (mass 32). Picked it? You may think O2 comes from CO2. Which molecule does Photosystem II split?"
     },
     {
      "option": "Both flasks, because O2 comes from water and CO2 equally",
-     "feedback": "If both sources contributed, both flasks would show some heavy O2. Only one did. The oxygen in CO2 ends up in sugar and water, not O2 gas."
+     "feedback": "If both counted, both flasks would show heavy O2. Only one did. CO2's oxygen ends up in sugar and water, not O2 gas."
     },
     {
      "option": "Neither flask, because heavy oxygen would end up in the sugar",
-     "feedback": "That is true for CO2's oxygen, but one flask clearly released heavy O2 (mass 36). Where did that heavy oxygen come from?"
+     "feedback": "True for CO2's oxygen! But one flask clearly gave heavy O2 (mass 36). Where did that come from?"
     }
    ]
   },
@@ -62,11 +62,11 @@
    "concept_ids": [
     "c_chemiosmosis"
    ],
-   "prompt": "The ATP synthase housing will unlock when you enter how many times higher the H+ concentration is in the thylakoid lumen than in the stroma.",
+   "prompt": "The frozen turbine wants a number: how many times more H+ is in the thylakoid lumen than in the stroma? Enter it.",
    "hints": [
-    "Read the pH probe display: it gives the pH of the lumen and of the stroma.",
-    "Lower pH means more H+. Each 1-unit pH difference is a 10-fold difference in H+ concentration, and that stored gradient is what spins ATP synthase.",
-    "Similar example: a solution at pH 4 has 10 x 10 = 100 times more H+ than one at pH 6. Now apply it to the probe's two readings."
+    "Read the pH probe display. It shows the lumen and the stroma.",
+    "Lower pH means more H+. Each 1-unit pH step is 10 times more H+. That stored gradient is what spins ATP synthase.",
+    "Similar example: pH 4 has 10 x 10 = 100 times more H+ than pH 6. Now try it with the probe's readings."
    ],
    "answer_number": 1000,
    "tolerance": 0,
@@ -83,11 +83,11 @@
     "c_electron_transport",
     "c_photolysis"
    ],
-   "prompt": "The breaker panel asks you to confirm the DCMU leak before flushing bay 2. Which bay 2 reading proves it?",
+   "prompt": "The breaker won't flush bay 2 until you prove the DCMU leak. Which bay 2 reading proves it?",
    "hints": [
-    "Re-read the maintenance tag on the breaker panel: it says exactly which hand-off DCMU blocks.",
-    "Photosystem II keeps splitting water only as long as it can pass its electrons on down the chain. If that hand-off is blocked, what stops first?",
-    "Similar case: if a factory's exit conveyor jams, the machines feeding it soon stop too, even though power is still on. Which process feeds Photosystem II its electrons?"
+    "Re-read the tag on the breaker panel. It names the exact hand-off DCMU blocks.",
+    "Photosystem II only keeps splitting water while it can pass its electrons on. Block that, and what stops first?",
+    "Similar case: jam a factory's exit belt and the machines feeding it stop too, even with the power on. What feeds Photosystem II its electrons?"
    ],
    "answer_number": null,
    "tolerance": null,
@@ -105,15 +105,15 @@
    "wrong_feedback": [
     {
      "option": "Light absorption drops to zero, because DCMU destroys chlorophyll",
-     "feedback": "The tag says DCMU blocks an electron hand-off; it doesn't touch the pigments. Chlorophyll still absorbs light, it just can't pass the energy on usefully."
+     "feedback": "The tag says DCMU blocks an electron hand-off. It doesn't touch pigments, so chlorophyll still absorbs light."
     },
     {
      "option": "CO2 uptake stops but O2 release continues at full speed",
-     "feedback": "O2 comes from splitting water at Photosystem II, which needs somewhere to send its electrons. If PSII can't pass electrons on, can it keep splitting water?"
+     "feedback": "O2 comes from splitting water at Photosystem II. If PSII can't pass electrons on, can it keep splitting water?"
     },
     {
      "option": "No readings change, because Photosystem I can still absorb light",
-     "feedback": "Photosystem I needs electrons delivered from Photosystem II in linear flow. Block the chain upstream and the whole line stalls."
+     "feedback": "Photosystem I needs electrons from Photosystem II. Block the line upstream and everything stalls."
     }
    ]
   },
@@ -123,11 +123,11 @@
    "concept_ids": [
     "c_calvin_cycle"
    ],
-   "prompt": "The export hatch opens only if you load exactly enough CO2 to export 5 G3P as sugar. How many CO2 molecules must enter the Calvin cycle?",
+   "prompt": "The hatch wants exactly enough CO2 to export 5 G3P as sugar. How many CO2 must enter the Calvin cycle?",
    "hints": [
-    "Use the Calvin cycle ledger: compare how many CO2 went in with how many G3P were exported.",
-    "Most G3P made by the cycle is recycled to rebuild RuBP; only the net G3P leaves as sugar. Each exported G3P holds 3 carbons, and every carbon came from one CO2.",
-    "Similar example: to export 2 G3P you need 2 x 3 = 6 CO2, just as the ledger shows. Scale that up."
+    "Use the Calvin cycle ledger. Compare the CO2 that went in with the G3P exported.",
+    "Most G3P is recycled to rebuild RuBP. Only the net G3P leaves as sugar. Each exported G3P has 3 carbons, and each carbon came from one CO2.",
+    "Similar example: exporting 2 G3P takes 2 x 3 = 6 CO2, just like the ledger shows. Scale it up."
    ],
    "answer_number": 15,
    "tolerance": 0,
@@ -143,11 +143,11 @@
    "concept_ids": [
     "c_rubisco_photorespiration"
    ],
-   "prompt": "Before the vent will open, the controller asks for your diagnosis: why is sugar output falling even though the lights are on full?",
+   "prompt": "The vent controller wants a diagnosis. Why is sugar output falling when the lights are on full?",
    "hints": [
-    "Read the Air-mix gauge: look at the O2 and CO2 levels and the state of the stomata.",
-    "Rubisco can bind O2 instead of CO2. When O2 is high and CO2 is low inside the leaf, it does this far more often, and that reaction wastes carbon and ATP.",
-    "Similar case: a cashier who grabs whatever coin is on top will grab the wrong coin more often when the wrong coins pile up. Which molecule is piling up in the dome?"
+    "Read the Air-mix gauge. Check the O2, the CO2, and the stomata.",
+    "Rubisco can grab O2 instead of CO2. High O2 and low CO2 make that happen way more often, which wastes carbon and ATP.",
+    "Similar case: a cashier who grabs the top coin grabs the wrong coin more when wrong coins pile up. What's piling up in the dome?"
    ],
    "answer_number": null,
    "tolerance": null,
@@ -165,15 +165,15 @@
    "wrong_feedback": [
     {
      "option": "The plants are using the extra O2 for cellular respiration and burning their sugar faster than they make it",
-     "feedback": "Cellular respiration isn't sped up by extra O2 like this. The gauge points to the enzyme that fixes carbon: what does Rubisco do when O2 is high and CO2 is low?"
+     "feedback": "Extra O2 doesn't speed up respiration like this. The gauge points at the carbon-fixing enzyme. What does Rubisco do when O2 is high?"
     },
     {
      "option": "The high O2 is bleaching the chlorophyll so it can no longer absorb light",
-     "feedback": "The gauge says the lights are fine and gives no sign of pigment damage. The problem is on the carbon-fixing side, not light absorption."
+     "feedback": "The lights are fine, and there's no sign of pigment damage. The problem is on the carbon-fixing side."
     },
     {
      "option": "The light reactions have stopped because there is not enough CO2 for them to split",
-     "feedback": "The light reactions split water, not CO2. CO2 is used by Rubisco in the Calvin cycle."
+     "feedback": "The light reactions split water, not CO2. Rubisco uses CO2 in the Calvin cycle."
     }
    ]
   },
@@ -184,11 +184,11 @@
     "c_limiting_factors",
     "c_calvin_cycle"
    ],
-   "prompt": "Final lock. Use the fragments you collected: the ATP output, the NADPH output, and the cost of fixing one CO2. How many CO2 molecules per minute can the Calvin cycle actually fix?",
+   "prompt": "Final lock! Use your fragments: the ATP output, the NADPH output, and the cost of one CO2. How many CO2 per minute can the Calvin cycle really fix?",
    "hints": [
-    "Look at your Fragments collected: you have the two supply rates and the cost of each CO2.",
-    "Work out how many CO2 each supply alone could pay for. A process can only run as fast as its scarcest input allows; the other supply is left over.",
-    "Similar example: a bakery with 20 eggs and 10 cups of flour, where each cake needs 2 eggs and 1 cup of flour, can make min(20/2, 10/1) = 10 cakes. Do the same with ATP and NADPH."
+    "Check your collected fragments. You have both supply rates and the cost of each CO2.",
+    "Work out how many CO2 each supply could pay for alone. A process runs only as fast as its scarcest input.",
+    "Similar example: 20 eggs and 10 cups of flour, with 2 eggs and 1 cup per cake, make min(20/2, 10/1) = 10 cakes. Do the same with ATP and NADPH."
    ],
    "answer_number": 7,
    "tolerance": 0,
@@ -200,7 +200,7 @@
   }
  ],
  "content": {
-  "premise": "You are the botanist on Mars research station Dome 7. The oxygen generator has failed, the greenhouse is locked down, and the station has twenty minutes of reserve air. Every greenhouse subsystem is sealed behind a diagnostic lock that only opens for someone who understands how the plants actually work.",
+  "premise": "You're the botanist on Mars station Dome 7. The oxygen maker is dead, and the station has 20 minutes of air left. Every greenhouse system is locked. The locks only open for someone who knows how plants really work. No pressure.",
   "rooms": [
    {
     "id": "r_light",
@@ -211,7 +211,7 @@
      "red and blue grow lamps",
      "lab bench with flasks"
     ],
-    "description": "Rows of algae tanks glow under grow lamps. Warning lights blink over three sealed consoles: a sample cabinet, the ATP synthase housing, and the electron-flow breaker panel.",
+    "description": "Algae tanks glow under grow lamps. Three consoles blink angry red: a sample cabinet, the ATP synthase housing, and the breaker panel.",
     "hotspots": [
      {
       "id": "h_notebook",
@@ -220,16 +220,16 @@
       "lock_check_id": "",
       "reveals_clue": "",
       "is_exit": false,
-      "description": "Experiment log, day 212: Two flasks of identical algae under the same light. One was given water made with heavy oxygen (18O); the other was given CO2 made with heavy oxygen. Everything else normal. Mass spectrometer on the released O2 gas: Flask A = mass 36 (both oxygen atoms heavy). Flask B = mass 32 (ordinary). The flask labels smeared in the surge."
+      "description": "Day 212: two identical algae flasks got heavy oxygen (18O), one in its water and one in its CO2. The surge smeared the labels. O2 gas readout: Flask A = mass 36 (heavy). Flask B = mass 32 (normal)."
      },
      {
       "id": "h_cabinet",
       "label": "Sealed sample cabinet",
       "zone": "middle-left",
       "lock_check_id": "k_tracer",
-      "reveals_clue": "Water supply: the O2 comes from split water, and the dome's water tank is full, so water is NOT a bottleneck.",
+      "reveals_clue": "Water tank full: water is NOT the bottleneck.",
       "is_exit": false,
-      "description": "A cabinet holding the two unlabeled flasks. Its keypad reads: IDENTIFY THE HEAVY-WATER FLASK."
+      "description": "It holds the two mystery flasks. The keypad blinks: WHICH ONE DRANK THE HEAVY WATER?"
      },
      {
       "id": "h_probe",
@@ -238,25 +238,25 @@
       "lock_check_id": "",
       "reveals_clue": "",
       "is_exit": false,
-      "description": "Two probes are inserted in a chloroplast sample. Thylakoid lumen: pH 5. Stroma: pH 8. Sticker on the display: each 1-unit drop in pH means 10 times more H+. ATP synthase only turns while H+ flows down its gradient."
+      "description": "Two probes poke into a chloroplast. Sticker: each 1-unit pH drop = 10 times more H+, and ATP synthase only spins while H+ flows down its gradient. Readout: lumen pH 5. Stroma pH 8."
      },
      {
       "id": "h_synthase",
       "label": "ATP synthase housing",
       "zone": "center",
       "lock_check_id": "k_gradient",
-      "reveals_clue": "ATP synthase restarted. Meter: ATP output = 21 per minute.",
+      "reveals_clue": "Turbine spinning! Meter: ATP output = 21 per minute.",
       "is_exit": false,
-      "description": "A turbine-like model of ATP synthase, frozen mid-spin. The display reads: CONFIRM GRADIENT STRENGTH (fold difference in H+)."
+      "description": "A turbine-shaped ATP synthase, frozen mid-spin. Its screen wants the gradient strength."
      },
      {
       "id": "h_breaker",
       "label": "Electron-flow breaker panel",
       "zone": "bottom-center",
       "lock_check_id": "k_dcmu",
-      "reveals_clue": "Bay 2 flushed and electron flow restored. Meter: NADPH output = 16 per minute.",
+      "reveals_clue": "Bay 2 flushed! Meter: NADPH output = 16 per minute.",
       "is_exit": false,
-      "description": "Maintenance tag: \"Weed-killer DCMU leaked into bay 2. DCMU stops plastoquinone from accepting electrons from Photosystem II.\" Bay 2 sensors: light absorption, O2 release, CO2 uptake."
+      "description": "Tag: \"Weed-killer DCMU leaked into bay 2. It stops plastoquinone from taking electrons from Photosystem II.\" Bay 2 sensors: light absorption, O2 release, CO2 uptake."
      }
     ]
    },
@@ -264,12 +264,13 @@
     "id": "r_carbon",
     "name": "Carbon Fixation Bay",
     "scene_tags": [
-     "hydroponic greenhouse bay",
-     "stacked leafy plant racks",
-     "air vents and gas gauges",
-     "sealed airlock door"
+     "greenhouse",
+     "glasshouse",
+     "potted plants",
+     "botany",
+     "hydroponic greenhouse bay"
     ],
-    "description": "Leafy racks fill a humid bay. The air tastes stale. An export hatch, a jammed air vent, and the airlock out of the dome are all sealed.",
+    "description": "Leafy racks fill a sticky, humid bay. The air tastes stale. The export hatch, the air vent, and the airlock are all sealed.",
     "hotspots": [
      {
       "id": "h_ledger",
@@ -278,16 +279,16 @@
       "lock_check_id": "",
       "reveals_clue": "",
       "is_exit": false,
-      "description": "Batch record: 6 CO2 entered the cycle and Rubisco attached each to RuBP. Consumed: 18 ATP and 12 NADPH. Made: 12 G3P. Of those, 10 G3P were rebuilt into 6 RuBP and 2 G3P were exported as sugar."
+      "description": "Batch record: 6 CO2 went in, and Rubisco stuck each one onto RuBP. The cycle used 18 ATP and 12 NADPH to make 12 G3P: 10 rebuilt 6 RuBP, and 2 left as sugar."
      },
      {
       "id": "h_hatch",
       "label": "Sugar export hatch",
       "zone": "middle-left",
       "lock_check_id": "k_ledger",
-      "reveals_clue": "Ledger footnote: every CO2 fixed costs 3 ATP and 2 NADPH.",
+      "reveals_clue": "Footnote: each CO2 fixed costs 3 ATP and 2 NADPH.",
       "is_exit": false,
-      "description": "A hatch that feeds sugar to the station kitchen. Display: LOAD CO2 FOR 5 EXPORTED G3P."
+      "description": "This hatch feeds sugar to the very hungry station kitchen. Screen: LOAD CO2 FOR 5 EXPORTED G3P."
      },
      {
       "id": "h_gauge",
@@ -296,16 +297,16 @@
       "lock_check_id": "",
       "reveals_clue": "",
       "is_exit": false,
-      "description": "Dome air: O2 38%, CO2 0.01%. Leaf temperature: 35 C. Stomata: closed. Lights: full. Warning: sugar output falling."
+      "description": "The gauge flashes like it's panicking. Readout: O2 38%, CO2 0.01%, leaf temp 35 C, stomata closed, lights full, sugar output falling."
      },
      {
       "id": "h_vent",
       "label": "Air vent controller",
       "zone": "bottom-left",
       "lock_check_id": "k_vent",
-      "reveals_clue": "Vent open: O2 back to 21% and CO2 restored. Photorespiration is now negligible, so count every Rubisco reaction as a CO2 fixed.",
+      "reveals_clue": "Vent open! No more photorespiration: every Rubisco reaction fixes CO2.",
       "is_exit": false,
-      "description": "A jammed vent between the bay and the station's air scrubber. The controller demands a diagnosis before it will open."
+      "description": "A jammed vent to the station's air scrubber. It won't budge until you name the problem."
      },
      {
       "id": "h_airlock",
@@ -314,7 +315,7 @@
       "lock_check_id": "k_airlock",
       "reveals_clue": "",
       "is_exit": true,
-      "description": "The only way out. Its panel reads: ENTER TRUE CARBON-FIXATION RATE (CO2 per minute). Use the fragments you collected."
+      "description": "The only way out. Panel: ENTER TRUE CARBON-FIXATION RATE (CO2 per minute). Use your fragments."
      }
     ]
    }
@@ -323,37 +324,37 @@
    {
     "concept_id": "c_photolysis",
     "title": "Photolysis (water splitting)",
-    "explanation": "Photosystem II splits water to replace the electrons it loses. The oxygen atoms from water become the O2 gas plants release.",
+    "explanation": "Photosystem II splits water to replace the electrons it loses. The oxygen from that water becomes the O2 gas plants release.",
     "source_ref": "slide 16"
    },
    {
     "concept_id": "c_electron_transport",
     "title": "Linear electron flow",
-    "explanation": "Electrons travel from Photosystem II through plastoquinone, the cytochrome complex and plastocyanin to Photosystem I, then to NADP+ to make NADPH. Blocking any hand-off stalls the whole line.",
+    "explanation": "Electrons go from Photosystem II through plastoquinone, the cytochrome complex, and plastocyanin to Photosystem I, then to NADP+ to make NADPH. Block any hand-off and the whole line stalls.",
     "source_ref": "slides 17-20"
    },
    {
     "concept_id": "c_chemiosmosis",
     "title": "Chemiosmosis in the chloroplast",
-    "explanation": "The electron chain pumps H+ into the thylakoid lumen. H+ flowing back out to the stroma through ATP synthase spins it and makes ATP.",
+    "explanation": "The electron chain pumps H+ into the thylakoid lumen. When H+ flows back out through ATP synthase, it spins it and makes ATP.",
     "source_ref": "slides 21-22"
    },
    {
     "concept_id": "c_calvin_cycle",
     "title": "Calvin cycle",
-    "explanation": "In the stroma, Rubisco fixes CO2 onto RuBP; ATP and NADPH turn the product into G3P; most G3P rebuilds RuBP. Each CO2 fixed costs 3 ATP and 2 NADPH, and 3 CO2 make one exported G3P.",
+    "explanation": "In the stroma, Rubisco sticks CO2 onto RuBP. ATP and NADPH turn the product into G3P, and most G3P rebuilds RuBP. Each CO2 costs 3 ATP and 2 NADPH, and 3 CO2 make one exported G3P.",
     "source_ref": "slides 24-27"
    },
    {
     "concept_id": "c_rubisco_photorespiration",
     "title": "Rubisco and photorespiration",
-    "explanation": "Rubisco can grab O2 instead of CO2, especially when O2 is high, CO2 is low, and it's hot. That wastes carbon and ATP without making sugar.",
+    "explanation": "Rubisco can grab O2 instead of CO2, especially when it's hot, O2 is high, and CO2 is low. That wastes carbon and ATP and makes no sugar.",
     "source_ref": "slide 29"
    },
    {
     "concept_id": "c_limiting_factors",
     "title": "Limiting factors",
-    "explanation": "A process runs only as fast as its scarcest input. Real chloroplasts make slightly too little ATP by linear flow alone, so they top it up with cyclic electron flow.",
+    "explanation": "A process runs only as fast as its scarcest input. Linear flow alone makes slightly too little ATP, so chloroplasts top it up with cyclic electron flow.",
     "source_ref": "slides 33-34"
    }
   ]

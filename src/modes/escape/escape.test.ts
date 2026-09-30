@@ -55,3 +55,24 @@ describe("escapeAssetRequests", () => {
     expect(escapeAssetRequests(content)).toEqual([{ role: "scene:r1", tags: ["lab"] }, { role: "scene:r2", tags: ["vault"] }]);
   });
 });
+
+describe("readability limits", () => {
+  const words = (n: number) => Array.from({ length: n }, (_, i) => `w${i}`).join(" ");
+  it("accepts text right at the limits", () => {
+    const ok = { ...spec, checks: spec.checks.map((k) => ({ ...k, prompt: words(40) })),
+      content: { ...content, premise: words(60), rooms: content.rooms.map((r) => ({ ...r, description: words(40),
+        hotspots: r.hotspots.map((h) => ({ ...h, description: words(45), reveals_clue: h.reveals_clue ? words(15) : "" })) })) } };
+    expect(validateEscape(ok, map)).toEqual([]);
+  });
+  it("flags wordy premise, room description, hotspot description, fragment, and check prompt", () => {
+    const bad = { ...spec, checks: spec.checks.map((k) => (k.id === "k2" ? { ...k, prompt: words(41) } : k)),
+      content: { ...content, premise: words(61), rooms: content.rooms.map((r) => (r.id === "r1" ? { ...r, description: words(41),
+        hotspots: r.hotspots.map((h) => (h.id === "h1" ? { ...h, description: words(46), reveals_clue: words(16) } : h)) } : r)) } };
+    const p = validateEscape(bad, map).join("|");
+    expect(p).toMatch(/premise is too long \(61 words, max 60\)/);
+    expect(p).toMatch(/room r1 description is too long \(41 words, max 40\)/);
+    expect(p).toMatch(/hotspot h1 description is too long \(46 words, max 45\)/);
+    expect(p).toMatch(/hotspot h1 fragment \(reveals_clue\) is too long \(16 words, max 15\)/);
+    expect(p).toMatch(/check k2 prompt is too long \(41 words, max 40\)/);
+  });
+});

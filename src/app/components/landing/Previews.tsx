@@ -7,16 +7,20 @@ function Frame({ children, className = "" }: { children: React.ReactNode; classN
 
 export function CasePreview() {
   return (
-    <Frame className="p-4 text-[13px]">
-      <div className="flex items-center gap-3 border-b border-zinc-100 pb-3">
-        <img src={`${ART}/import-portrait-pharmacist-middle-aged.png`} alt="" className="h-9 w-9 rounded-md object-cover" />
-        <div><p className="font-medium">Dana Reyes</p><p className="text-zinc-500">Pharmacist · suspect</p></div>
+    <Frame className="relative bg-zinc-950 p-4 text-[13px] text-white">
+      <div className="flex items-center justify-between">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-300">Testimony 2 of 3</p>
+        <p className="text-red-500" aria-label="4 lives">{"\u2665".repeat(4)}<span className="text-white/20">{"\u2665"}</span></p>
       </div>
-      <div className="space-y-2 py-3">
-        <div className="flex justify-end"><p className="max-w-[80%] rounded-lg bg-zinc-950 px-3 py-2 text-white">Why did the plants stop making ATP within minutes?</p></div>
-        <p className="max-w-[85%] rounded-lg bg-zinc-100 px-3 py-2 text-zinc-800">I stock a lot of chemicals. Most of them act over hours, not minutes. Ask the lab about the tox report.</p>
+      <div className="mt-3 flex gap-3 rounded-xl border-2 border-white/15 bg-zinc-900 p-3">
+        <img src={`${ART}/import-portrait-pharmacist-middle-aged.png`} alt="" className="h-11 w-11 shrink-0 rounded-lg object-cover" />
+        <div><p className="font-bold text-amber-300">Dana</p><p className="mt-0.5 text-[14px] leading-snug">&ldquo;The cells were fine. They just switched to fermenting.&rdquo;</p></div>
       </div>
-      <div className="flex items-center justify-between gap-3 rounded-lg border border-zinc-200 px-3 py-2"><span className="truncate font-medium">Tox report</span><span className="shrink-0 text-zinc-400">Key evidence</span></div>
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <span className="rounded-lg bg-sky-500 py-2 text-center font-black uppercase">Press</span>
+        <span className="rounded-lg bg-red-600 py-2 text-center font-black uppercase">Present</span>
+      </div>
+      <p className="absolute right-3 top-12 rotate-[-8deg] rounded-md border-4 border-red-500 bg-black/70 px-2 py-0.5 text-lg font-black uppercase text-red-500">Objection!</p>
     </Frame>
   );
 }

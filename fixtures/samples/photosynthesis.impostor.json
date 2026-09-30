@@ -1,11 +1,11 @@
 {
   "mode": "impostor",
-  "title": "Photosynthesis Impostor",
+  "title": "Photosynthesis Impostor: Who's Faking It?",
   "hook": "",
-  "briefing": "Everyone gets a fact card about the round's topic, but one card is secretly wrong. Read yours aloud, explain why it's true, grill weak explanations, then vote out the impostor.",
-  "intro": "Five rounds, from pigments to C4 plants. Each round, one player's card has been corrupted with a classic photosynthesis misconception.",
-  "outro_win": "The crew caught the impostors. Your understanding of photosynthesis held up under cross-examination.",
-  "outro_lose": "The impostors slipped through. Review each round's fake and why it's wrong, then play again.",
+  "briefing": "Everyone gets a fact card, but one card is secretly fake. Read yours aloud, defend it, grill your friends, and vote out the impostor!",
+  "intro": "Five rounds, from leaf colors to cactus tricks. One card each round is lying. Trust no one (except chlorophyll).",
+  "outro_win": "Impostors caught! Your photosynthesis brain survived the grilling.",
+  "outro_lose": "The impostors got away with it. Check each round's fake and why it's wrong, then demand a rematch.",
   "concept_ids": [
     "c_light_absorption",
     "c_photolysis",
@@ -26,20 +26,20 @@
           "c_light_absorption"
         ],
         "true_facts": [
-          "Pigments sit in the thylakoid membranes, grouped with proteins into light-harvesting complexes around each photosystem.",
-          "Accessory pigments like chlorophyll b and carotenoids pass the energy they absorb along to reaction-center chlorophyll a.",
-          "When a pigment molecule absorbs a photon, one of its electrons is boosted up to a higher energy level.",
-          "Carotenoids widen the range of usable light and also protect chlorophyll from damage by excess light.",
-          "In autumn, chlorophyll breaks down first, revealing yellow and orange carotenoids that were in the leaf all along.",
-          "Isolated chlorophyll in a test tube glows red because its excited electrons fall back with no acceptor to catch them.",
-          "Light energy becomes chemical energy only when the reaction-center chlorophyll hands an excited electron to an acceptor.",
-          "Having several different pigments lets a leaf capture a wider band of wavelengths than chlorophyll a could alone.",
-          "Photosystem II's reaction center is called P680 because its chlorophyll absorbs best at 680 nanometers.",
-          "Up to a saturation point, brighter light excites more electrons per second and speeds up the light reactions."
+          "Pigments sit in the thylakoid membranes, grouped around each photosystem so they can pass energy inward.",
+          "Chlorophyll b and carotenoids pass their absorbed energy to chlorophyll a, so more light gets used.",
+          "When a pigment absorbs a photon, one electron jumps to a higher energy level because it gained energy.",
+          "Carotenoids protect chlorophyll from too much light, so leaves in bright sun don't get damaged.",
+          "In autumn, leaves turn yellow because chlorophyll breaks down first and reveals the carotenoids underneath.",
+          "Chlorophyll in a test tube glows red, because its excited electrons fall back with nothing to catch them.",
+          "Light energy gets stored because the reaction center hands its excited electron to an acceptor molecule.",
+          "A mix of pigments lets a leaf catch more colors of light, since each pigment absorbs different ones.",
+          "Photosystem II's center is named P680 because its chlorophyll absorbs best at 680 nanometers.",
+          "Brighter light speeds up the light reactions, because it excites more electrons per second, up to a limit."
         ],
-        "corrupted_fact": "Leaves look green because chlorophyll absorbs green light most strongly and uses it to power photosynthesis.",
-        "correct_version": "Leaves look green because chlorophyll absorbs red and blue light strongly and reflects most of the green light.",
-        "explanation": "The color you see is the light a pigment does NOT absorb. Chlorophyll absorbs red and blue best; green bounces back to your eyes."
+        "corrupted_fact": "Leaves look green because chlorophyll absorbs green light best and uses it to power photosynthesis.",
+        "correct_version": "Leaves look green because chlorophyll absorbs red and blue light and reflects most of the green light.",
+        "explanation": "You see the color a pigment does NOT absorb. Chlorophyll soaks up red and blue, so green bounces back to your eyes."
       },
       {
         "topic": "Electron flow in the light reactions",
@@ -48,20 +48,20 @@
           "c_photolysis"
         ],
         "true_facts": [
-          "Photosystem II passes its excited electrons to plastoquinone, which carries them through the thylakoid membrane.",
-          "As electrons pass through the cytochrome complex, their energy is used to pump H+ into the thylakoid lumen.",
-          "Photosystem I re-energizes electrons with a second photon so they have enough energy to reduce NADP+.",
-          "At the end of the chain, NADP+ reductase adds two electrons and an H+ to NADP+ to form NADPH.",
-          "In linear electron flow, electrons travel from Photosystem II to Photosystem I, never the other way around.",
+          "Photosystem II hands its excited electrons to plastoquinone, which carries them across the thylakoid membrane.",
+          "The cytochrome complex uses energy from passing electrons to pump H+ into the thylakoid lumen.",
+          "Photosystem I re-energizes electrons with a second photon, so they have enough energy to make NADPH.",
+          "NADP+ reductase adds two electrons and an H+ to NADP+, so NADPH forms at the end of the chain.",
+          "Electrons travel from Photosystem II to Photosystem I, because PSII's electrons are what refill PSI.",
           "Plastocyanin is a small copper protein that ferries electrons from the cytochrome complex to Photosystem I.",
-          "In cyclic electron flow, Photosystem I sends electrons back to the cytochrome complex, making ATP but no NADPH.",
-          "The light reactions happen in the thylakoid membranes, while the Calvin cycle happens in the stroma.",
-          "Electrons lose a little energy at each step of the transport chain, like a ball bouncing down a staircase.",
-          "The herbicide DCMU blocks electrons from leaving Photosystem II, so NADPH production in the leaf stops."
+          "In cyclic flow, Photosystem I sends electrons back to the cytochrome complex, so it makes ATP but no NADPH.",
+          "The light reactions run in the thylakoid membranes, because that's where the photosystems are built in.",
+          "Electrons lose a bit of energy at each step, like a ball bouncing down stairs, which powers the pumps.",
+          "The weed-killer DCMU blocks electrons from leaving Photosystem II, so NADPH production in the leaf stops."
         ],
-        "corrupted_fact": "The oxygen gas released during photosynthesis comes from splitting carbon dioxide molecules in the Calvin cycle.",
-        "correct_version": "The oxygen gas released during photosynthesis comes from splitting water molecules at Photosystem II.",
-        "explanation": "Isotope tracer experiments show that labeled oxygen in water, not in CO2, ends up in the O2 gas. CO2's oxygen ends up in sugar and water."
+        "corrupted_fact": "The oxygen gas from photosynthesis comes from splitting carbon dioxide, which happens in the Calvin cycle.",
+        "correct_version": "The oxygen gas from photosynthesis comes from splitting water molecules at Photosystem II.",
+        "explanation": "Tracer experiments show labeled oxygen in water, not CO2, ends up as O2 gas. CO2's oxygen ends up in sugar and water."
       },
       {
         "topic": "Chemiosmosis and ATP synthase",
@@ -69,20 +69,20 @@
           "c_chemiosmosis"
         ],
         "true_facts": [
-          "In bright light the thylakoid lumen can reach about pH 5, while the stroma stays near pH 8.",
-          "The H+ gradient across the thylakoid membrane stores potential energy, like water held behind a dam.",
-          "ATP synthase is a rotary enzyme whose spinning part is turned by the flow of hydrogen ions through it.",
-          "Chemiosmosis in chloroplasts works on the same principle as ATP production in mitochondria.",
-          "Splitting water on the lumen side of the membrane releases H+ into the lumen, adding to the gradient.",
-          "If the thylakoid membrane is made leaky to H+, electron transport can continue but ATP production drops.",
-          "The cytochrome complex uses energy from passing electrons to pump H+ across the thylakoid membrane.",
-          "ATP made by chloroplast ATP synthase is released into the stroma, right where the Calvin cycle uses it.",
-          "Linear electron flow alone makes slightly too little ATP for the Calvin cycle, so cyclic flow tops it up.",
-          "Forming NADPH on the stroma side removes H+ there, which makes the gradient across the membrane steeper."
+          "Bright light drops the lumen to about pH 5 while the stroma stays near 8, because H+ piles up inside.",
+          "The H+ gradient stores energy like water behind a dam, so letting H+ flow back out can do work.",
+          "ATP synthase spins like a tiny turbine because hydrogen ions rush through it, and the spinning makes ATP.",
+          "Chloroplasts make ATP the same way mitochondria do, since both use an H+ gradient across a membrane.",
+          "Splitting water inside the lumen releases H+ right there, which adds to the gradient.",
+          "If the thylakoid membrane leaks H+, electrons still flow but ATP output drops, since the gradient collapses.",
+          "The cytochrome complex pumps H+ into the lumen, so electron flow keeps building the gradient.",
+          "ATP synthase releases ATP into the stroma, which is handy because the Calvin cycle runs there.",
+          "Linear flow makes slightly too little ATP for the Calvin cycle, so cyclic flow tops it up.",
+          "Making NADPH uses up H+ in the stroma, which makes the gradient across the membrane even steeper."
         ],
-        "corrupted_fact": "ATP synthase makes ATP as H+ ions flow from the stroma into the thylakoid lumen, down their gradient.",
-        "correct_version": "ATP synthase makes ATP as hydrogen ions flow from the thylakoid lumen out into the stroma, down their gradient.",
-        "explanation": "H+ is pumped INTO the lumen, so the lumen is the high-concentration side. ATP synthase is driven as H+ flows back OUT to the stroma."
+        "corrupted_fact": "ATP synthase makes ATP as H+ flows from the stroma into the lumen, because that way is downhill.",
+        "correct_version": "ATP synthase makes ATP as H+ flows from the lumen out into the stroma, down its gradient.",
+        "explanation": "H+ gets pumped INTO the lumen, so the lumen is the crowded side. ATP synthase spins as H+ rushes back OUT to the stroma."
       },
       {
         "topic": "The Calvin cycle",
@@ -90,20 +90,20 @@
           "c_calvin_cycle"
         ],
         "true_facts": [
-          "In the fixation step, Rubisco attaches CO2 to a five-carbon sugar called RuBP.",
-          "The unstable six-carbon product of fixation immediately splits into two three-carbon molecules of 3-PGA.",
-          "In the reduction step, ATP and NADPH from the light reactions convert 3-PGA into G3P.",
-          "For every three CO2 molecules fixed, the cycle makes six G3P but exports only one as net sugar.",
-          "Five of every six G3P molecules are rearranged, using more ATP, to rebuild RuBP.",
-          "Building one net G3P from three CO2 costs the cycle 9 ATP and 6 NADPH.",
-          "G3P exported from the chloroplast can be built into glucose, sucrose, starch, or even amino acids.",
-          "The Calvin cycle takes place in the stroma, the fluid that surrounds the thylakoids.",
-          "Without RuBP regeneration, fixation would stop quickly because Rubisco would run out of its CO2 acceptor.",
-          "Almost all the carbon in a tree's wood originally came from CO2 taken in through its leaves."
+          "In fixation, Rubisco sticks CO2 onto a five-carbon sugar called RuBP, so carbon enters the cycle.",
+          "The six-carbon product is unstable, so it instantly splits into two three-carbon 3-PGA molecules.",
+          "ATP and NADPH from the light reactions turn 3-PGA into G3P, which is the cycle's sugar.",
+          "Three CO2 make six G3P, but only one leaves as sugar because five must rebuild RuBP.",
+          "Five of every six G3P get rearranged back into RuBP, which costs the cycle extra ATP.",
+          "One net G3P costs 9 ATP and 6 NADPH, since each CO2 costs 3 ATP and 2 NADPH.",
+          "Exported G3P can become glucose, starch, or even amino acids, because it's a flexible building block.",
+          "The Calvin cycle runs in the stroma, so ATP from ATP synthase lands right where it's needed.",
+          "Without new RuBP, fixation stops fast, because Rubisco runs out of things to stick CO2 onto.",
+          "Most of a tree's wood came from CO2 in the air, because the Calvin cycle builds sugar from it."
         ],
-        "corrupted_fact": "The Calvin cycle runs mainly at night, when the light reactions stop and the plant is free to fix CO2.",
-        "correct_version": "The Calvin cycle runs mainly during the day, because it depends on the ATP and NADPH the light reactions make.",
-        "explanation": "The old name 'dark reactions' only means they don't use light directly. They need a constant supply of ATP and NADPH, which stops soon after dark."
+        "corrupted_fact": "The Calvin cycle runs mostly at night, because it doesn't need light to fix CO2 into sugar.",
+        "correct_version": "The Calvin cycle runs mostly during the day, because it needs ATP and NADPH from the light reactions.",
+        "explanation": "\"Dark reactions\" only means they don't use light directly. They need a steady supply of ATP and NADPH, which runs out soon after dark."
       },
       {
         "topic": "Rubisco, photorespiration, C4 and CAM",
@@ -113,20 +113,20 @@
           "c_limiting_factors"
         ],
         "true_facts": [
-          "Rubisco can bind O2 instead of CO2, and it does so more often as leaf temperature rises.",
-          "Photorespiration uses up ATP and releases CO2 without producing any sugar.",
-          "When stomata close on a hot, dry day, O2 builds up inside the leaf and CO2 runs low.",
-          "PEP carboxylase grabs CO2 even at very low concentrations and never binds O2 by mistake.",
-          "CAM plants such as cacti open their stomata at night and store CO2 as organic acids until daytime.",
-          "CAM plants separate CO2 capture and the Calvin cycle in time, while C4 plants separate them in space.",
-          "At low light, adding more CO2 barely raises the photosynthesis rate, because light is the limiting factor.",
-          "Above an optimum temperature, the photosynthesis rate falls as enzymes like Rubisco start to lose their shape.",
-          "C4 plants spend extra ATP to concentrate CO2, which pays off in hot climates but not in cool ones.",
-          "Rubisco is so slow that plants make huge amounts of it, making it likely the most abundant protein on Earth."
+          "Rubisco grabs O2 instead of CO2 more often as leaves heat up, which wastes the plant's energy.",
+          "Photorespiration burns ATP and releases CO2 without making sugar, so it drags down growth.",
+          "When stomata close on a hot day, O2 builds up inside the leaf, since CO2 can't get in.",
+          "PEP carboxylase grabs CO2 even when it's scarce, and it never grabs O2, so it's very reliable.",
+          "Cacti open their stomata at night so they lose less water, then store CO2 as acids until morning.",
+          "CAM plants separate CO2 capture and the Calvin cycle in time, so stomata can stay shut all day.",
+          "In dim light, adding extra CO2 barely helps, because light is the limiting factor.",
+          "Past its best temperature, photosynthesis slows because enzymes like Rubisco start losing their shape.",
+          "C4 plants spend extra ATP to concentrate CO2, which pays off in hot places but not cool ones.",
+          "Rubisco is so slow that plants make tons of it, so it's likely Earth's most common protein."
         ],
-        "corrupted_fact": "In C4 plants, Rubisco works in the mesophyll cells, right where PEP carboxylase first captures the CO2.",
-        "correct_version": "In C4 plants, Rubisco works in the bundle-sheath cells, where CO2 first captured by PEP carboxylase in the mesophyll is concentrated.",
-        "explanation": "C4 plants separate the two enzymes in space: PEP carboxylase captures CO2 in the mesophyll, then it is shuttled to bundle-sheath cells so Rubisco sees high CO2 and little O2."
+        "corrupted_fact": "In C4 plants, Rubisco works in the mesophyll cells, because that's where CO2 is first captured.",
+        "correct_version": "In C4 plants, Rubisco works in the bundle-sheath cells, where CO2 captured in the mesophyll gets concentrated.",
+        "explanation": "C4 plants split the jobs by place. PEP carboxylase grabs CO2 in the mesophyll, then ships it to bundle-sheath cells so Rubisco gets lots of CO2."
       }
     ]
   }

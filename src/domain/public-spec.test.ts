@@ -4,18 +4,12 @@ import { spec } from "@/modes/case/__fixtures__/case";
 import { content as impostorContent } from "@/modes/impostor/__fixtures__/impostor";
 
 describe("toPublicSpec", () => {
-  it("strips check answers and case secrets", () => {
-    const pub = toPublicSpec(spec);
-    const json = JSON.stringify(pub);
-    for (const leak of ["SECRET", "ALIBI", "KNOWS", "correct_option_id", "solution", "Dana used", "feedback_by_wrong", "wrong_option_feedback", "speaking_style"])
+  it("strips case secrets: contradictions, press replies, locked evidence, and the verdict", () => {
+    const json = JSON.stringify(toPublicSpec(spec));
+    for (const leak of ["SECRET UNLOCK", "SOLUTION TEXT", "correct_option_id", "proof_evidence_id", "contradiction", "press_reply", "breakthrough", "wrong_option_feedback", "I panicked"])
       expect(json).not.toContain(leak);
-    expect(pub.checks[0]).toMatchObject({ id: "d1", kind: "choice", prompt: "Which stage stops first?", hints: ["1", "2", "3"] });
-    expect([...pub.checks[0].options!].sort()).toEqual(["ETC", "Glycolysis"]);
-    expect(Object.keys(pub.checks[0]).sort()).toEqual(["concept_ids", "hints", "id", "kind", "options", "prompt"]);
     expect(json).toContain("Dr. Vale");
-    expect(json).toContain("Tox report");
-    expect(json).toContain("who had the pharmacy key"); // locked evidence appears only as a lead
-    expect(json).not.toContain("Dana signed out the key");
+    expect(json).toContain("statements");
   });
   it("hides impostor facts", () => {
     const pub = toPublicSpec({ ...spec, mode: "impostor", content: impostorContent, checks: [] });

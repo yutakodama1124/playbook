@@ -4,6 +4,10 @@ import type { ImpostorContent } from "./schema";
 
 export const ROUNDS = 5, MIN_TRUE_FACTS = 9;
 
+/** Readability limits (word counts): fact cards are read aloud, so keep them short. */
+export const IMPOSTOR_WORD_LIMITS = { fact: 25, explanation: 40 } as const;
+const wordCount = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
+
 export function validateImpostor(c: ImpostorContent, map: ConceptMap): string[] {
   const problems: string[] = [];
   const concepts = new Set(map.concepts.map((x) => x.id));
@@ -20,6 +24,12 @@ export function validateImpostor(c: ImpostorContent, map: ConceptMap): string[] 
     if (lengths.length && r.corrupted_fact.length > lengths[lengths.length - 1]) problems.push(`round ${i + 1}: corrupted fact is the longest card — shorten it`);
     if (r.concept_ids.length === 0) problems.push(`round ${i + 1} needs concept_ids`);
     if (r.correct_version.trim().toLowerCase() === r.corrupted_fact.trim().toLowerCase()) problems.push(`round ${i + 1}: correct_version must differ from the corrupted fact`);
+    const L = IMPOSTOR_WORD_LIMITS, tooLong = (what: string, s: string, max: number) => {
+      const n = wordCount(s); if (n > max) problems.push(`round ${i + 1}: ${what} is too long (${n} words, max ${max}) — keep it short and simple`);
+    };
+    r.true_facts.forEach((f, k) => tooLong(`true fact ${k + 1}`, f, L.fact));
+    tooLong("corrupted fact", r.corrupted_fact, L.fact);
+    tooLong("explanation", r.explanation, L.explanation);
     for (const id of r.concept_ids) if (!concepts.has(id)) problems.push(`round ${i + 1} references unknown concept ${id}`);
   });
   return problems;

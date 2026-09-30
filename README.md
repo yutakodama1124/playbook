@@ -16,7 +16,7 @@ Studying is mostly passive: rereading notes and flashcards. The popular "gamifie
 
 | Mode | How the concept is the mechanic |
 |---|---|
-| **Case Files** (solo) | Question characters, earn evidence by asking the right person the right thing, and fill a case board. Board answers are only confirmed two at a time (like *Return of the Obra Dinn*), so you can't guess row by row. The correct answer is always backed by 3+ clues (the *Three Clue Rule* from mystery design). A mentor character teaches the science but never gives the answer. |
+| **Case Files** (solo) | A courtroom game in the style of *Ace Attorney*. Witnesses testify; one line in each testimony is a lie. **Press** lines to dig for detail and new evidence, then **present** the evidence that breaks the lie — which only works if you apply the concept (e.g. "the cells just switched to fermenting" vs. a sensor showing ATP crashed to 15%). Five lives, points, streaks, and a final verdict where you name the culprit *and* present the proof. No AI during play. |
 | **Escape Room** (solo) | Two rooms of locks that open by computing, predicting, or ordering a process. Each lock yields a fragment; the sealed exit is a meta-puzzle that combines them. Designed to the standard escape-room puzzle rules: one answer, everything clued, no red herrings. |
 | **Impostor** (3–10 players) | Everyone gets a fact card on their phone; one is subtly wrong, built from a real misconception. Each player reads their fact and explains *why* it's true — the impostor has to bluff a reason. Secret vouching pairs and scoring for misdirection keep it tense. |
 | **Boss Fight** | Your test date becomes a boss. Weak concepts are its shields. Correct answers deal damage, and review questions come back on a spaced schedule (1, 2, 4, 8 days, compressed before test day). |
@@ -39,9 +39,9 @@ flowchart LR
 1. **Concept Map.** Claude reads the uploaded material and extracts 6–10 concepts, where each appears in the notes, and 1–2 common misconceptions per concept (misconceptions become red herrings and wrong-answer feedback).
 2. **Generation.** A mode-specific prompt turns the Concept Map into a game as structured data (validated with Zod).
 3. **Quality gates.** Before a student sees a game:
-   - **Rule checks in code** — every numeric answer is recomputed from its formula, every choice answer exists, concept ids are real, and mode rules hold (Case Files: 3+ clues for the answer, every wrong option made tempting by evidence, 2+ pieces of evidence that must be discovered; Escape Room: one exit meta-lock fed by every other lock; Impostor: the fake fact can't stand out by length).
+   - **Rule checks in code** — every numeric answer is recomputed from its formula, every choice answer exists, concept ids are real, and mode rules hold (Case Files: exactly one contradiction per testimony whose evidence is already in the player's hands, every hidden item unlocked by exactly one press, feedback for every wrong verdict; Escape Room: one exit meta-lock fed by every other lock; Impostor: the fake fact can't stand out by length).
    - **AI playtester** — a separate Claude review independently derives every answer from the in-game information, tries to solve puzzles *without* the concept, and checks for contradictions and "quiz in costume" design. Serious problems are sent back to the generator (up to 2 repair rounds); if the game still fails, it is not shown.
-4. **Play.** Answers are checked **in code, not by AI**. Answer keys, character secrets, and locked clues **never reach the browser** — the server sends a redacted version and releases clues only after a lock is solved. Character chat has a leak guard so a suspect can't blurt out the solution.
+4. **Play.** Answers are checked **in code, not by AI**. Answer keys, character secrets, and locked clues **never reach the browser** — the server sends a redacted version and releases clues only after a lock is solved.
 5. **Art** comes from a reusable, auto-tagged image library, so most games cost nothing extra to illustrate.
 
 ### Stack
@@ -72,8 +72,8 @@ Environment: `ANTHROPIC_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `
 ## Research behind the design
 
 - Habgood & Ainsworth, *intrinsic integration*: learning content should be the core mechanic, not a quiz beside it.
-- *Return of the Obra Dinn*: deductions confirmed in batches to prevent guessing.
-- The Alexandrian's *Three Clue Rule* for mystery design.
+- *Ace Attorney* cross-examination (press / present, penalties for wild guesses).
+- Duolingo / Blooket game feel: lives, streaks, instant feedback, short sessions.
 - Escape-room puzzle design rules and puzzle-hunt metapuzzles.
 - Social deduction (Werewolf, Among Us): bluffing, information asymmetry, verification.
 - Learning science: predict-observe-explain, retrieval practice, spaced repetition, curiosity gaps.

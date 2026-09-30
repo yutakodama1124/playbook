@@ -13,38 +13,34 @@ export function caseAssetRequests(c: CaseContent): GameSpec["asset_requests"] {
   ];
 }
 
-const SYSTEM = `You design "Case Files": a detective game built from a student's Concept Map. It must play like a real mystery (think Return of the Obra Dinn or a good whodunit), not a quiz with a story pasted on. ${CONTENT_POLICY}
+const SYSTEM = `You design "Case Files": a courtroom-detective game in the style of Ace Attorney, built from a student's Concept Map. Witnesses testify, the player PRESSES statements for detail and PRESENTS evidence to expose the one statement per testimony that the evidence disproves. It must feel like a game a teenager would choose to play, not a worksheet. ${CONTENT_POLICY}
 
-CORE RULE (intrinsic integration): the investigation IS the learning. The case can only be cracked by APPLYING the unit's concepts to evidence. Motive, body language, or trivia recall alone must never be enough.
+CORE RULE (intrinsic integration): every contradiction is only visible if you APPLY a concept. The evidence never says "this statement is false"; the player has to reason "if X were true, the data would show Y, but it shows Z." Motive, tone, or trivia recall alone must never expose a lie.
 
-THEME — pick what fits the subject:
-- "mystery": sabotage, theft, or a staged accident (never a killing). Accusation options = suspects.
-- "patient": a patient with symptoms. Options = diagnoses. Characters = patient, family, nurse.
-- "system": something failing (a bridge, an economy, an ecosystem, a program). Options = root causes.
+STYLE (very important)
+- 8th-grade reading level. Short sentences. Plain words; only use the unit's own terms.
+- Witnesses have distinct, fun personalities (nervous, smug, overly cheerful, grumpy) and talk like real people. A little humor is good.
+- Word limits (hard): statement ≤ 22 words, press_reply ≤ 30, evidence detail ≤ 30, key_fact ≤ 12 (the one line the player must notice), bio ≤ 20, premise ≤ 60, breakthrough ≤ 35, contradiction explanation ≤ 50, finale explanation ≤ 55.
+
+THEME — pick what fits the subject: "mystery" (sabotage, theft, or a staged accident — never a killing), "patient" (options = diagnoses), or "system" (something failing; options = root causes).
 
 STRUCTURE
-- hook: one intriguing question specific to THIS case that creates a knowledge gap before anything is explained (for example, for a physics unit: "Why did the heavier cart lose the race downhill?" — never reuse this example). Must not give the answer away.
-- Characters: 3–4 involved characters + exactly 1 mentor (is_mentor=true, an expert who teaches concepts Socratically and is never an option). Each non-mentor: a secret, an alibi, facts they know, what they lie about ("" if honest), a distinct speaking style. Secrets and alibis must fit together into one consistent timeline.
-- Every non-mentor has a believable motive or opportunity and something to hide. The culprit must NOT be the most obvious by role or motive (no "the rival did it"). Only the concept applied to the evidence separates them.
-- Evidence (6–8 items), written as in-world documents (lab reports, logs, receipts, charts, messages) whose text teaches the concept it hinges on through real data or details, not lectures.
-  - 3–4 items are in the file from the start (unlocked_by "").
-  - 2–4 items must be DISCOVERED: unlocked_by = the id of a non-mentor character who hands it over only when asked about unlock_topic. unlock_topic is a short noun phrase (2–6 words) naming a concrete thing a curious detective would think to ask about after reading the other evidence (e.g. "the oxygen probe log"). The player is only told WHO knows more, not what, so the evidence they already have must point toward the topic. Every discovered item must be needed by at least one board row.
-- THREE CLUE RULE: at least 3 evidence items support the correct option, and at least 2 of them directly tie the concept conclusion to that option. List in points_to only the options or characters an item genuinely implicates (at most 2). Each wrong option is made tempting by at least 1 evidence item tied to a real misconception from the map, and is ruled out once the concept is applied correctly.
-- Case board (3–5 rows): the reasoning chain up to, but NOT including, the final answer — what the data show → what that rules out → which step or mechanism failed. At least one row is a number check computed from evidence data. Never put the culprit, diagnosis, or root cause on the board; the accusation is where the player combines the rows into the final call. Each row has its own check (kind choice or number only) and cites the evidence_ids needed to answer it. Rows are confirmed only in batches, so each must have exactly one defensible answer.
-- Accusation: the final call. Option labels short (max 8 words), neutral, no mechanism given away. wrong_option_feedback corrects the misconception behind each wrong option.
-- Solution chain: 3–5 steps from evidence to answer, each tied to a concept id.
-- Field guide: one entry per concept used, student-level, with source_ref copied from the concept.
+- hook: one intriguing question specific to THIS case that creates a knowledge gap without giving the answer away.
+- characters: exactly 1 mentor (is_mentor=true; the player's partner who gives hints; never a witness or an option) + 3–4 others. The culprit must NOT be the most obvious by role or motive.
+- evidence (5–8 items), written as in-world items (probe logs, lab sheets, receipts, texts) with real data. 2–4 start in the file (starts_in_file=true). Every other item is unlocked by PRESSING exactly one statement (press_unlocks_evidence_id), and that press_reply should naturally mention handing it over.
+- testimonies: exactly 3, escalating. 1 = WHAT happened, 2 = HOW (which step or mechanism failed), 3 = WHO. Each: a witness (not the mentor), a short title, 4–5 statements, exactly one contradiction {statement_id, evidence_id, concept_id, explanation}. The contradicting evidence must be in the file by then (starting, or unlocked by a press in this or an earlier testimony). At least one press in testimonies 1–2 unlocks evidence needed later. breakthrough = what the witness blurts out after being caught; it should feel like a reveal that moves the case forward.
+- Make wrong presents tempting: at least one other statement per testimony should sound suspicious (built from a real misconception) but be TRUE.
+- hints: exactly 3 per testimony, from the mentor: a nudge toward which data matters → the concept explained simply → nearly there. Never name the exact statement and evidence pair.
+- finale: question (e.g. "Who sabotaged the lab?"), 3–4 options (non-mentor characters, character_id set), correct_option_id, proof_evidence_id (the one item that proves it), wrong_option_feedback for EVERY wrong option correcting the misconception behind it, and an explanation that ties the science together.
+- field_guide: one entry per concept used, student-level, source_ref copied from the concept.
 
 QUALITY BAR
-- Every answer must be derivable from in-game information plus the concept. One defensible answer per question.
-- No filler questions (no arithmetic unrelated to the concept, no "what is the definition of X").
-- Numbers in evidence must be realistic and internally consistent.
-- The title, hook, intro, premise, and briefing must not hint at which option is correct.
+- One defensible contradiction per testimony and one defensible verdict. Numbers realistic and consistent.
+- The title, hook, intro, premise, and briefing must not hint at the culprit.
 - NEVER write concept ids (like c_something) in any text a student reads — use concept names.
-
-CHECK FIELDS by kind — number: answer_number, tolerance, formula (mathjs expression computing answer_number); choice: options, answer=[correct], wrong_feedback for EVERY wrong option. All other fields (pairs, etc.) = [] or null. Number checks always include a formula, even if it is just the value from the evidence. For number rows, hint 2 names the most likely wrong value and the misconception behind it. Hints: exactly 3 — a nudge toward the right evidence, an explanation of the concept, a worked SIMILAR example; never the answer.
-briefing: 2–4 sentences, in-world, naming the concepts the detective will need as tools, without saying which mechanism happened in this case. setting_tags: 3–5 plain tags describing the location.
-IDs: characters "ch_…", evidence "e_…", options "opt_…", board rows "row_…", checks "k_…". Never start a non-concept id with "c_".`;
+- checks: [] (this mode grades testimonies, not checks).
+briefing: 2–3 short in-world sentences naming the concepts the player will need as tools. setting_tags: 3–5 plain tags describing the location; portrait_tags: 2–4 plain tags per character (age, look, job).
+IDs: characters "ch_…", evidence "e_…", testimonies "t_…", statements "s_…", options "opt_…". Never start a non-concept id with "c_".`;
 
 export const generateCase: Generator = async ({ llm, map, targetConceptIds }) => {
   const out = await llm.parseStructured({

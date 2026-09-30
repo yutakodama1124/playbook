@@ -1,514 +1,400 @@
 {
   "mode": "case",
-  "title": "The Night the Cells Went Quiet",
-  "hook": "How can a cell run out of energy while it is sitting in a pool of sugar and oxygen?",
-  "briefing": "Every cell in Team Aurora's culture burns glucose in stages: glycolysis in the cytoplasm, then the Krebs cycle and the electron transport chain inside the mitochondria, where oxygen catches the electrons at the very end. When that last stage stalls, cells fall back on fermentation and survive on a trickle of ATP. Something pushed these cells from one mode to the other overnight. Your job is to read the lab data like a cell biologist and work out what, and who.",
-  "intro": "Hollis Summer Research Program, 8:05 a.m., the morning of the final showcase. Team Aurora's muscle-cell cultures, three weeks of work, have gone nearly silent: they are barely using oxygen and their ATP has crashed. Four people were near the incubator overnight. Program director Dr. Okafor has asked you to find out what happened before the judges arrive at noon.",
-  "outro_win": "You traced it from the numbers: oxygen everywhere, but the cells couldn't use it, so the block had to sit at the end of the electron transport chain. The azide buffer was the only thing that could do that, and Theo was the only one who used it. He admits he 'borrowed' the Aurora plates for a wash he knew would hurt them. Team Aurora reruns a backup plate and presents the sabotage itself as a live demo of complex IV inhibition.",
-  "outro_lose": "The wrong person takes the blame, and the real cause stays in the hood. Look again at the oxygen data: if the cells had lacked oxygen, the medium would have been oxygen-poor, not nearly saturated. Ask where oxygen gets used, and what could stop it being used while it is right there.",
+  "title": "Flatline at 9:48",
+  "hook": "Why would a dish of heart cells stop beating while it was swimming in sugar and oxygen?",
+  "briefing": "Cells make ATP in stages. Glycolysis splits glucose in the cytoplasm and nets 2 ATP, no oxygen needed. The Krebs cycle loads electrons onto NADH and FADH2. The electron transport chain passes those electrons to oxygen and powers ATP synthase, which makes most of the cell's ATP. If that last stage stops, cells fall back on fermentation. Keep all of that in mind. You'll need it in court.",
+  "intro": "Hillcrest High, 7:02 a.m. Team Nova's heart-muscle cells, nicknamed the Drummers, beat in a dish for three weeks. This morning they're silent. The state science fair judges arrive at noon. Your lab partner Jules has pulled three witnesses into Room 204. Press their statements for details. When a line doesn't add up, present the evidence that breaks it. Five wrong calls and the case is closed without you.",
+  "outro_win": "Margo's uncropped photo put her at the open dish with Buffer B at 9:45, three minutes before the flatline. She wanted a front-page sabotage scoop, and a rival to pin it on. Team Nova grows a backup dish and presents the case itself: oxygen everywhere, ATP in ruins, one poison at the end of the chain. The judges give it first place.",
+  "outro_lose": "The wrong name makes the headline, and the real culprit gets the scoop. Go back to the numbers. Oxygen piled up unused, so the end of the chain was blocked. A poison like that works in minutes. Who was at the dish just minutes before 9:48?",
   "concept_ids": [
-    "c_glycolysis",
     "c_fermentation",
+    "c_glycolysis",
     "c_electron_transport_chain",
-    "c_etc_inhibitors",
     "c_chemiosmosis",
+    "c_etc_inhibitors",
     "c_enzymes"
   ],
-  "checks": [
-    {
-      "id": "k_metabolism",
-      "kind": "choice",
-      "concept_ids": [
-        "c_glycolysis",
-        "c_fermentation"
-      ],
-      "prompt": "Based on the oxygen readout and the medium chemistry, what changed in the cells overnight?",
-      "hints": [
-        "Compare two things side by side: how much oxygen the cells used, and how much glucose and lactate changed.",
-        "Glycolysis needs no oxygen and makes 2 ATP; when the mitochondrial stages stop, cells turn pyruvate into lactate to recycle NAD+ and keep glycolysis running.",
-        "Example: a sprinter's leg muscle at full effort uses sugar fast and piles up lactate, even though the sprinter is breathing hard. The sugar is being broken down, just not all the way to CO2 and water."
-      ],
-      "answer_number": null,
-      "tolerance": null,
-      "formula": null,
-      "options": [
-        "They stopped using oxygen but kept breaking down glucose",
-        "They ran out of glucose, so all energy production stopped",
-        "They kept using oxygen normally; something else failed",
-        "Every stage stopped, including glycolysis"
-      ],
-      "answer": [
-        "They stopped using oxygen but kept breaking down glucose"
-      ],
-      "wrong_feedback": [
-        {
-          "option": "They ran out of glucose, so all energy production stopped",
-          "feedback": "Check the glucose number again: 14 mM is still left, more than half of what they started with. Starving cells would not be making lactate at record speed."
-        },
-        {
-          "option": "They kept using oxygen normally; something else failed",
-          "feedback": "Oxygen use fell from 41 to 3 pmol per minute. That is more than a 90% drop, not normal."
-        },
-        {
-          "option": "Every stage stopped, including glycolysis",
-          "feedback": "Lactate jumped by 21 mM. Lactate only comes from pyruvate, and pyruvate only comes from glycolysis, so glycolysis was running hard."
-        }
-      ],
-      "pairs": []
-    },
-    {
-      "id": "k_lactate_share",
-      "kind": "number",
-      "concept_ids": [
-        "c_fermentation",
-        "c_glycolysis"
-      ],
-      "prompt": "Each glucose that is fermented in a muscle cell becomes 2 lactate. About what percent of the glucose the cells used overnight was fermented to lactate?",
-      "hints": [
-        "You need two changes from the medium chemistry panel: how much glucose disappeared and how much lactate appeared.",
-        "Fermentation turns 1 glucose into 2 pyruvate, then into 2 lactate. So glucose fermented = lactate produced ÷ 2. Whatever is left over could have gone on to the mitochondria.",
-        "Similar example: a yeast flask uses 10 mM glucose and produces 12 mM ethanol (2 ethanol per glucose). Glucose fermented = 12 ÷ 2 = 6 mM, so 6 ÷ 10 = 60% was fermented and 40% was available for aerobic respiration."
-      ],
-      "answer_number": 95.45,
-      "tolerance": 3,
-      "formula": "((23 - 2) / 2) / (25 - 14) * 100",
-      "options": [],
-      "answer": [],
-      "wrong_feedback": [],
-      "pairs": []
-    },
-    {
-      "id": "k_block_site",
-      "kind": "choice",
-      "concept_ids": [
-        "c_electron_transport_chain",
-        "c_etc_inhibitors"
-      ],
-      "prompt": "Where did cellular respiration break down?",
-      "hints": [
-        "The oxygen probe tells you whether oxygen was missing or just unused. Start there.",
-        "Oxygen is only consumed at one place: it accepts electrons at the end of the electron transport chain. If that step is blocked, oxygen piles up in the medium even though the cell is desperate for ATP.",
-        "Similar example: a car with a full fuel tank that won't run. If fuel is reaching the engine but not being burned, the problem is in the engine, not the fuel line. Look for where the 'fuel' stops being used, not where it stops arriving."
-      ],
-      "answer_number": null,
-      "tolerance": null,
-      "formula": null,
-      "options": [
-        "Glycolysis in the cytoplasm",
-        "Oxygen getting into the incubator",
-        "The last complex of the electron transport chain",
-        "Enzymes slowed by the cold"
-      ],
-      "answer": [
-        "The last complex of the electron transport chain"
-      ],
-      "wrong_feedback": [
-        {
-          "option": "Glycolysis in the cytoplasm",
-          "feedback": "Lactate soared and glucose was used four times faster than usual, so glycolysis was working overtime, not blocked."
-        },
-        {
-          "option": "Oxygen getting into the incubator",
-          "feedback": "The probe read 158 mmHg by morning, almost fully saturated. There was more oxygen than usual, not less. It was there but not being used."
-        },
-        {
-          "option": "Enzymes slowed by the cold",
-          "feedback": "A 30-minute dip to 34.5 °C only slows enzymes a little and reversibly, and it would slow glycolysis too. Instead glycolysis sped up."
-        }
-      ],
-      "pairs": []
-    },
-    {
-      "id": "k_delivery",
-      "kind": "choice",
-      "concept_ids": [
-        "c_etc_inhibitors"
-      ],
-      "prompt": "Which event overnight could have caused a block at that spot?",
-      "hints": [
-        "Line up the sign-out sheet with the bottles found in the hood. Which event put a chemical onto the cells?",
-        "Some chemicals bind cytochrome c oxidase (complex IV), the enzyme that hands electrons to oxygen. Cyanide is the classic example; check whether anything in the lab works the same way.",
-        "Similar example: if a fish tank's fish all stop moving right after a new bottle of water conditioner goes in, you check that bottle's ingredient list before blaming the heater or the air pump."
-      ],
-      "answer_number": null,
-      "tolerance": null,
-      "formula": null,
-      "options": [
-        "The CO2 tank swap",
-        "The wash with DPBS stock B",
-        "The skipped evening feeding",
-        "The incubator door left ajar"
-      ],
-      "answer": [
-        "The wash with DPBS stock B"
-      ],
-      "wrong_feedback": [
-        {
-          "option": "The CO2 tank swap",
-          "feedback": "The tank supplies only CO2; oxygen comes in through the room-air vent. And the oxygen probe shows oxygen rising, not falling."
-        },
-        {
-          "option": "The skipped evening feeding",
-          "feedback": "A missed feeding can't block the electron transport chain, and there was still plenty of glucose left in the morning."
-        },
-        {
-          "option": "The incubator door left ajar",
-          "feedback": "An open door lets in more room air, not less oxygen, and a short cool spell can't switch off one specific protein complex."
-        }
-      ],
-      "pairs": []
-    }
-  ],
+  "checks": [],
   "asset_requests": [],
   "content": {
     "theme": "mystery",
-    "premise": "On the night before the Hollis Summer Research Program showcase, Team Aurora's muscle-cell cultures stopped using oxygen and lost most of their ATP. Four people had access to the tissue-culture room overnight.",
-    "setting": "The tissue-culture room of a university biology lab during a summer research program for high school students",
+    "premise": "Team Nova grew real heart-muscle cells that beat in a dish. They were the favorite to win the state science fair. Last night, the cells stopped beating. They had sugar. They had oxygen. Three people were near Room 204. Cross-examine them before the judges arrive at noon.",
+    "setting": "Room 204, the biology lab at Hillcrest High, the morning after the heart cells stopped",
     "setting_tags": [
+      "high school",
       "biology lab",
-      "cell culture incubator",
-      "night",
-      "university",
-      "fume hood"
+      "early morning",
+      "incubator",
+      "microscope"
     ],
     "characters": [
       {
-        "id": "ch_okafor",
-        "name": "Dr. Imani Okafor",
-        "role": "program director",
-        "bio": "Runs the summer program and has taught cell metabolism for twenty years. Wants the truth before noon.",
+        "id": "ch_jules",
+        "name": "Jules Tran",
+        "role": "your lab partner, Team Nova",
+        "bio": "Your lab partner. Knows the class notes cold. Named the heart cells the Drummers and wants justice for them.",
         "is_mentor": true,
-        "secret": "",
-        "alibi": "Was at home overnight; got the alert at 7:50 a.m.",
-        "knows": [
-          "How each stage of respiration works and where it happens",
-          "What normal overnight culture data look like"
-        ],
-        "lies_about": "",
-        "speaking_style": "Calm, answers questions with questions, loves analogies about factories and assembly lines.",
         "portrait_tags": [
-          "scientist",
-          "middle-aged woman",
+          "teenage girl",
           "lab coat",
-          "glasses"
+          "goggles on head",
+          "notebook"
         ]
       },
       {
-        "id": "ch_theo",
-        "name": "Theo Park",
-        "role": "rival intern, Team Helix",
-        "bio": "Team Helix's lead intern. Was in the lab late finishing a staining experiment on fixed (already dead) cells.",
+        "id": "ch_blake",
+        "name": "Blake Okoro",
+        "role": "rival team captain, Team Helix",
+        "bio": "Three-time science fair champ. Studies dead, preserved cells. His ego is very much alive.",
         "is_mentor": false,
-        "secret": "He knew DPBS stock B contains sodium azide, which is fine for his fixed cells but toxic to living ones. At 21:30 he washed two of Team Aurora's plates with it after hearing their results were ahead of Helix's. He hoped it would look like an incubator failure.",
-        "alibi": "Says he was in the hood from 21:20 to 21:45 washing and staining only his own plates, then went home.",
-        "knows": [
-          "Stock B is the only wash buffer on the shelf with a preservative",
-          "He left the hood messy because he was in a hurry",
-          "Dana was fiddling with the gas tanks when he left"
-        ],
-        "lies_about": "Which plates he washed; he insists he never touched the Aurora plates.",
-        "speaking_style": "Quick, confident, a little too helpful; redirects suspicion toward the gas tank.",
         "portrait_tags": [
           "teenage boy",
-          "hoodie",
-          "lab goggles on head"
+          "blazer",
+          "smirk",
+          "trophy"
         ]
       },
       {
-        "id": "ch_dana",
-        "name": "Dana Ruiz",
-        "role": "lab manager",
-        "bio": "Keeps the lab running: gas tanks, sign-out sheets, equipment probes.",
+        "id": "ch_gus",
+        "name": "Gus Ferreira",
+        "role": "night custodian",
+        "bio": "Has cleaned Hillcrest for 22 years. Talks to his floor polisher, Duchess. Swears she listens.",
         "is_mentor": false,
-        "secret": "She silenced the incubator's CO2 alarm during the 23:05 tank swap and forgot to write the swap in the maintenance log until morning.",
-        "alibi": "Came in at 23:00 only to swap the empty CO2 tank; left at 23:25.",
-        "knows": [
-          "The incubator tank supplies CO2 only; oxygen comes in from room air through a filtered vent",
-          "The dissolved-oxygen probe records all night",
-          "Everyone must sign out the tissue-culture hood"
-        ],
-        "lies_about": "At first claims the CO2 alarm never went off.",
-        "speaking_style": "Brisk, practical, defensive about her equipment.",
         "portrait_tags": [
-          "woman",
-          "work gloves",
-          "clipboard",
-          "gas cylinder"
+          "older man",
+          "custodian uniform",
+          "mustache",
+          "floor polisher"
         ]
       },
       {
-        "id": "ch_priya",
-        "name": "Priya Shah",
-        "role": "night facilities technician",
-        "bio": "Does rounds of the building overnight: alarms, waste bins, restocking.",
+        "id": "ch_margo",
+        "name": "Margo Vance",
+        "role": "editor, the Hillcrest Tribune",
+        "bio": "Runs the school paper and the Heart Cam livestream of Team Nova's cells. Talks in headlines.",
         "is_mentor": false,
-        "secret": "She propped the incubator door open for a few minutes at 02:10 to wipe condensation, then got distracted by a call and left it ajar for about half an hour.",
-        "alibi": "On her regular 02:00 rounds; logged closing the door at 02:40.",
-        "knows": [
-          "She found bottles and plate lids left in tissue-culture hood 2 at 02:15",
-          "The temperature only dropped a few degrees"
-        ],
-        "lies_about": "Says she found the door already ajar instead of admitting she opened it.",
-        "speaking_style": "Friendly, chatty, uses a lot of 'honestly' and 'to be fair'.",
         "portrait_tags": [
-          "woman",
-          "facilities uniform",
-          "flashlight",
-          "keys"
-        ]
-      },
-      {
-        "id": "ch_marcus",
-        "name": "Marcus Lee",
-        "role": "Team Aurora intern",
-        "bio": "Aurora's youngest member, responsible for the evening feeding of the cultures.",
-        "is_mentor": false,
-        "secret": "He skipped the 18:00 feeding to catch the last bus and ticked nothing on the sheet, planning to feed at 7 a.m.",
-        "alibi": "Checked the plates at 17:45, left at 17:52 for the bus.",
-        "knows": [
-          "The plates looked healthy and pink at 17:45",
-          "Theo was coming in as he was leaving"
-        ],
-        "lies_about": "At first says he fed the cells on time.",
-        "speaking_style": "Nervous, apologetic, talks fast.",
-        "portrait_tags": [
-          "teenage boy",
-          "backpack",
-          "lab coat too big"
+          "teenage girl",
+          "press lanyard",
+          "phone",
+          "curly hair"
         ]
       }
     ],
     "evidence": [
       {
-        "id": "e_incubator_log",
-        "title": "Incubator 3 overnight log",
-        "text": "Readings every 10 min, 18:00–08:00. Temperature: 37.0 °C all night except 02:10–02:40, low of 34.5 °C (DOOR AJAR alarm), back to 37.0 °C by 03:05. CO2: 5.0% all night except 23:05–23:20, low of 3.1% (GAS SUPPLY INTERRUPTED, alarm silenced). Humidity 95%.",
+        "id": "e_dish_check",
+        "title": "7 A.M. Dish Check",
+        "detail": "Cells still stuck to the dish, alive but barely. Not beating. Glucose: plenty left. Lactate: 8 times normal. ATP: 15% of normal.",
+        "key_fact": "ATP at 15% of normal, lactate 8 times higher",
+        "concept_ids": [
+          "c_fermentation",
+          "c_glycolysis"
+        ],
+        "starts_in_file": true
+      },
+      {
+        "id": "e_door_log",
+        "title": "Front Door Swipe Log",
+        "detail": "Room 204 front door, last night. Blake Okoro: in 6:30, out 7:30. Blake Okoro: in 9:05, out 9:10. Gus Ferreira: in 10:00, out 10:40.",
+        "key_fact": "Blake's last swipe out: 9:10 p.m.",
+        "concept_ids": [],
+        "starts_in_file": true
+      },
+      {
+        "id": "e_temp_log",
+        "title": "Incubator Temperature Log",
+        "detail": "Steady at 37 °C all evening. Power off 10:05 to 10:25 p.m., dipping to 33 °C. Back to 37 °C by 10:30 and steady all night.",
+        "key_fact": "Cooled to 33 °C for 20 minutes, then fully rewarmed",
         "concept_ids": [
           "c_enzymes"
         ],
-        "points_to": [
-          "ch_dana",
-          "ch_priya"
-        ],
-        "unlocked_by": "",
-        "unlock_topic": ""
+        "starts_in_file": true
       },
       {
-        "id": "e_ocr_readout",
-        "title": "Plate reader: oxygen use and ATP",
-        "text": "Team Aurora, plates A-1 to A-4 (average). Oxygen consumption rate: 18:00 = 41 pmol O2/min per well; 08:00 = 3 pmol O2/min per well. Cell ATP (luminescence, % of 18:00): 08:00 = 22%. Cell count unchanged. Tech note: 'cells attached, not dead yet, but running on almost nothing.'",
+        "id": "e_o2_probe",
+        "title": "Oxygen Probe Readings",
+        "detail": "Oxygen in Nova's dish, read hourly. A normal night stays near 110, because busy cells pull oxygen out. Last night: 9 p.m. 110. 10 p.m. 150. 7 a.m. 155.",
+        "key_fact": "Oxygen in the dish went UP overnight",
         "concept_ids": [
-          "c_electron_transport_chain",
-          "c_chemiosmosis"
-        ],
-        "points_to": [],
-        "unlocked_by": "",
-        "unlock_topic": ""
-      },
-      {
-        "id": "e_medium_panel",
-        "title": "Medium chemistry panel",
-        "text": "Team Aurora medium, 18:00 vs 08:00. Glucose: 25.0 → 14.0 mM. Lactate: 2.0 → 23.0 mM. pH: 7.40 → 6.85. Program reference for a healthy overnight: glucose about −4 mM, lactate about +3 mM, pH stays above 7.2.",
-        "concept_ids": [
-          "c_glycolysis",
-          "c_fermentation"
-        ],
-        "points_to": [
-          "ch_marcus",
-          "ch_theo"
-        ],
-        "unlocked_by": "",
-        "unlock_topic": ""
-      },
-      {
-        "id": "e_feeding_sheet",
-        "title": "Aurora feeding checklist",
-        "text": "Week 3. Mon–Thu: 18:00 feeding ticked (M.L.). Friday 18:00: box empty. Scribbled in the margin: 'bus!! will feed 7am — M'. Next scheduled medium change: Saturday 07:00.",
-        "concept_ids": [
-          "c_glycolysis"
-        ],
-        "points_to": [
-          "ch_marcus"
-        ],
-        "unlocked_by": "",
-        "unlock_topic": ""
-      },
-      {
-        "id": "e_oxygen_probe",
-        "title": "Dissolved-oxygen probe trace",
-        "text": "Probe in Aurora plate A-1 medium. Normal nights: 105–115 mmHg, because busy cells keep pulling oxygen out of the medium. Last night: 18:00 = 112 mmHg; 23:10 = 149 mmHg; 02:30 = 156 mmHg; 08:00 = 158 mmHg. Fully air-saturated medium at 37 °C with no cells = about 160 mmHg. Dana's note on the gas panel: 'Tank = CO2 only. O2 comes from room air through the HEPA vent.'",
-        "concept_ids": [
-          "c_electron_transport_chain",
-          "c_etc_inhibitors"
-        ],
-        "points_to": [
-          "ch_theo"
-        ],
-        "unlocked_by": "ch_dana",
-        "unlock_topic": "the oxygen probe inside the incubator"
-      },
-      {
-        "id": "e_hood_signout",
-        "title": "Tissue-culture hood sign-out sheet",
-        "text": "Hood 2, Friday. 17:40–17:50 M. Lee, 'check Aurora plates, no feed'. 21:20–21:45 T. Park, 'wash + fix Helix staining plates, DPBS stock B'. 23:05 D. Ruiz, 'incubator 3 CO2 tank swap (not hood)'. 02:15 P. Shah, 'rounds: closed incubator 3 door, cleared hood'.",
-        "concept_ids": [
-          "c_etc_inhibitors"
-        ],
-        "points_to": [
-          "ch_theo"
-        ],
-        "unlocked_by": "ch_dana",
-        "unlock_topic": "the hood sign-out sheet"
-      },
-      {
-        "id": "e_hood_bottles",
-        "title": "Items found in hood 2 at 02:15",
-        "text": "Collected by P. Shah: (1) 500 mL bottle 'DPBS stock B', about 60 mL used. Label: 'Contains 0.09% sodium azide (preservative). Supplier note: sodium azide binds cytochrome c oxidase (complex IV), the same site blocked by cyanide.' (2) Four lids labelled 'Helix H-1 to H-4'. (3) Two lids labelled 'Aurora A-1, A-2'.",
-        "concept_ids": [
-          "c_etc_inhibitors",
           "c_electron_transport_chain"
         ],
-        "points_to": [
-          "ch_theo"
+        "starts_in_file": false
+      },
+      {
+        "id": "e_doorstop",
+        "title": "Rubber Doorstop",
+        "detail": "Found wedging Room 204's back door open last night. The back door has no card reader.",
+        "key_fact": "Back-door visitors never show up in the swipe log",
+        "concept_ids": [],
+        "starts_in_file": false
+      },
+      {
+        "id": "e_beat_log",
+        "title": "Heart Monitor Printout",
+        "detail": "Beats per minute from Nova's dish. Steady at 60 from 6:00 to 9:46 p.m. 9:47: 31. 9:48: 0. Alarm on. No beats since.",
+        "key_fact": "Normal until 9:46, flatline at 9:48",
+        "concept_ids": [
+          "c_etc_inhibitors",
+          "c_chemiosmosis"
         ],
-        "unlocked_by": "ch_priya",
-        "unlock_topic": "what she found left in the tissue-culture hood"
+        "starts_in_file": false
+      },
+      {
+        "id": "e_buffer_b",
+        "title": "Bottle of Buffer B",
+        "detail": "Found in the trash by Nova's incubator, cap off, half empty. Label: \"Contains sodium azide. Blocks cells like cyanide. For dead, preserved cells ONLY.\"",
+        "key_fact": "Sodium azide: blocks the same step as cyanide",
+        "concept_ids": [
+          "c_etc_inhibitors"
+        ],
+        "starts_in_file": false
+      },
+      {
+        "id": "e_article",
+        "title": "Tribune Safety Story",
+        "detail": "Last month's front page, by Margo Vance: \"The Scariest Bottle in Room 204.\" Photo of Buffer B on Blake's shelf, label circled in red.",
+        "key_fact": "Margo knew exactly where Buffer B was kept",
+        "concept_ids": [],
+        "starts_in_file": false
+      },
+      {
+        "id": "e_uncropped_photo",
+        "title": "Margo's Uncropped Photo",
+        "detail": "Full version of Margo's \"SABOTAGE\" photo, shot up close. Nova's dish with the lid off, Buffer B uncapped beside it. Photo data: 9:45 p.m., Room 204.",
+        "key_fact": "Margo shot the open dish, Buffer B beside it, at 9:45",
+        "concept_ids": [
+          "c_etc_inhibitors"
+        ],
+        "starts_in_file": false
       }
     ],
-    "accusation": {
-      "prompt": "Who is responsible for what happened to Team Aurora's cells?",
+    "testimonies": [
+      {
+        "id": "t_blake",
+        "witness_id": "ch_blake",
+        "title": "Your Cells Are Just Lazy",
+        "statements": [
+          {
+            "id": "s_blake_staining",
+            "text": "I was here from 6:30 to 7:30, staining MY cells. Dead ones. They don't complain.",
+            "press_reply": "Preserved cells, already dead. I rinse them with Buffer B from my shelf. Totally safe for them. They're past caring.",
+            "press_unlocks_evidence_id": ""
+          },
+          {
+            "id": "s_blake_drumsolo",
+            "text": "When I left, your cells were beating like a drum solo. Not that I was looking.",
+            "press_reply": "Sixty beats a minute. I counted. Out of scientific curiosity. Not jealousy. Definitely not jealousy.",
+            "press_unlocks_evidence_id": ""
+          },
+          {
+            "id": "s_blake_charger",
+            "text": "I came back at 9:05 for my phone charger. In and out in five minutes.",
+            "press_reply": "Weird thing, though. The back door was propped open with a doorstop. Not my doing. I use doors like a civilized person.",
+            "press_unlocks_evidence_id": "e_doorstop"
+          },
+          {
+            "id": "s_blake_fermenting",
+            "text": "This morning your cells look lazy, not dead. They switched to fermentation.",
+            "press_reply": "They probably ran low on oxygen. Cells ferment when they can't breathe. Check the oxygen probe in your dish, genius.",
+            "press_unlocks_evidence_id": "e_o2_probe"
+          },
+          {
+            "id": "s_blake_generator",
+            "text": "Fermentation is a backup generator. Same energy, different fuel. Nothing to cry about.",
+            "press_reply": "Glycolysis keeps chugging, fermentation keeps it going. Energy is energy. Honestly, your cells are having a spa day.",
+            "press_unlocks_evidence_id": ""
+          }
+        ],
+        "contradiction": {
+          "statement_id": "s_blake_generator",
+          "evidence_id": "e_dish_check",
+          "concept_id": "c_fermentation",
+          "explanation": "Fermentation only recycles NAD+ so glycolysis can keep making its 2 ATP per glucose. Aerobic respiration makes about 30. The high lactate proves the cells were fermenting, and their ATP still crashed to 15%."
+        },
+        "breakthrough": "Okay, okay. 2 ATP instead of 30 is not a spa day. Something shut down their mitochondria and forced them to ferment. But it wasn't me!",
+        "hints": [
+          "Blake says everything with a smirk. Only one of his lines breaks the rules of biology.",
+          "Aerobic respiration makes about 30 ATP per glucose. Fermentation just keeps glycolysis running, and glycolysis makes 2.",
+          "If fermenting cells really had the same energy, what would their ATP look like this morning? Check what it actually was."
+        ]
+      },
+      {
+        "id": "t_gus",
+        "witness_id": "ch_gus",
+        "title": "Duchess Needed an Outlet",
+        "statements": [
+          {
+            "id": "s_gus_swipe",
+            "text": "I swiped in at ten sharp, like always. Duchess and I keep a tight schedule.",
+            "press_reply": "Floors, then trash, then floors again. The back door was propped open, so I kicked the doorstop out. Drafts are bad for Duchess.",
+            "press_unlocks_evidence_id": ""
+          },
+          {
+            "id": "s_gus_unplug",
+            "text": "At 10:05 I unplugged your incubator for twenty minutes. Duchess needs the good outlet.",
+            "press_reply": "Plugged it right back in at 10:25. A little chilly for twenty minutes, then toasty again. The temperature log will back me up.",
+            "press_unlocks_evidence_id": ""
+          },
+          {
+            "id": "s_gus_beeping",
+            "text": "Your heart monitor was already beeping when I walked in. So I printed out its log.",
+            "press_reply": "Beeping like a microwave nobody's watching. I figured you kids would want the printout, so I saved it. You're welcome.",
+            "press_unlocks_evidence_id": "e_beat_log"
+          },
+          {
+            "id": "s_gus_suffocated",
+            "text": "Those cells suffocated, plain and simple. Not enough oxygen got into that dish.",
+            "press_reply": "My uncle's goldfish went the same way. No oxygen, no energy. That's biology, kid.",
+            "press_unlocks_evidence_id": ""
+          },
+          {
+            "id": "s_gus_bottle",
+            "text": "Somebody tossed a bottle in the trash right next to your incubator. Didn't recognize it.",
+            "press_reply": "Cap off, half empty, scary label. I don't touch chemicals. Bagged it with gloves and saved it for you.",
+            "press_unlocks_evidence_id": "e_buffer_b"
+          }
+        ],
+        "contradiction": {
+          "statement_id": "s_gus_suffocated",
+          "evidence_id": "e_o2_probe",
+          "concept_id": "c_electron_transport_chain",
+          "explanation": "Cells use oxygen at only one step: the end of the electron transport chain, where oxygen grabs electrons and becomes water. Oxygen in the dish went UP. It was right there. The cells just stopped using it."
+        },
+        "breakthrough": "Wait. So there was plenty of oxygen, and the cells couldn't use it? Then the very end of the chain was jammed. That's no draft. That's poison!",
+        "hints": [
+          "Gus has a simple answer. Ask yourself: was something missing, or was something just not being used?",
+          "Oxygen is used at one place only: the end of the electron transport chain, where it catches electrons and becomes water.",
+          "If cells stop using oxygen but it keeps flowing in, what happens to the amount in the dish? Is anything measuring that?"
+        ]
+      },
+      {
+        "id": "t_margo",
+        "witness_id": "ch_margo",
+        "title": "BREAKING: I Know Who Did It",
+        "statements": [
+          {
+            "id": "s_margo_heartcam",
+            "text": "I ran Heart Cam for my live blog last night. Your cells were the best story at Hillcrest.",
+            "press_reply": "Eleven live viewers! Well, ten and my mom. Turns out heartbeats are amazing content.",
+            "press_unlocks_evidence_id": ""
+          },
+          {
+            "id": "s_margo_shelf",
+            "text": "Everybody knows Blake keeps Buffer B on his shelf. It's basically cyanide in a bottle.",
+            "press_reply": "I wrote a whole safety story about it last month. Photos, circled label, the works. Front page, obviously.",
+            "press_unlocks_evidence_id": "e_article"
+          },
+          {
+            "id": "s_margo_slow",
+            "text": "Blake dosed your dish when he snuck back at 9:05. Poisons like that take a while to kick in.",
+            "press_reply": "Slow and sneaky, just like him. It crept up on your cells for ages, then boom. Flatline. Classic.",
+            "press_unlocks_evidence_id": ""
+          },
+          {
+            "id": "s_margo_scoop",
+            "text": "At 9:52 I posted \"SABOTAGE AT HILLCREST!\" with an exclusive photo. Call it a reporter's instinct.",
+            "press_reply": "My best shot ever. I cropped it for drama, but the full version is even better. Here, look. I'm very proud.",
+            "press_unlocks_evidence_id": "e_uncropped_photo"
+          },
+          {
+            "id": "s_margo_motive",
+            "text": "Blake had motive, means, and opportunity. Honestly, the headline writes itself.",
+            "press_reply": "Motive: he hates losing. Means: Buffer B. Opportunity: 9:05. I learned that from a true-crime podcast. Seven seasons.",
+            "press_unlocks_evidence_id": ""
+          }
+        ],
+        "contradiction": {
+          "statement_id": "s_margo_slow",
+          "evidence_id": "e_beat_log",
+          "concept_id": "c_etc_inhibitors",
+          "explanation": "Sodium azide blocks complex IV, just like cyanide. The chain stops at once, ATP synthase stalls, and ATP crashes within minutes. The cells beat normally until 9:46. The dish was dosed around 9:45, not 9:05."
+        },
+        "breakthrough": "Fine! If it hits in minutes, someone dosed the dish around 9:45, and Blake was long gone. But you can't prove who was there!",
+        "hints": [
+          "Margo tells a great story. Check whether her timeline actually works.",
+          "A poison that blocks complex IV doesn't creep. The chain shuts down, and ATP collapses within minutes.",
+          "If the dish was poisoned when she says, when should the beating have stopped? Find the record of when it really did."
+        ]
+      }
+    ],
+    "finale": {
+      "question": "Who poisoned Team Nova's heart cells?",
       "options": [
         {
-          "id": "opt_theo",
-          "label": "Theo Park",
-          "character_id": "ch_theo"
+          "id": "opt_blake",
+          "label": "Blake Okoro",
+          "character_id": "ch_blake"
         },
         {
-          "id": "opt_dana",
-          "label": "Dana Ruiz",
-          "character_id": "ch_dana"
+          "id": "opt_gus",
+          "label": "Gus Ferreira",
+          "character_id": "ch_gus"
         },
         {
-          "id": "opt_priya",
-          "label": "Priya Shah",
-          "character_id": "ch_priya"
+          "id": "opt_margo",
+          "label": "Margo Vance",
+          "character_id": "ch_margo"
         },
         {
-          "id": "opt_marcus",
-          "label": "Marcus Lee",
-          "character_id": "ch_marcus"
+          "id": "opt_accident",
+          "label": "No one. The cells ran out of sugar.",
+          "character_id": null
         }
       ],
-      "correct_option_id": "opt_theo",
+      "correct_option_id": "opt_margo",
+      "proof_evidence_id": "e_uncropped_photo",
       "wrong_option_feedback": [
         {
-          "option_id": "opt_dana",
-          "feedback": "The tank swap looks suspicious, but the tank only carries CO2, and the oxygen probe shows oxygen rising in the medium all night. The cells weren't short of oxygen; they couldn't use it."
+          "option_id": "opt_blake",
+          "feedback": "Buffer B is his, but he swiped out at 9:10. A complex IV poison crashes ATP within minutes, and the cells beat normally until 9:46. Someone opened that dish later."
         },
         {
-          "option_id": "opt_priya",
-          "feedback": "A 30-minute cool spell to 34.5 °C slows enzymes slightly and reversibly. It would slow glycolysis too, yet lactate production surged. Cold can't explain oxygen sitting unused."
+          "option_id": "opt_gus",
+          "feedback": "Gus unplugged the incubator after the flatline. And mild cooling only slows enzymes. Warm them back up and they recover. These cells never did."
         },
         {
-          "option_id": "opt_marcus",
-          "feedback": "The skipped feeding is real, but 14 mM glucose was still in the dish. Starving cells would make less lactate, not seven times more, and missing food doesn't stop cells using oxygen while fuel remains."
+          "option_id": "opt_accident",
+          "feedback": "The 7 a.m. check shows plenty of glucose and 8 times the lactate. Glycolysis was running hard. The cells had fuel. They just couldn't use their oxygen."
         }
-      ]
+      ],
+      "explanation": "Sodium azide, like cyanide, blocks complex IV at the end of the electron transport chain. Electrons can't reach oxygen, so oxygen piles up unused. Proton pumping stops, ATP synthase stalls, and ATP crashes within minutes. The cells fell back on glycolysis and fermentation: only 2 ATP per glucose. Not enough to keep a heart beating."
     },
-    "solution": {
-      "summary": "Theo washed two Aurora plates with DPBS stock B, which contains sodium azide. Azide blocks cytochrome c oxidase (complex IV), so electrons could no longer reach oxygen: oxygen use crashed while dissolved oxygen rose toward saturation, the proton gradient and ATP synthase stalled, and the cells survived on glycolysis plus lactic acid fermentation, burning glucose fast for only 2 ATP each.",
-      "chain": [
-        {
-          "step": "Oxygen use dropped over 90% and ATP fell to 22%, while glucose use and lactate production shot up: the cells switched from aerobic respiration to fermentation.",
-          "concept_id": "c_fermentation"
-        },
-        {
-          "step": "Glycolysis was clearly running (about 95% of used glucose became lactate), so the problem was after glycolysis, and the cold spell can't explain it.",
-          "concept_id": "c_glycolysis"
-        },
-        {
-          "step": "Oxygen in the medium rose to nearly saturated, so oxygen was present but not being accepted: the electron transport chain was blocked at its last step, which also stops ATP synthase.",
-          "concept_id": "c_electron_transport_chain"
-        },
-        {
-          "step": "Stock B contains sodium azide, which blocks complex IV like cyanide; Aurora lids were found with Theo's stock B wash in the hood, so Theo's wash delivered the block.",
-          "concept_id": "c_etc_inhibitors"
-        }
-      ]
-    },
-    "board": [
-      {
-        "id": "r_what",
-        "question": "What happened to the cells' metabolism overnight?",
-        "check_id": "k_metabolism",
-        "evidence_ids": [
-          "e_ocr_readout",
-          "e_medium_panel"
-        ]
-      },
-      {
-        "id": "r_how",
-        "question": "How much of the glucose they used went down the fermentation route? (%)",
-        "check_id": "k_lactate_share",
-        "evidence_ids": [
-          "e_medium_panel"
-        ]
-      },
-      {
-        "id": "r_where",
-        "question": "Where in respiration did things break down?",
-        "check_id": "k_block_site",
-        "evidence_ids": [
-          "e_oxygen_probe",
-          "e_incubator_log",
-          "e_medium_panel"
-        ]
-      },
-      {
-        "id": "r_cause",
-        "question": "Which overnight event could cause a block there?",
-        "check_id": "k_delivery",
-        "evidence_ids": [
-          "e_hood_bottles",
-          "e_hood_signout"
-        ]
-      }
-    ],
     "field_guide": [
       {
         "concept_id": "c_glycolysis",
         "title": "Glycolysis",
-        "explanation": "The first stage, in the cytoplasm. One glucose is split into 2 pyruvate, giving a net 2 ATP and 2 NADH. It does not need oxygen.",
+        "explanation": "Splits one glucose into 2 pyruvate in the cytoplasm, netting 2 ATP and 2 NADH. Needs no oxygen.",
         "source_ref": "class notes, bullet 2"
       },
       {
         "concept_id": "c_fermentation",
         "title": "Fermentation",
-        "explanation": "When the mitochondria can't take pyruvate's electrons, muscle cells turn pyruvate into lactate. This recycles NAD+ so glycolysis can keep going, but the cell gets only 2 ATP per glucose instead of about 30.",
+        "explanation": "When the chain can't run, cells turn pyruvate into lactate to recycle NAD+. Glycolysis keeps going, but that's only 2 ATP per glucose.",
         "source_ref": "class notes, bullet 5"
       },
       {
         "concept_id": "c_electron_transport_chain",
         "title": "Electron transport chain",
-        "explanation": "Proteins on the inner mitochondrial membrane pass electrons from NADH and FADH2 down a chain. Oxygen waits at the very end to accept them and becomes water. That is the only place respiration uses oxygen.",
+        "explanation": "NADH and FADH2 hand electrons down proteins in the inner mitochondrial membrane. Oxygen catches them at the end and becomes water. No working chain, no oxygen use.",
         "source_ref": "class notes, bullet 4"
       },
       {
         "concept_id": "c_chemiosmosis",
         "title": "Chemiosmosis and ATP synthase",
-        "explanation": "As electrons move, protons are pumped across the membrane. Their flow back through ATP synthase makes most of the cell's ATP (about 26–34 per glucose). No electron flow means no gradient and no ATP from this step.",
+        "explanation": "The chain pumps protons across the membrane. Protons flowing back through ATP synthase make most of the cell's ATP. Stop the chain and ATP synthase stalls.",
         "source_ref": "class notes, bullet 4"
       },
       {
         "concept_id": "c_etc_inhibitors",
         "title": "Electron transport chain poisons",
-        "explanation": "Cyanide blocks cytochrome c oxidase (complex IV), the last complex, which hands electrons to oxygen. The whole chain backs up, oxygen goes unused, and ATP production collapses within minutes.",
+        "explanation": "Cyanide and similar poisons block complex IV. Electrons can't reach oxygen, the whole chain stops, and ATP collapses within minutes.",
         "source_ref": "class notes, bullet 6"
       },
       {
         "concept_id": "c_enzymes",
-        "title": "Enzymes, temperature and pH",
-        "explanation": "Enzymes speed up reactions by lowering activation energy. Cooling slows them down reversibly; high heat or extreme pH can denature them.",
+        "title": "Enzymes and temperature",
+        "explanation": "Cooling slows enzymes, but they speed back up when warmed. High heat or extreme pH can denature them for good.",
         "source_ref": "class notes, bullet 7"
       }
     ]
