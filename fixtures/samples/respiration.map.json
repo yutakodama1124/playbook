@@ -1,0 +1,78 @@
+{
+  "unit": { "title": "Cellular Respiration", "course": "AP Biology", "level": "AP/IB" },
+  "source_coverage": "All seven bullet points of the class notes (Unit 3) are covered; nothing on photosynthesis or uncouplers.",
+  "concepts": [
+    {
+      "id": "c_cellular_respiration", "name": "Cellular respiration (overall)", "kind": "process",
+      "summary": "Cells break down glucose with oxygen to make ATP, releasing CO2 and water.",
+      "facts": ["C6H12O6 + 6O2 → 6CO2 + 6H2O + ATP", "Aerobic respiration yields roughly 30–38 ATP per glucose in total"],
+      "formulas": [], "steps": ["glycolysis", "pyruvate oxidation + Krebs cycle", "electron transport chain + chemiosmosis"],
+      "misconceptions": [{ "wrong": "Cells 'breathe' oxygen directly to make energy, so oxygen is used in every stage", "why_wrong": "Only the last step (the electron transport chain) uses O2; glycolysis needs no oxygen" }],
+      "relations": [{ "to": "c_glycolysis", "type": "requires" }, { "to": "c_electron_transport_chain", "type": "requires" }],
+      "source_ref": "class notes, bullet 1"
+    },
+    {
+      "id": "c_glycolysis", "name": "Glycolysis", "kind": "process",
+      "summary": "In the cytoplasm, one glucose is split into 2 pyruvate, netting 2 ATP and 2 NADH, with no oxygen needed.",
+      "facts": ["Happens in the cytoplasm", "glucose → 2 pyruvate", "Net 2 ATP and 2 NADH per glucose", "Does not require oxygen"],
+      "formulas": [], "steps": [],
+      "misconceptions": [{ "wrong": "Glycolysis stops when oxygen runs out", "why_wrong": "Glycolysis is anaerobic; it keeps going as long as NAD+ is regenerated (e.g. by fermentation)" }],
+      "relations": [{ "to": "c_krebs_cycle", "type": "precedes" }, { "to": "c_fermentation", "type": "precedes" }],
+      "source_ref": "class notes, bullet 2"
+    },
+    {
+      "id": "c_krebs_cycle", "name": "Pyruvate oxidation and the Krebs cycle", "kind": "process",
+      "summary": "In the mitochondrial matrix, pyruvate is fully oxidized to CO2, loading electrons onto NADH and FADH2 and making 2 ATP.",
+      "facts": ["Takes place in the mitochondrial matrix", "Releases CO2", "Produces NADH, FADH2 and 2 ATP per glucose"],
+      "formulas": [], "steps": [],
+      "misconceptions": [{ "wrong": "The Krebs cycle makes most of the cell's ATP", "why_wrong": "It makes only 2 ATP directly; its main job is loading NADH/FADH2 for the electron transport chain" }],
+      "relations": [{ "to": "c_electron_transport_chain", "type": "produces" }],
+      "source_ref": "class notes, bullet 3"
+    },
+    {
+      "id": "c_electron_transport_chain", "name": "Electron transport chain", "kind": "process",
+      "summary": "On the inner mitochondrial membrane, NADH and FADH2 hand electrons down a chain of proteins; oxygen is the final electron acceptor and becomes water.",
+      "facts": ["Located on the inner mitochondrial membrane", "NADH and FADH2 donate electrons", "O2 is the final electron acceptor and is reduced to water", "Cytochrome c oxidase (complex IV) is the last complex, which hands electrons to O2"],
+      "formulas": [], "steps": [],
+      "misconceptions": [{ "wrong": "If cells stop using oxygen, it must be because there is no oxygen around", "why_wrong": "Oxygen is only used when electrons reach complex IV; if the chain is blocked, oxygen sits unused even when plentiful" }],
+      "relations": [{ "to": "c_chemiosmosis", "type": "causes" }],
+      "source_ref": "class notes, bullet 4"
+    },
+    {
+      "id": "c_chemiosmosis", "name": "Chemiosmosis and ATP synthase", "kind": "process",
+      "summary": "The ETC pumps protons to build a gradient; protons flowing back through ATP synthase make about 26–34 ATP per glucose.",
+      "facts": ["Proton gradient across the inner membrane drives ATP synthase", "Produces ~26–34 ATP per glucose — most of the cell's ATP"],
+      "formulas": [], "steps": [],
+      "misconceptions": [{ "wrong": "ATP synthase can keep making ATP even if the electron transport chain stops", "why_wrong": "Without electron flow there is no proton pumping, so the gradient collapses and ATP synthase stalls" }],
+      "relations": [{ "to": "c_electron_transport_chain", "type": "requires" }],
+      "source_ref": "class notes, bullet 4"
+    },
+    {
+      "id": "c_fermentation", "name": "Fermentation", "kind": "process",
+      "summary": "Without a working ETC, cells regenerate NAD+ by turning pyruvate into lactate (muscle) or ethanol + CO2 (yeast), getting only 2 ATP per glucose.",
+      "facts": ["Regenerates NAD+ so glycolysis can continue", "Muscle cells make lactic acid (lactate); yeast make alcohol and CO2", "Only 2 ATP per glucose", "Each glucose fermented in muscle gives 2 lactate"],
+      "formulas": [], "steps": [],
+      "misconceptions": [{ "wrong": "Fermentation makes extra energy as a backup", "why_wrong": "It makes no ATP itself; it only recycles NAD+ so glycolysis's 2 ATP can continue" }],
+      "relations": [{ "to": "c_glycolysis", "type": "requires" }],
+      "source_ref": "class notes, bullet 5"
+    },
+    {
+      "id": "c_etc_inhibitors", "name": "Electron transport chain poisons", "kind": "principle",
+      "summary": "Chemicals like cyanide block cytochrome c oxidase (complex IV), so the ETC stops and ATP production collapses within minutes.",
+      "facts": ["Cyanide blocks cytochrome c oxidase (complex IV)", "Blocking complex IV stops the whole chain and oxygen use", "ATP production collapses within minutes"],
+      "formulas": [], "steps": [],
+      "misconceptions": [{ "wrong": "Cyanide-type poisons work by stopping oxygen from reaching the cell", "why_wrong": "Oxygen still arrives; the cell simply can't use it because complex IV is blocked" }],
+      "relations": [{ "to": "c_electron_transport_chain", "type": "opposes" }],
+      "source_ref": "class notes, bullet 6"
+    },
+    {
+      "id": "c_enzymes", "name": "Enzymes, temperature and pH", "kind": "principle",
+      "summary": "Enzymes lower activation energy; their activity depends on temperature and pH.",
+      "facts": ["Enzymes lower activation energy", "Activity is affected by temperature and pH", "Cooling slows enzymes; high heat can denature them"],
+      "formulas": [], "steps": [],
+      "misconceptions": [{ "wrong": "Any drop in temperature 'kills' enzymes", "why_wrong": "Mild cooling only slows enzymes reversibly; denaturation is caused by high heat or extreme pH" }],
+      "relations": [],
+      "source_ref": "class notes, bullet 7"
+    }
+  ]
+}

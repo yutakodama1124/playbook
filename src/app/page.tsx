@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { loadRecent, rememberUnit, type RecentUnit } from "./components/recent";
 import { Button, Card, Label, PageHeader, buttonClass, inputClass } from "./components/ui";
 import { CasePreview, EscapePreview, ImpostorPreview } from "./components/landing/Previews";
+import { SAMPLES } from "./samples";
 
 const MODES = [
   { name: "Case Files", line: "Question suspects. Only the science closes the case.", preview: <CasePreview /> },
@@ -45,7 +46,7 @@ export default function Home() {
           <p className="mx-auto mt-5 max-w-lg text-lg text-zinc-600">Upload your notes. Play a game you can only win by understanding them.</p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <a href="#start" className={buttonClass("primary", "lg", "w-full sm:w-auto")}>Build a game from my notes</a>
-            <a href="#modes" className={buttonClass("secondary", "lg", "w-full sm:w-auto")}>See the games</a>
+            <a href="#try" className={buttonClass("secondary", "lg", "w-full sm:w-auto")}>Try a sample game</a>
           </div>
         </section>
 
@@ -60,7 +61,19 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-6xl px-4 pt-24">
+        <section id="try" className="mx-auto max-w-6xl scroll-mt-16 px-4 pt-20">
+          <h2 className="text-lg font-semibold">Try one now</h2>
+          <p className="mt-1 text-sm text-zinc-600">Ready-made games from AP Biology notes. No upload needed.</p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            {SAMPLES.map((s) => (
+              <a key={s.href} href={s.href} className="rounded-xl border border-zinc-200 bg-white px-4 py-3 transition-colors hover:border-zinc-400">
+                <p className="font-medium">{s.mode}</p><p className="text-sm text-zinc-500">{s.unit}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-4 pt-20">
           <ol className="grid gap-10 border-t border-zinc-200 pt-10 md:grid-cols-3">
             {STEPS.map(([t, d], i) => (
               <li key={t}><p className="text-sm text-zinc-400">Step {i + 1}</p><p className="mt-1 font-medium">{t}</p><p className="mt-1 text-sm leading-relaxed text-zinc-600">{d}</p></li>
