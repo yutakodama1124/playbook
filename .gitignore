@@ -49,3 +49,5 @@ dist-workflow/
 
 # art drop folder (uploaded to Supabase by scripts/import-assets.mts)
 /assets-import/
+
+/.playwright-mcp/

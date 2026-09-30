@@ -56,7 +56,7 @@ export function CaseBoard({ gameId, board, checks, evidenceTitle, confirmed, set
                 <ol className="space-y-1 text-sm text-zinc-700">{k.hints.slice(0, hintsShown[row.id]).map((h, j) => <li key={j}><span className="font-medium text-zinc-500">Hint {j + 1}.</span> {h}</li>)}</ol>
               )}
               {!done && k && (hintsShown[row.id] ?? 0) < 3 && (
-                <button onClick={() => setHintsShown({ ...hintsShown, [row.id]: (hintsShown[row.id] ?? 0) + 1 })} className="text-xs font-medium text-zinc-500 hover:text-zinc-900">{(hintsShown[row.id] ?? 0) === 0 ? "Get a hint" : "Another hint"}</button>
+                <button onClick={() => setHintsShown({ ...hintsShown, [row.id]: (hintsShown[row.id] ?? 0) + 1 })} className="block text-xs font-medium text-zinc-500 hover:text-zinc-900">{(hintsShown[row.id] ?? 0) === 0 ? "Get a hint" : "Another hint"}</button>
               )}
               {k?.kind === "choice" ? (
                 <select disabled={done} value={answers[row.id] ?? ""} onChange={(e) => setAnswers({ ...answers, [row.id]: e.target.value })} className={inputClass} aria-label={row.question}>
