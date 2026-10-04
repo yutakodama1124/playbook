@@ -21,11 +21,11 @@ I wanted the opposite: a game where **the concept is the mechanic**. You don't a
 You upload your own notes, slides, or photos of a unit. Playbook builds a **concept map** — the key ideas, where each one shows up in your notes, and the mistakes students usually make — and then generates a game from that exact material:
 
 - **Case Files** — a courtroom game inspired by *Ace Attorney*. Witnesses testify and one line in each testimony is a lie. Press lines for detail and new evidence, then present the evidence that breaks the lie — it only works if you apply the concept. Five lives, points, streaks, and a final verdict where you name the culprit *and* present the proof.
-- **Escape Room** — two rooms of locks that open when you compute, predict, or put a process in order. Every lock gives a fragment, and the sealed exit is a meta-puzzle that combines them.
+- **Escape Room** — a point-and-click room against a 20-minute clock. Click glowing objects for clues; locks open when you compute, predict, or put a process in order. Every lock drops a fragment into your inventory, and the sealed exit is a final puzzle that combines them.
 - **Impostor** — a party game for 3–10 players on their phones. Everyone gets a fact card; one is subtly wrong, built from a real misconception. You read your fact and explain *why* it's true, so the impostor has to bluff a reason. Secret vouching pairs and scoring for misdirection keep it tense.
 - **Boss Fight** — your test date becomes a boss. Weak concepts are its shields, correct answers deal damage, and review questions come back on a spaced schedule before test day.
 
-Every game opens with a hook question, has a three-step hint ladder (nudge → concept → similar worked example, never the answer), and ends with a debrief that connects what you did to the textbook concept.
+Every game opens with a hook question, has three-step hints that explain the idea but never give the answer, and ends with a debrief that connects what you did to the textbook concept.
 
 **Try it without uploading anything:** the home page has three ready-made AP Biology games.
 
@@ -34,11 +34,11 @@ Every game opens with a hook question, has a three-step hint ladder (nudge → c
 - **Next.js + TypeScript** on **Vercel**, **Supabase** (Postgres + storage), and **Render Workflows** for the long-running generation jobs (a full game takes 1–3 minutes, longer than a normal serverless request).
 - **Claude (Anthropic API)** reads the material, builds the concept map, designs each game as structured data, and reviews it.
 - **Quality gates before a student sees a game:**
-  1. Rule checks in code — every numeric answer is recomputed from its formula, every choice has feedback for each wrong option, and mode rules hold (the Three Clue Rule for mysteries, one exit meta-lock fed by every other lock, a fake fact that can't be spotted by its length).
+  1. Rule checks in code — every numeric answer is recomputed from its formula, every choice has feedback for each wrong option, and mode rules hold (every lie in a testimony is disproved by evidence the player already holds, one exit lock fed by every other lock, a fake fact that can't be spotted by its length, and short 8th-grade wording).
   2. An **AI playtester** that independently re-derives every answer, tries to solve puzzles without the concept, and flags anything confusing, unfair, or "quiz in costume." Problems go back to the generator for up to two repair rounds; if a game still fails, it isn't shown.
-- **During play, answers are checked in code, never by AI.** Answer keys, character secrets, and locked clues never reach the browser; clues are released only after a lock opens.
+- **During play, answers are checked in code, never by AI.** Answer keys, which line is the lie, and locked evidence never reach the browser; clues are released only after a lock opens.
 - **Art** comes from a reusable, auto-tagged image library (hand-made with Codex plus generated images), so most games cost nothing extra to illustrate.
-- 117 automated tests cover the answer checking, validation rules, game engines, and secret redaction.
+- 110 automated tests cover the answer checking, validation rules, game engines, and secret redaction.
 
 ## Challenges
 
