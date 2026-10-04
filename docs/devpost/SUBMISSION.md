@@ -51,14 +51,14 @@ Every game opens with a hook question, has three-step hints that explain the ide
 
 - Three complete game modes plus Boss Fight, live multiplayer on phones, and a quality pipeline that refuses to show a broken game.
 - Answers are always checked deterministically, so a student is never told "correct" by a model that might be wrong.
-- [ADD AFTER TESTING: e.g. "6 classmates tested it: average score on 3 application questions went from X/3 to Y/3; 5 of 6 said it made them think about *why* more than Quizlet."]
+- Case Files went from a chat-and-notes detective game that felt like homework to a courtroom game with lives, streaks, and "Objection!" moments — after I admitted my first version wasn't fun and rebuilt it.
 
 ## What I learned
 
 - The difference between a game about a subject and a game *made of* a subject — and how much research exists on exactly this.
 - How to design with AI safely: let the model be creative, but keep correctness in code (answer keys, validation, redaction).
 - Building a real full-stack product: databases, background jobs, cost limits, deployment, and testing.
-- [ADD one personal lesson in your own words.]
+- "Working" and "fun" are not the same thing. My first versions worked perfectly and were still boring, and the only fix was to be honest about that, study real games, and rebuild instead of polishing something nobody wanted to play.
 
 ## What's next
 
