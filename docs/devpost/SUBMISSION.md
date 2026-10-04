@@ -89,15 +89,5 @@ next.js, react, typescript, tailwindcss, node.js, vercel, supabase, postgresql, 
 6. `06-impostor-round.png` — explain your fact; one card is fake
 7. `07-unit-boss.png` — concept map and Boss Fight mastery
 
-## Video demo (1–2 min) — record with QuickTime (File → New Screen Recording) + your voice, upload to YouTube (unlisted is fine), paste the link.
-
-| Time | Show | Say |
-|---|---|---|
-| 0:00–0:08 | You, or the home page | "Blooket makes you answer questions to play a game. I made the game the question." |
-| 0:08–0:20 | Paste notes → concept map (cut the wait) | "Upload your notes. Playbook maps the key concepts and the mistakes students usually make." |
-| 0:20–0:45 | Case Files: witness line → Press (new evidence) → Present → OBJECTION! → wrong guess loses a heart | "Witnesses lie. You catch them with the science. Guess wrong and you lose a life." |
-| 0:45–0:58 | Escape Room: click a lock, wrong answer shows feedback, solve it, fragment unlocks | "Every lock needs a concept, and the fragments combine into the final exit." |
-| 0:58–1:10 | Impostor: QR code, phones, vote, reveal | "In class, everyone explains their fact. One is fake — you only catch it if you understand it." |
-| 1:10–1:18 | Boss panel | "Your test is the boss. Weak concepts are its shields." |
-| 1:18–1:28 | README diagram or quick code view | "Answers are checked in code, and an AI playtester blocks unfair puzzles before anyone sees them." |
-| 1:28–1:35 | Home page | "Playbook. Turn any unit into a game." |
+## Video demo
+https://youtu.be/o72C-B8UpsQ (unlisted, 53 s, no voiceover; source in brag-output/, not committed)
